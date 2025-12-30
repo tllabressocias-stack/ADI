@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOYA S.A. - Presentación de Inversión</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+            position: relative;
+            overflow-y: auto;
+        }
+        
+        .slide.active {
+            display: flex;
+        }
+        
+        .slide-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #1a202c;
+            margin-bottom: 30px;
+        }
+        
+        .slide-subtitle {
+            font-size: 32px;
+            color: #4a5568;
+            margin-bottom: 40px;
+        }
+        
+        .slide-content {
+            font-size: 20px;
+            color: #2d3748;
+            line-height: 1.8;
+            max-width: 1200px;
+        }
+        
+        .metric-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            margin: 15px;
+            border-radius: 15px;
+            display: inline-block;
+            min-width: 280px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .metric-value {
+            font-size: 42px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        .metric-label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            width: 100%;
+        }
+        
+        .grid-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+        
+        .grid-item-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .grid-item-content {
+            font-size: 16px;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .chart-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .chart-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 15px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .recommendation {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 30px 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .risk-warning {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #78350f;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-size: 16px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        tr:hover {
+            background: #f7fafc;
+        }
+        
+        .bullet-list {
+            text-align: left;
+            display: inline-block;
+            margin: 20px auto;
+        }
+        
+        .bullet-list li {
+            list-style: none;
+            margin: 15px 0;
+            padding-left: 30px;
+            position: relative;
+            font-size: 18px;
+            color: #2d3748;
+        }
+        
+        .bullet-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        
+        .slide-bg-dark {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            color: white;
+        }
+        
+        .slide-bg-dark .slide-title {
+            color: white;
+        }
+        
+        .slide-bg-dark .slide-subtitle {
+            color: #cbd5e0;
+        }
+        
+        .slide-bg-dark .slide-content {
+            color: #e2e8f0;
+        }
+        
+        .centered-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+            }
+            
+            .slide-title {
+                font-size: 32px;
+            }
+            
+            .slide-subtitle {
+                font-size: 20px;
+            }
+            
+            .metric-box {
+                min-width: 200px;
+                padding: 20px;
+            }
+            
+            .metric-value {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- SLIDE 1: TITLE -->
+        <div class="slide active slide-bg-dark">
+            <div class="centered-content">
+                <div class="slide-title">TOYA S.A.</div>
+                <div class="slide-subtitle">Tesis de Inversión 2026</div>
+                <div style="margin-top: 60px; font-size: 24px;">Análisis Fundamental DCF + Múltiplos</div>
+                <div style="margin-top: 80px; font-size: 18px; opacity: 0.8;">Diciembre 2025</div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 2: RESUMEN EJECUTIVO -->
+        <div class="slide">
+            <div class="slide-title">Resumen Ejecutivo</div>
+            <div class="grid" style="margin-top: 40px;">
+                <div class="metric-box">
+                    <div class="metric-label">Precio Actual</div>
+                    <div class="metric-value">9.19 PLN</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Fair Value (DCF)</div>
+                    <div class="metric-value">21.05 PLN</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Upside</div>
+                    <div class="metric-value">129%</div>
+                </div>
+            </div>
+            <div class="recommendation" style="margin-top: 40px;">
+                RECOMENDACIÓN: COMPRAR
+            </div>
+            <div style="margin-top: 30px; font-size: 18px; color: #4a5568;">
+                Distribuidor europeo de herramientas premium con crecimiento estructural 11.5% CAGR<br>
+                Trading 50-60% por debajo de valor intrínseco
+            </div>
+        </div>
+        
+        <!-- SLIDE 3: TESIS DE INVERSIÓN -->
+        <div class="slide">
+            <div class="slide-title">Tesis de Inversión</div>
+            <div class="grid" style="margin-top: 40px;">
+                <div class="grid-item">
+                    <div class="grid-item-title">🚀 Crecimiento</div>
+                    <div class="grid-item-content">
+                        <strong>11.5% CAGR</strong><br>
+                        Online: 25% crecimiento<br>
+                        Retail: 47% crecimiento
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">📈 Márgenes</div>
+                    <div class="grid-item-content">
+                        <strong>50-80 bps expansión</strong><br>
+                        EBITDA: 14.6% → 14.8%<br>
+                        Operating leverage
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">💰 FCF</div>
+                    <div class="grid-item-content">
+                        <strong>100-160M PLN anual</strong><br>
+                        Capital-light model<br>
+                        Shareholder returns
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">🛡️ Balance Sheet</div>
+                    <div class="grid-item-content">
+                        <strong>Fortress</strong><br>
+                        Net cash -57M<br>
+                        D/E 4%, Coverage 32x
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 4: PERFIL DE COMPAÑÍA -->
+        <div class="slide">
+            <div class="slide-title">Perfil de TOYA S.A.</div>
+            <div class="grid" style="margin-top: 40px; text-align: left;">
+                <div class="grid-item">
+                    <div class="grid-item-title">Sector</div>
+                    <div class="grid-item-content">Distribución mayorista de herramientas, accesorios y equipos</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">Geografía</div>
+                    <div class="grid-item-content">Europa Central/Occidental (Poland, Alemania, Francia, Rep. Checa, Eslovaquia)</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">Cotización</div>
+                    <div class="grid-item-content">GPW (Varsovia) - Ticker: TOYA</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">Presencia</div>
+                    <div class="grid-item-content">+2,000 puntos de distribución, marca YATO premium</div>
+                </div>
+            </div>
+            <div class="grid" style="margin-top: 30px;">
+                <div class="grid-item">
+                    <div class="grid-item-title">Online Distribution</div>
+                    <div class="grid-item-content">25% crecimiento, margen bruto 47%</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">Retail Networks</div>
+                    <div class="grid-item-content">47% crecimiento, margen 33-35%</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">Wholesale</div>
+                    <div class="grid-item-content">Clientes mayoristas, margen 28-30%</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 5: DATOS HISTÓRICOS FY2024 -->
+        <div class="slide">
+            <div class="slide-title">Datos Financieros Históricos (FY2024)</div>
+            <table style="margin-top: 40px;">
+                <tr>
+                    <th>Métrica</th>
+                    <th>FY2024</th>
+                    <th>Cambio YoY</th>
+                </tr>
+                <tr>
+                    <td><strong>Ventas</strong></td>
+                    <td>821.0M PLN</td>
+                    <td>+12.1%</td>
+                </tr>
+                <tr>
+                    <td><strong>EBITDA</strong></td>
+                    <td>106.8M PLN</td>
+                    <td>-0.7%</td>
+                </tr>
+                <tr>
+                    <td><strong>EBITDA Margin</strong></td>
+                    <td>13.0%</td>
+                    <td>-120 bps</td>
+                </tr>
+                <tr>
+                    <td><strong>Net Income</strong></td>
+                    <td>68.4M PLN</td>
+                    <td>0.0%</td>
+                </tr>
+                <tr>
+                    <td><strong>EPS</strong></td>
+                    <td>0.91 PLN</td>
+                    <td>-0.1%</td>
+                </tr>
+            </table>
+            <div class="risk-warning" style="margin-top: 40px;">
+                <strong>⚠️ Nota importante:</strong> FY2024 deprimido por inversiones en crecimiento (online, retail expansion). Márgenes normalizarán en FY2025+.
+            </div>
+        </div>
+        
+        <!-- SLIDE 6: ANÁLISIS FINANCIERO -->
+        <div class="slide">
+            <div class="slide-title">Análisis Financiero - Ratios de Calidad</div>
+            <div class="grid" style="margin-top: 40px;">
+                <div class="metric-box">
+                    <div class="metric-label">ROE (2024)</div>
+                    <div class="metric-value">15.0%</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">ROCE (2024)</div>
+                    <div class="metric-value">17.0%</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">D/E Ratio</div>
+                    <div class="metric-value">13%</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Interest Coverage</div>
+                    <div class="metric-value">32x</div>
+                </div>
+            </div>
+            <div style="margin-top: 40px; font-size: 18px; color: #4a5568;">
+                <strong style="color: #667eea;">Evaluación: 8.7/10 - Premium Quality</strong><br><br>
+                ✓ Returns excepcionales (15-20% ROE/ROCE - top-tier para distribuidor)<br>
+                ✓ Márgenes brutos premium 33-34% vs pares 25-30%<br>
+                ✓ Fortress balance sheet: Net cash, D/E ultra-bajo<br>
+                ✓ Capital-light model: CAPEX 1.8% revenue
+            </div>
+        </div>
+        
+        <!-- SLIDE 7: HISTÓRICO PERFORMANCE -->
+        <div class="slide">
+            <div class="slide-title">Histórico: Revenue & EBITDA Growth</div>
+            <div class="chart-container">
+                <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/3daa25f879da36347a8f01d3350ad4b9/bc1ac204-f417-495e-a9a0-66bd9e32df59/a2e9a88a.png" alt="Revenue and EBITDA">
+            </div>
+            <div style="margin-top: 20px; font-size: 16px; color: #4a5568;">
+                Crecimiento robusto: Revenue 821M (12% YoY) en FY2024. EBITDA 107M reflejando inversiones de crecimiento, pero normalización esperada FY2025+
+            </div>
+        </div>
+        
+        <!-- SLIDE 8: MÁRGENES PROYECCIÓN -->
+        <div class="slide">
+            <div class="slide-title">Márgenes: Histórico + Proyecciones</div>
+            <div class="chart-container">
+                <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/3daa25f879da36347a8f01d3350ad4b9/eb002634-5fca-4d8b-b3cc-2ec912a9ec8f/17cea2be.png" alt="Margin Progression">
+            </div>
+            <div style="margin-top: 20px; font-size: 16px; color: #4a5568;">
+                <strong>Tesis clave:</strong> Margen EBITDA recupera de 13% (FY2024) a 14.8% (FY2028+) vía operating leverage. SGA baja de 23.8% a ~20% conforme online/retail growth absorbe costos fijos.
+            </div>
+        </div>
+        
+        <!-- SLIDE 9: PROYECCIONES FINANCIERAS -->
+        <div class="slide">
+            <div class="slide-title">Proyecciones Financieras (2025-2031)</div>
+            <table style="margin-top: 30px; font-size: 14px;">
+                <tr>
+                    <th>Año</th>
+                    <th>2025E</th>
+                    <th>2026E</th>
+                    <th>2027E</th>
+                    <th>2030E</th>
+                    <th>2031E</th>
+                </tr>
+                <tr>
+                    <td><strong>Sales (M)</strong></td>
+                    <td>930</td>
+                    <td>1,056</td>
+                    <td>1,193</td>
+                    <td>1,661</td>
+                    <td>1,827</td>
+                </tr>
+                <tr>
+                    <td><strong>EBITDA (M)</strong></td>
+                    <td>136</td>
+                    <td>154</td>
+                    <td>174</td>
+                    <td>246</td>
+                    <td>270</td>
+                </tr>
+                <tr>
+                    <td><strong>Margin</strong></td>
+                    <td>14.6%</td>
+                    <td>14.6%</td>
+                    <td>14.6%</td>
+                    <td>14.8%</td>
+                    <td>14.8%</td>
+                </tr>
+                <tr>
+                    <td><strong>EPS (PLN)</strong></td>
+                    <td>1.16</td>
+                    <td>1.35</td>
+                    <td>1.55</td>
+                    <td>2.12</td>
+                    <td>2.34</td>
+                </tr>
+                <tr>
+                    <td><strong>FCF (M)</strong></td>
+                    <td>40</td>
+                    <td>109</td>
+                    <td>125</td>
+                    <td>147</td>
+                    <td>162</td>
+                </tr>
+            </table>
+            <div style="margin-top: 30px; font-size: 16px; color: #4a5568;">
+                <strong style="color: #667eea;">CAGR 2025-2031: 11.5%</strong> (realista, achievable basado en histórico 10-13%)
+            </div>
+        </div>
+        
+        <!-- SLIDE 10: FREE CASH FLOW PROJECTION -->
+        <div class="slide">
+            <div class="slide-title">Proyección Free Cash Flow</div>
+            <div class="chart-container">
+                <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/3daa25f879da36347a8f01d3350ad4b9/f859395c-f606-4288-befb-1eeee32c62c9/85cf97f1.png" alt="FCF Projection">
+            </div>
+            <div style="margin-top: 20px; font-size: 16px; color: #4a5568;">
+                FCF 2025 deprimido por -46.5M trabajón capital, pero fuerte recuperación 2026+ (100-160M anual). Sustenta dividendos, buybacks y creación de valor shareholder.
+            </div>
+        </div>
+        
+        <!-- SLIDE 11: VALUACIÓN DCF -->
+        <div class="slide">
+            <div class="slide-title">Valuación DCF - Parámetros</div>
+            <div class="grid" style="margin-top: 40px;">
+                <div class="grid-item">
+                    <div class="grid-item-title">WACC</div>
+                    <div class="grid-item-content">
+                        <strong>10.31%</strong><br>
+                        Rf: 5.5%<br>
+                        Beta: 0.78<br>
+                        Ke: 9.79%
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">Terminal Value</div>
+                    <div class="grid-item-content">
+                        <strong>1,892.5M PLN</strong><br>
+                        2031 EBITDA: 270M<br>
+                        Multiple: 7.0x<br>
+                        Growth: 4.5%
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">Enterprise Value</div>
+                    <div class="grid-item-content">
+                        <strong>1,500.5M PLN</strong><br>
+                        PV FCF: 548M (37%)<br>
+                        PV Terminal: 952M (63%)<br>
+                        Net Cash: 57M
+                    </div>
+                </div>
+            </div>
+            <div class="recommendation" style="margin-top: 40px;">
+                Fair Value per Share: <strong>21.05 PLN</strong>
+            </div>
+        </div>
+        
+        <!-- SLIDE 12: DCF VALUATION BRIDGE -->
+        <div class="slide">
+            <div class="slide-title">Puente de Valuación DCF</div>
+            <div class="chart-container">
+                <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/3daa25f879da36347a8f01d3350ad4b9/2ff1fca6-824e-4fbd-bc14-60f9313389ce/c2734113.png" alt="DCF Bridge">
+            </div>
+        </div>
+        
+        <!-- SLIDE 13: ENTERPRISE VALUE COMPOSITION -->
+        <div class="slide">
+            <div class="slide-title">Composición del Enterprise Value</div>
+            <div class="chart-container">
+                <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/3daa25f879da36347a8f01d3350ad4b9/af94a5f5-97a9-4c78-bdb6-b4da595e4d5c/2c5673b4.png" alt="EV Composition">
+            </div>
+            <div style="margin-top: 20px; font-size: 16px; color: #4a5568;">
+                37% de EV proviene de FCF explícito (2026-2031), 63% de valor terminal. Split típico que refleja balance entre cash flows visibles y valor perpetuo.
+            </div>
+        </div>
+        
+        <!-- SLIDE 14: MULTIPLES ANALYSIS -->
+        <div class="slide">
+            <div class="slide-title">Valuación por Múltiplos</div>
+            <table style="margin-top: 30px; font-size: 16px;">
+                <tr>
+                    <th>Horizonte</th>
+                    <th>Fair Value</th>
+                    <th>Upside</th>
+                </tr>
+                <tr>
+                    <td><strong>FY2025E (P/E 8.5x)</strong></td>
+                    <td>10.3 PLN</td>
+                    <td>+12%</td>
+                </tr>
+                <tr>
+                    <td><strong>FY2026E (EV/EBITDA 9.7x)</strong></td>
+                    <td>14.1 PLN</td>
+                    <td>+53%</td>
+                </tr>
+                <tr>
+                    <td><strong>FY2027E (EV/EBITDA 8.6x)</strong></td>
+                    <td>16.2 PLN</td>
+                    <td>+76%</td>
+                </tr>
+                <tr>
+                    <td><strong>FY2030E (EV/EBITDA 7.0x)</strong></td>
+                    <td>23.3 PLN</td>
+                    <td>+154%</td>
+                </tr>
+            </table>
+            <div class="risk-warning" style="margin-top: 40px;">
+                Múltiplos sugieren valuación actual 50-60% por debajo de fair value
+            </div>
+        </div>
+        
+        <!-- SLIDE 15: MULTIPLES COMPARISON vs PEERS -->
+        <div class="slide">
+            <div class="slide-title">Comparación Múltiplos vs Pares Europeos</div>
+            <div class="chart-container">
+                <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/3daa25f879da36347a8f01d3350ad4b9/49d43f48-71b5-4489-9d5b-df83d679a448/2608badf.png" alt="Peers Comparison">
+            </div>
+            <div style="margin-top: 20px; font-size: 16px; color: #4a5568;">
+                <strong style="color: #ef4444;">COMPELLING VALUATION:</strong> TOYA trading 40% below peer multiple (4.6x vs 7.5x EV/EBITDA) PERO crecimiento 11.5% vs peer 9% = merece PREMIUM no discount
+            </div>
+        </div>
+        
+        <!-- SLIDE 16: UPSIDE ANALYSIS -->
+        <div class="slide">
+            <div class="slide-title">Análisis de Upside</div>
+            <div class="chart-container">
+                <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/3daa25f879da36347a8f01d3350ad4b9/8597d863-32ca-426c-aa7f-ae9e3ea755ae/f2733a2c.png" alt="Valuation Upside">
+            </div>
+            <div style="margin-top: 20px; font-size: 16px; color: #4a5568;">
+                Todos los métodos convergen en upside significativo. Incluso escenario conservador FY2025E muestra 12%+
+            </div>
+        </div>
+        
+        <!-- SLIDE 17: RISK/REWARD MATRIX -->
+        <div class="slide">
+            <div class="slide-title">Matriz Risk/Reward</div>
+            <div class="chart-container">
+                <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/3daa25f879da36347a8f01d3350ad4b9/af94a5f5-97a9-4c78-bdb6-b4da595e4d5c/2c5673b4.png" alt="Risk Reward">
+            </div>
+            <div style="margin-top: 20px; text-align: center;">
+                <table style="width: 100%; max-width: 700px; margin: 20px auto;">
+                    <tr>
+                        <th>Escenario</th>
+                        <th>Probability</th>
+                        <th>Fair Value</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Bull</strong></td>
+                        <td>30%</td>
+                        <td>25-27 PLN</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Base (DCF)</strong></td>
+                        <td>45%</td>
+                        <td>20-22 PLN</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bear</strong></td>
+                        <td>25%</td>
+                        <td>15-17 PLN</td>
+                    </tr>
+                </table>
+            </div>
+            <div style="margin-top: 20px; font-size: 16px; color: #4a5568; text-align: center;">
+                <strong style="color: #10b981;">Incluso en bear case: 60% upside</strong>
+            </div>
+        </div>
+        
+        <!-- SLIDE 18: WACC SENSITIVITY -->
+        <div class="slide">
+            <div class="slide-title">Sensibilidad: WACC</div>
+            <div class="chart-container">
+                <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/3daa25f879da36347a8f01d3350ad4b9/8128f447-142a-42f8-abfd-c0c216d4bfec/14bf2667.png" alt="WACC Sensitivity">
+            </div>
+            <div style="margin-top: 20px; font-size: 16px; color: #4a5568;">
+                Valuación robusta a cambios de WACC: ±1% cambio resulta en ±20% fair value swing, pero rango 17.5-25.5 PLN vs 9.19 PLN actual
+            </div>
+        </div>
+        
+        <!-- SLIDE 19: PRICE TO FAIR VALUE BRIDGE -->
+        <div class="slide">
+            <div class="slide-title">Puente: Precio Actual → Fair Value</div>
+            <div class="chart-container">
+                <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/3daa25f879da36347a8f01d3350ad4b9/b5eb5078-4a88-45e0-a4c6-aec0cdeb608e/fe4b1169.png" alt="Price to Fair Value">
+            </div>
+            <div style="margin-top: 20px; font-size: 16px; color: #4a5568;">
+                9.19 PLN → 21.05 PLN: (+1.50 margin recovery) + (+3.50 operating leverage) + (+4.00 FCF accumulation) + (+2.86 terminal premium)
+            </div>
+        </div>
+        
+        <!-- SLIDE 20: CATALIZADORES -->
+        <div class="slide">
+            <div class="slide-title">Catalizadores de Inversión</div>
+            <div class="chart-container">
+                <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/3daa25f879da36347a8f01d3350ad4b9/90d756f2-7685-4395-a1c4-0b4e50e22900/e3eaed69.png" alt="Catalysts Timeline">
+            </div>
+            <div style="margin-top: 20px; font-size: 16px; color: #4a5568;">
+                <strong>Q1 2026:</strong> FY2025 earnings es catalizador crítico - validará tesis de margin recovery
+            </div>
+        </div>
+        
+        <!-- SLIDE 21: CATALIZADORES DETALLES -->
+        <div class="slide">
+            <div class="slide-title">Catalizadores: Detalle</div>
+            <div class="grid" style="margin-top: 30px;">
+                <div class="grid-item">
+                    <div class="grid-item-title">Corto Plazo (6-12 meses)</div>
+                    <div class="grid-item-content">
+                        • FY2025 earnings release<br>
+                        • Inventory normalization -40M<br>
+                        • FY2026 guidance
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">Mediano Plazo (1-2 años)</div>
+                    <div class="grid-item-content">
+                        • SGA improvement visible<br>
+                        • Online 25%+ growth<br>
+                        • M&A opportunity
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">Largo Plazo (2-5 años)</div>
+                    <div class="grid-item-content">
+                        • Scale benefits realized<br>
+                        • 15%+ EBITDA margins<br>
+                        • Platform consolidation
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 22: RIESGOS -->
+        <div class="slide">
+            <div class="slide-title">Análisis de Riesgos</div>
+            <div class="grid" style="margin-top: 30px;">
+                <div class="grid-item">
+                    <div class="grid-item-title">⚠️ SGA Inflation (HIGH)</div>
+                    <div class="grid-item-content">SGA se mantiene 23%+ → valuation 20% lower. Prob: 30%</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">⚠️ Competencia (MEDIUM)</div>
+                    <div class="grid-item-content">Amazon, Decathlon presionan márgenes. Prob: 40%</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">⚠️ Inventory Fail (MEDIUM)</div>
+                    <div class="grid-item-content">-40M swing no ocurre, FCF 2026 lower. Prob: 25%</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">⚠️ Macro Slowdown (MEDIUM)</div>
+                    <div class="grid-item-content">GDP <2% en Poland/Europa. Prob: 35%</div>
+                </div>
+            </div>
+            <div style="margin-top: 30px; font-size: 16px; color: #4a5568; text-align: center;">
+                <strong>Mitigaciones:</strong> Online crecimiento automático, brand strength YATO, distribuidor modelo resilient, fortress balance sheet
+            </div>
+        </div>
+        
+        <!-- SLIDE 23: RETURN RATIOS TREND -->
+        <div class="slide">
+            <div class="slide-title">Rentabilidad: Tendencia ROE/ROCE/ROA</div>
+            <div class="chart-container">
+                <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/3daa25f879da36347a8f01d3350ad4b9/11274e67-0c9e-49d3-bf5f-d9bd36055eee/2c5673b4.png" alt="Return Ratios">
+            </div>
+            <div style="margin-top: 20px; font-size: 16px; color: #4a5568;">
+                Ratios normalizándose desde peak 2021, pero aún excepcionales (15-20% range). Refleja growth investments, no deterioro fundamental.
+            </div>
+        </div>
+        
+        <!-- SLIDE 24: PERFIL DE INVERSOR -->
+        <div class="slide">
+            <div class="slide-title">Perfil de Inversor Apropiado</div>
+            <ul class="bullet-list">
+                <li><strong>Value Investors:</strong> 50-60% discount a intrínseco</li>
+                <li><strong>GARP Investors:</strong> 11.5% crecimiento a valuación barata</li>
+                <li><strong>Small/Mid-Cap Specialists:</strong> 680M market cap sweet spot</li>
+                <li><strong>Medium-Long Term Horizon:</strong> 3+ años para materializar upside</li>
+                <li><strong>Medium Risk Tolerance:</strong> Distribuidor defensivo, pero requiere SGA discipline</li>
+            </ul>
+            <div class="recommendation" style="margin-top: 40px;">
+                NOT para: Trading de corto plazo, inversores especulativos, bajistas en distribuidores
+            </div>
+        </div>
+        
+        <!-- SLIDE 25: ENTRADA Y SALIDA -->
+        <div class="slide">
+            <div class="slide-title">Estrategia de Entrada & Gestión de Posición</div>
+            <div class="grid" style="margin-top: 40px;">
+                <div class="grid-item">
+                    <div class="grid-item-title">Puntos de Entrada</div>
+                    <div class="grid-item-content">
+                        <strong>Agresivo:</strong> Inmediato (9.19)<br>
+                        <strong>Moderado:</strong> 8.50-9.00<br>
+                        <strong>Conservador:</strong> Post-earnings Q1'26
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">Targets de Salida</div>
+                    <div class="grid-item-content">
+                        <strong>T1 (6-12m):</strong> 12-14 PLN (take 1/3)<br>
+                        <strong>T2 (1-2y):</strong> 16-18 PLN (take 1/3)<br>
+                        <strong>T3 (3-4y):</strong> 20-24 PLN (hold)
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-title">Stop Loss</div>
+                    <div class="grid-item-content">
+                        <strong>Nivel: 7.50 PLN</strong><br>
+                        (-18% from entry)<br>
+                        <br>
+                        Trigger si: Márgenes < 12.5% en FY2025
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 26: CONCLUSIÓN -->
+        <div class="slide slide-bg-dark">
+            <div class="centered-content">
+                <div class="slide-title" style="color: white;">Conclusión de Inversión</div>
+                <div style="margin-top: 60px; font-size: 24px; color: #e2e8f0;">
+                    TOYA es una <strong style="color: #34d399;">oportunidad compelente</strong> de<br>
+                    distribuidor de calidad premiun<br><br>
+                    Trading <strong style="color: #fbbf24;">50-60% por debajo</strong> de valor intrínseco<br>
+                    con <strong style="color: #34d399;">129% upside</strong> en base case
+                </div>
+                <div style="margin-top: 60px; font-size: 32px; font-weight: bold; color: #34d399;">
+                    RECOMENDACIÓN: COMPRAR
+                </div>
+                <div style="margin-top: 40px; font-size: 20px; color: #cbd5e0;">
+                    Precio Objetivo: 21.05 PLN<br>
+                    Horizonte: 3-4 años<br>
+                    Confianza: HIGH (70%+)
+                </div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 27: PREGUNTAS -->
+        <div class="slide slide-bg-dark">
+            <div class="centered-content">
+                <div class="slide-title" style="color: white; font-size: 64px;">¿Preguntas?</div>
+                <div style="margin-top: 80px; font-size: 24px; color: #e2e8f0;">
+                    Análisis DCF Completo + Documentación Disponible<br><br>
+                    Próximos Pasos:<br>
+                    1. Revisar guidance management FY2025<br>
+                    2. Monitorear inventory normalization H2 2025<br>
+                    3. Re-evaluar Q1 2026 earnings
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">27</span>
+    </div>
+    
+    <div class="controls">
+        <button onclick="previousSlide()">← Anterior</button>
+        <button onclick="nextSlide()">Siguiente →</button>
+    </div>
+    
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        document.getElementById('total-slides').textContent = totalSlides;
+        
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+        }
+        
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+        
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+        
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
