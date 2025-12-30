@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PUUILO - Equity Research Interactive Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 3px solid #00d4ff;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            color: #00d4ff;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 212, 255, 0.3);
+        }
+        
+        .tagline {
+            font-size: 1.1em;
+            color: #b0e0e6;
+            margin-bottom: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .kpi-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .kpi-card {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #00d4ff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
+        }
+        
+        .kpi-label {
+            font-size: 0.9em;
+            color: #b0e0e6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        
+        .kpi-value {
+            font-size: 2em;
+            color: #00ff88;
+            font-weight: bold;
+        }
+        
+        .kpi-subtitle {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 8px;
+        }
+        
+        section {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 1px solid #00d4ff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        h2 {
+            color: #00d4ff;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #00d4ff;
+            padding-bottom: 10px;
+        }
+        
+        h3 {
+            color: #00ff88;
+            font-size: 1.3em;
+            margin: 20px 0 15px 0;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 30px 0;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #00d4ff;
+        }
+        
+        .chart-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        @media (max-width: 1024px) {
+            .chart-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid #00d4ff;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        th {
+            background: #0f3460;
+            color: #00d4ff;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #00d4ff;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        tr:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+        
+        .positive {
+            color: #00ff88;
+            font-weight: bold;
+        }
+        
+        .neutral {
+            color: #b0e0e6;
+        }
+        
+        .highlight-box {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid #00ff88;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .risk-box {
+            background: rgba(255, 100, 100, 0.1);
+            border-left: 4px solid #ff6464;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .metric-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .metric-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 3px solid #00ff88;
+        }
+        
+        .metric-label {
+            font-size: 0.85em;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        
+        .metric-value {
+            font-size: 1.5em;
+            color: #00ff88;
+            font-weight: bold;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            background: #0f3460;
+            border-top: 2px solid #00d4ff;
+            margin-top: 40px;
+            color: #888;
+            font-size: 0.9em;
+        }
+        
+        .button {
+            display: inline-block;
+            background: #00d4ff;
+            color: #1a1a2e;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .button:hover {
+            background: #00ff88;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        }
+        
+        .recommendation-box {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 212, 255, 0.2));
+            border: 2px solid #00ff88;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .recommendation-title {
+            font-size: 1.5em;
+            color: #00ff88;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .recommendation-value {
+            font-size: 3em;
+            color: #00d4ff;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .tab-button {
+            background: #0f3460;
+            border: 2px solid #00d4ff;
+            color: #00d4ff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            background: #00d4ff;
+            color: #1a1a2e;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🏪 PUUILO OYJ - EQUITY RESEARCH</h1>
+        <p class="tagline">Tesis de Inversión Interactiva | Valuación DCF 113% Upside</p>
+    </header>
+    
+    <div class="container">
+        <!-- KPI CARDS -->
+        <div class="kpi-section">
+            <div class="kpi-card">
+                <div class="kpi-label">Precio Actual</div>
+                <div class="kpi-value">€12,52</div>
+                <div class="kpi-subtitle">HEL: PYL</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Fair Value DCF</div>
+                <div class="kpi-value">€26,62</div>
+                <div class="kpi-subtitle">Base Case 12-24m</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Upside Potencial</div>
+                <div class="kpi-value">113%</div>
+                <div class="kpi-subtitle">Risk/Reward Favorable</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Recomendación</div>
+                <div class="kpi-value" style="color: #00ff88;">COMPRA</div>
+                <div class="kpi-subtitle">Horizonte 3-5 años</div>
+            </div>
+        </div>
+        
+        <!-- TESIS CENTRAL -->
+        <section>
+            <h2>📊 Tesis de Inversión Central</h2>
+            <div class="highlight-box">
+                <h3>¿Por qué PUUILO?</h3>
+                <p><strong>Retailer nórdico especializado</strong> en decoración del hogar, hobby y jardinería, en expansión agresiva con:</p>
+                <ul style="margin-left: 20px; margin-top: 15px;">
+                    <li>✓ <strong>13%+ CAGR</strong> documentado (FY21-25: 11,0% | IPO-25: 22,0%)</li>
+                    <li>✓ <strong>Márgenes mejorando</strong>: 21,6% → 22,5% realista (90bps de mejora)</li>
+                    <li>✓ <strong>Management alineado</strong>: Fundador 4,9%, CEO/CFO insider buying Dic 2025</li>
+                    <li>✓ <strong>Capital eficiente</strong>: ROIC 18-22% por tienda, payback 4-5 años</li>
+                    <li>✓ <strong>Valuación atractiva</strong>: 11,3x EV/EBITDA vs 14,5x fair value</li>
+                </ul>
+            </div>
+            
+            <!-- CHARTS -->
+            <div class="chart-row">
+                <div>
+                    <h3>Crecimiento de Ventas Histórico & Proyectado</h3>
+                    <div class="chart-container">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <h3>Evolución EBITDA Margin (Path Conservador)</h3>
+                    <div class="chart-container">
+                        <canvas id="marginChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- VALUACION -->
+        <section>
+            <h2>💰 Valuación DCF Detallada</h2>
+            
+            <div class="recommendation-box">
+                <div class="recommendation-title">FAIR VALUE VALUATION</div>
+                <div class="recommendation-value">€26,62</div>
+                <p style="font-size: 1.2em;">vs Precio Actual €12,52 = <span class="positive">+113% Upside</span></p>
+            </div>
+            
+            <h3>Componentes DCF</h3>
+            <div class="metric-row">
+                <div class="metric-item">
+                    <div class="metric-label">WACC</div>
+                    <div class="metric-value">5,63%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">PV FCF (2026-31)</div>
+                    <div class="metric-value">€442M</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Terminal Value</div>
+                    <div class="metric-value">€1.926M</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Enterprise Value</div>
+                    <div class="metric-value">€2.368M</div>
+                </div>
+            </div>
+            
+            <h3>Free Cash Flow Projection</h3>
+            <div class="chart-container" style="height: 350px;">
+                <canvas id="fcfChart"></canvas>
+            </div>
+            
+            <h3>Escenarios de Valuación</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Escenario</th>
+                        <th>Probabilidad</th>
+                        <th>Fair Value</th>
+                        <th>Upside</th>
+                        <th>Drivers</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>BEAR</strong></td>
+                        <td>20-25%</td>
+                        <td class="positive">€18-20</td>
+                        <td>45-60%</td>
+                        <td>Margin 21,5%, WC 1,5%, Growth 2,5%</td>
+                    </tr>
+                    <tr style="background: rgba(0, 255, 136, 0.1);">
+                        <td><strong>BASE CASE</strong></td>
+                        <td>50-55%</td>
+                        <td class="positive">€26,62</td>
+                        <td>113%</td>
+                        <td>Margin 22,5%, WC 1,0%, Growth 4,0%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BULL</strong></td>
+                        <td>20-25%</td>
+                        <td class="positive">€30-33</td>
+                        <td>140-165%</td>
+                        <td>Margin 24,0%, WC 0,8%, Growth 5,0%</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Sensitivity Analysis - WACC vs Terminal Growth</h3>
+            <div class="chart-container" style="height: 350px;">
+                <canvas id="sensitivityChart"></canvas>
+            </div>
+        </section>
+        
+        <!-- FINANCIEROS -->
+        <section>
+            <h2>📈 Financieros & Métricas Clave</h2>
+            
+            <h3>Ingresos, EBITDA y FCF (FY26E-31E)</h3>
+            <div class="chart-container">
+                <canvas id="financialsChart"></canvas>
+            </div>
+            
+            <h3>Métricas Financieras Clave</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Métrica</th>
+                        <th>FY25</th>
+                        <th>FY26E</th>
+                        <th>FY28E</th>
+                        <th>FY31E</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ventas (€M)</strong></td>
+                        <td class="neutral">501</td>
+                        <td class="positive">501</td>
+                        <td class="positive">645</td>
+                        <td class="positive">866</td>
+                    </tr>
+                    <tr>
+                        <td><strong>EBITDA Margin %</strong></td>
+                        <td class="neutral">21,6%</td>
+                        <td class="positive">22,0%</td>
+                        <td class="positive">22,4%</td>
+                        <td class="positive">22,5%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>FCF (€M)</strong></td>
+                        <td class="neutral">53</td>
+                        <td class="positive">56</td>
+                        <td class="positive">84</td>
+                        <td class="positive">125</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ND/EBITDA (x)</strong></td>
+                        <td class="neutral">1,31x</td>
+                        <td class="positive">1,24x</td>
+                        <td class="positive">1,09x</td>
+                        <td class="positive">0,96x</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ROE %</strong></td>
+                        <td class="neutral">60%</td>
+                        <td class="positive">59%</td>
+                        <td class="positive">54%</td>
+                        <td class="positive">51%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <!-- INSIDERS -->
+        <section>
+            <h2>👥 Estructura Accionarial & Insiders</h2>
+            
+            <h3>Top Shareholders</h3>
+            <div class="chart-container">
+                <canvas id="shareholdersChart"></canvas>
+            </div>
+            
+            <h3>Management Alineación - Track Record & Insider Buying</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Insider</th>
+                        <th>Posición</th>
+                        <th>Stake</th>
+                        <th>Actividad Reciente</th>
+                        <th>Alignment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: rgba(0, 255, 136, 0.1);">
+                        <td><strong>Markku Tuomaala</strong></td>
+                        <td>Fundador, Board Member</td>
+                        <td class="positive">4,9%</td>
+                        <td>Holdings estables, NO VENDIENDO</td>
+                        <td class="positive">✓ EXCELENTE</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Jens Joller</strong></td>
+                        <td>CEO (desde 2019)</td>
+                        <td>~0,5%</td>
+                        <td>Compró 2.000 @ €12,47 (Dic 2025)</td>
+                        <td class="positive">✓ BULLISH</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Susanne Hounsgaard</strong></td>
+                        <td>CFO</td>
+                        <td>~0,3%</td>
+                        <td>Compró 800 @ €12,35 (Dic 2025)</td>
+                        <td class="positive">✓ BULLISH</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="highlight-box">
+                <h3>🔑 Interpretación de Insider Buying</h3>
+                <p>CEO + CFO comprando <strong>simultáneamente</strong> cercano a precios actuales (€12,35-12,47) es señal muy positiva:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Confianza:</strong> Management cree en prospects de empresa</li>
+                    <li><strong>Timing:</strong> En consolidación/corrección = valiente</li>
+                    <li><strong>Alineación:</strong> Ponen su propio dinero donde la boca está</li>
+                </ul>
+            </div>
+        </section>
+        
+        <!-- CATALYSTS -->
+        <section>
+            <h2>🎯 Catalysts & Timeline</h2>
+            
+            <h3>Near-term (12 meses)</h3>
+            <div class="metric-row">
+                <div class="metric-item">
+                    <div class="metric-label">Q1 2026</div>
+                    <div class="metric-value" style="color: #b0e0e6;">Results + Margin Guidance</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">H1 2026</div>
+                    <div class="metric-value" style="color: #b0e0e6;">3-4 New Stores</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Q2 2026</div>
+                    <div class="metric-value" style="color: #b0e0e6;">LFL Growth Validation</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">FY26</div>
+                    <div class="metric-value" style="color: #b0e0e6;">Full Year Delivery</div>
+                </div>
+            </div>
+            
+            <h3>Medium-term (2-3 años)</h3>
+            <ul style="margin-left: 20px;">
+                <li>📈 Expansión a 90+ tiendas (€700M+ ventas)</li>
+                <li>💰 EBITDA margin 22%+ sostenido (multiple expansion)</li>
+                <li>🔄 FCF >€100M/year (dividend potential)</li>
+                <li>📊 Net debt reduction (deleveraging story)</li>
+            </ul>
+            
+            <h3>Long-term (3-5 años)</h3>
+            <ul style="margin-left: 20px;">
+                <li>🌍 €1B+ revenue milestone</li>
+                <li>🤝 Posible M&A activity (consolidation play)</li>
+                <li>🌐 Expansión geográfica (France/Benelux)</li>
+            </ul>
+        </section>
+        
+        <!-- RIESGOS -->
+        <section>
+            <h2>⚠️ Riesgos & Mitigación</h2>
+            
+            <h3>Risk Matrix</h3>
+            <div class="chart-container" style="height: 350px;">
+                <canvas id="riskChart"></canvas>
+            </div>
+            
+            <h3>Riesgos Principales</h3>
+            <div class="risk-box">
+                <h3>Risk #1: Expansion Execution (PROB: 20-25%, SEV: HIGH)</h3>
+                <p><strong>Mitigación:</strong> Track record comprobado (60+ stores en 8 años), ROIC 18-22%, experienced team</p>
+            </div>
+            
+            <div class="risk-box">
+                <h3>Risk #2: Margin Compression (PROB: 25-30%, SEV: MEDIUM)</h3>
+                <p><strong>Mitigación:</strong> Private label growing (higher margin), pricing power, cost management improving</p>
+            </div>
+            
+            <div class="risk-box">
+                <h3>Risk #3: E-commerce Disruption (PROB: 40%, SEV: MEDIUM-HIGH)</h3>
+                <p><strong>Mitigación:</strong> Physical + experience defensible en home décor, local expertise, curación</p>
+            </div>
+            
+            <div class="risk-box">
+                <h3>Risk #4: Macro Recession (PROB: 20-25%, SEV: MEDIUM-HIGH)</h3>
+                <p><strong>Mitigación:</strong> Home décor + hobby resiliente, private label accessible pricing</p>
+            </div>
+        </section>
+        
+        <!-- COMPARABLES -->
+        <section>
+            <h2>📊 Análisis de Múltiplos Comparables</h2>
+            
+            <h3>EV/EBITDA Comparison</h3>
+            <div class="chart-container">
+                <canvas id="multiplesChart"></canvas>
+            </div>
+            
+            <h3>Valuación Comparables</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Empresa</th>
+                        <th>EV/EBITDA</th>
+                        <th>P/E</th>
+                        <th>EV/Sales</th>
+                        <th>Crecimiento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Inditex</strong></td>
+                        <td>19,2x</td>
+                        <td>23,2x</td>
+                        <td>1,28x</td>
+                        <td class="neutral">8-10%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>H&M</strong></td>
+                        <td>13,1x</td>
+                        <td>15,8x</td>
+                        <td>0,95x</td>
+                        <td class="neutral">3-5%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stockmann</strong></td>
+                        <td>9,4x</td>
+                        <td>11,2x</td>
+                        <td>0,70x</td>
+                        <td class="neutral">2-3%</td>
+                    </tr>
+                    <tr style="background: rgba(0, 255, 136, 0.1); border-top: 2px solid #00d4ff;">
+                        <td><strong>Puuilo (Current)</strong></td>
+                        <td class="positive">11,3x</td>
+                        <td class="positive">16,2x</td>
+                        <td class="positive">0,80x</td>
+                        <td class="positive">13%+</td>
+                    </tr>
+                    <tr style="background: rgba(0, 212, 255, 0.1);">
+                        <td><strong>Puuilo (Fair)</strong></td>
+                        <td class="positive">14,5x</td>
+                        <td class="positive">19,8x</td>
+                        <td class="positive">0,95x</td>
+                        <td class="positive">13%+</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <!-- RECOMENDACION -->
+        <section>
+            <h2>✅ Recomendación Final</h2>
+            
+            <div class="recommendation-box">
+                <div class="recommendation-title">RATING: BUY</div>
+                <div class="recommendation-value">€26,62</div>
+                <p style="font-size: 1.1em; margin-top: 15px;">
+                    Precio Actual: <strong>€12,52</strong> | Upside: <strong>+113%</strong><br>
+                    Riesgo: <strong>MEDIO</strong> | Horizonte: <strong>3-5 años</strong>
+                </p>
+            </div>
+            
+            <h3>Strengths ✓</h3>
+            <ul style="margin-left: 20px;">
+                <li>Crecimiento de calidad: 13%+ CAGR documentado</li>
+                <li>Fundamentals mejorando: Márgenes ↑, WC normalizando</li>
+                <li>Management experto: Fundador engaged, CEO/CFO insider buying</li>
+                <li>Capital eficiente: ROIC 18-22%, excellent unit economics</li>
+                <li>Moat defensible: Private label, experiencia, curación</li>
+                <li>Valuación: 11,3x vs 14,5x fair value = 30% discount</li>
+            </ul>
+            
+            <h3>Risks ⚠️ (Manageable)</h3>
+            <ul style="margin-left: 20px;">
+                <li>Expansion execution (mitigation: track record)</li>
+                <li>Online competition (mitigation: defensible categories)</li>
+                <li>Macro recession (mitigation: resilient categories)</li>
+                <li>Leverage (mitigation: EBITDA growth covers)</li>
+            </ul>
+            
+            <h3>Para Qué Inversores es Apropiado</h3>
+            <div class="metric-row">
+                <div class="metric-item" style="border-left-color: #00ff88;">
+                    <div class="metric-label">✓ GARP Investors</div>
+                    <div class="metric-value" style="font-size: 1em; color: #b0e0e6;">Growth-at-Reasonable-Price</div>
+                </div>
+                <div class="metric-item" style="border-left-color: #00ff88;">
+                    <div class="metric-label">✓ Thesis-Driven</div>
+                    <div class="metric-value" style="font-size: 1em; color: #b0e0e6;">Catalysts específicos</div>
+                </div>
+                <div class="metric-item" style="border-left-color: #00ff88;">
+                    <div class="metric-label">✓ Long-term Holders</div>
+                    <div class="metric-value" style="font-size: 1em; color: #b0e0e6;">3-5 year horizon</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- MONITORING -->
+        <section>
+            <h2>📋 Monitoreo & Exit Strategy</h2>
+            
+            <h3>Entry Points</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Precio</th>
+                        <th>Recomendación</th>
+                        <th>Rationale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: rgba(0, 255, 136, 0.1);">
+                        <td><strong>€12,50-14,00</strong></td>
+                        <td class="positive">GOOD ENTRY</td>
+                        <td>Current levels, attractive valuation</td>
+                    </tr>
+                    <tr>
+                        <td>€14,00-16,00</td>
+                        <td>REASONABLE</td>
+                        <td>Minor pullback, still attractive</td>
+                    </tr>
+                    <tr>
+                        <td>>€16,00</td>
+                        <td>WAIT</td>
+                        <td>Wait for dip if thesis unchanged</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Exit Targets</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Price Target</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>€20-22</td>
+                        <td>Take 25%</td>
+                        <td>Lock in gains, validate thesis</td>
+                    </tr>
+                    <tr style="background: rgba(0, 212, 255, 0.1);">
+                        <td>€24-26</td>
+                        <td>HOLD</td>
+                        <td>Base case delivery, target</td>
+                    </tr>
+                    <tr>
+                        <td>€28-30</td>
+                        <td>REASSESS</td>
+                        <td>Bull case being delivered?</td>
+                    </tr>
+                    <tr>
+                        <td>>€32</td>
+                        <td>STRONG SELL</td>
+                        <td>Valuation excessive</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+    
+    <footer>
+        <p><strong>PUUILO OYJ - Equity Research Dashboard</strong> | Diciembre 2025</p>
+        <p>Confianza en Tesis: 80-85% | Disclaimer: Análisis informativo, no constituye recomendación personalizada</p>
+        <p>© 2025 Equity Research | Todos los derechos reservados</p>
+    </footer>
+    
+    <script>
+        // Chart.js Configuration
+        Chart.defaults.color = '#b0e0e6';
+        Chart.defaults.borderColor = '#333';
+        
+        // Sales Chart
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        new Chart(salesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['FY21', 'FY22', 'FY23', 'FY24', 'FY25', 'FY26E', 'FY27E', 'FY28E', 'FY29E', 'FY30E', 'FY31E'],
+                datasets: [
+                    {
+                        label: 'Ventas (€M)',
+                        data: [296, 338, 383, 440, 501, 501, 569, 645, 729, 802, 866],
+                        backgroundColor: 'rgba(0, 212, 255, 0.7)',
+                        borderColor: '#00d4ff',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Crecimiento %',
+                        data: [9.6, 14.3, 13.3, 14.6, 14.0, 14.0, 13.5, 13.5, 13.0, 10.0, 8.0],
+                        type: 'line',
+                        borderColor: '#00ff88',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        yAxisID: 'y1',
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#b0e0e6' }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: { color: '#b0e0e6' },
+                        grid: { color: '#333' },
+                        title: { display: true, text: 'Ventas €M' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        ticks: { color: '#00ff88' },
+                        grid: { drawOnChartArea: false }
+                    },
+                    x: {
+                        ticks: { color: '#b0e0e6' },
+                        grid: { color: '#333' }
+                    }
+                }
+            }
+        });
+        
+        // Margin Chart
+        const marginCtx = document.getElementById('marginChart').getContext('2d');
+        new Chart(marginCtx, {
+            type: 'line',
+            data: {
+                labels: ['FY21', 'FY22', 'FY23', 'FY24', 'FY25', 'FY26E', 'FY27E', 'FY28E', 'FY29E', 'FY30E', 'FY31E'],
+                datasets: [{
+                    label: 'EBITDA Margin %',
+                    data: [20.7, 20.4, 20.1, 21.9, 21.6, 22.0, 22.2, 22.4, 22.5, 22.5, 22.5],
+                    borderColor: '#00ff88',
+                    backgroundColor: 'rgba(0, 255, 136, 0.2)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#00ff88',
+                    pointBorderColor: '#fff',
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#b0e0e6' }
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 20,
+                        max: 23,
+                        ticks: { color: '#b0e0e6' },
+                        grid: { color: '#333' }
+                    },
+                    x: {
+                        ticks: { color: '#b0e0e6' },
+                        grid: { color: '#333' }
+                    }
+                }
+            }
+        });
+        
+        // FCF Chart
+        const fcfCtx = document.getElementById('fcfChart').getContext('2d');
+        new Chart(fcfCtx, {
+            type: 'bar',
+            data: {
+                labels: ['FY26E', 'FY27E', 'FY28E', 'FY29E', 'FY30E', 'FY31E'],
+                datasets: [{
+                    label: 'Free Cash Flow (€M)',
+                    data: [56.3, 69.8, 83.7, 98.7, 113.3, 125.3],
+                    backgroundColor: 'rgba(0, 255, 136, 0.7)',
+                    borderColor: '#00ff88',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#b0e0e6' }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: { color: '#b0e0e6' },
+                        grid: { color: '#333' }
+                    },
+                    x: {
+                        ticks: { color: '#b0e0e6' },
+                        grid: { color: '#333' }
+                    }
+                }
+            }
+        });
+        
+        // Financials Chart
+        const financialsCtx = document.getElementById('financialsChart').getContext('2d');
+        new Chart(financialsCtx, {
+            type: 'line',
+            data: {
+                labels: ['FY26E', 'FY27E', 'FY28E', 'FY29E', 'FY30E', 'FY31E'],
+                datasets: [
+                    {
+                        label: 'Ventas (€M)',
+                        data: [501, 569, 645, 729, 802, 866],
+                        borderColor: '#00d4ff',
+                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'EBITDA (€M)',
+                        data: [110, 126, 144, 164, 181, 195],
+                        borderColor: '#00ff88',
+                        backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'FCF (€M)',
+                        data: [56, 70, 84, 99, 113, 125],
+                        borderColor: '#ffb700',
+                        backgroundColor: 'rgba(255, 183, 0, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#b0e0e6' }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: { color: '#b0e0e6' },
+                        grid: { color: '#333' }
+                    },
+                    x: {
+                        ticks: { color: '#b0e0e6' },
+                        grid: { color: '#333' }
+                    }
+                }
+            }
+        });
+        
+        // Shareholders Chart
+        const shareholdersCtx = document.getElementById('shareholdersChart').getContext('2d');
+        new Chart(shareholdersCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Ampfield (10,2%)', 'Capital Res (9,9%)', 'Markku Tuomaala (4,9%)', 'JPMorgan (5,0%)', 'Otros (70,0%)'],
+                datasets: [{
+                    data: [10.2, 9.9, 4.9, 5.0, 70.0],
+                    backgroundColor: [
+                        '#00d4ff',
+                        '#00a8cc',
+                        '#00ff88',
+                        '#ffb700',
+                        '#555'
+                    ],
+                    borderColor: '#1a1a2e',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#b0e0e6' }
+                    }
+                }
+            }
+        });
+        
+        // Risk Chart
+        const riskCtx = document.getElementById('riskChart').getContext('2d');
+        new Chart(riskCtx, {
+            type: 'bubble',
+            data: {
+                datasets: [
+                    {
+                        label: 'Expansion',
+                        data: [{x: 22, y: 8, r: 20}],
+                        backgroundColor: 'rgba(255, 100, 100, 0.6)'
+                    },
+                    {
+                        label: 'Inventory',
+                        data: [{x: 32, y: 5, r: 18}],
+                        backgroundColor: 'rgba(255, 150, 100, 0.6)'
+                    },
+                    {
+                        label: 'Margins',
+                        data: [{x: 27, y: 5, r: 18}],
+                        backgroundColor: 'rgba(255, 150, 100, 0.6)'
+                    },
+                    {
+                        label: 'E-commerce',
+                        data: [{x: 40, y: 7, r: 20}],
+                        backgroundColor: 'rgba(255, 100, 100, 0.6)'
+                    },
+                    {
+                        label: 'Macro',
+                        data: [{x: 22, y: 7, r: 20}],
+                        backgroundColor: 'rgba(255, 100, 100, 0.6)'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#b0e0e6' }
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: 'Probability (%)',
+                            color: '#b0e0e6'
+                        },
+                        ticks: { color: '#b0e0e6' },
+                        grid: { color: '#333' }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Severity (1-10)',
+                            color: '#b0e0e6'
+                        },
+                        ticks: { color: '#b0e0e6' },
+                        grid: { color: '#333' }
+                    }
+                }
+            }
+        });
+        
+        // Multiples Chart
+        const multiplesCtx = document.getElementById('multiplesChart').getContext('2d');
+        new Chart(multiplesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Inditex', 'H&M', 'Stockmann', 'Puuilo (Current)', 'Puuilo (Fair)'],
+                datasets: [{
+                    label: 'EV/EBITDA Multiple',
+                    data: [19.2, 13.1, 9.4, 11.3, 14.5],
+                    backgroundColor: [
+                        'rgba(150, 150, 150, 0.7)',
+                        'rgba(150, 150, 150, 0.7)',
+                        'rgba(150, 150, 150, 0.7)',
+                        'rgba(0, 212, 255, 0.7)',
+                        'rgba(0, 255, 136, 0.7)'
+                    ],
+                    borderColor: ['#999', '#999', '#999', '#00d4ff', '#00ff88'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: {
+                        labels: { color: '#b0e0e6' }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#b0e0e6' },
+                        grid: { color: '#333' }
+                    },
+                    y: {
+                        ticks: { color: '#b0e0e6' },
+                        grid: { color: '#333' }
+                    }
+                }
+            }
+        });
+        
+        // Sensitivity Chart
+        const sensitivityCtx = document.getElementById('sensitivityChart').getContext('2d');
+        new Chart(sensitivityCtx, {
+            type: 'bubble',
+            data: {
+                datasets: [
+                    {
+                        label: 'FV €24,50 (3% growth)',
+                        data: [{x: 3, y: 5.1, r: 25}],
+                        backgroundColor: 'rgba(255, 100, 100, 0.6)'
+                    },
+                    {
+                        label: 'FV €26,62 (4% growth)',
+                        data: [{x: 4, y: 5.63, r: 35}],
+                        backgroundColor: 'rgba(0, 255, 136, 0.8)'
+                    },
+                    {
+                        label: 'FV €29,10 (5% growth)',
+                        data: [{x: 5, y: 6.1, r: 25}],
+                        backgroundColor: 'rgba(0, 212, 255, 0.8)'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#b0e0e6' }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Terminal Growth (%)',
+                            color: '#b0e0e6'
+                        },
+                        ticks: { color: '#b0e0e6' },
+                        grid: { color: '#333' }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'WACC (%)',
+                            color: '#b0e0e6'
+                        },
+                        ticks: { color: '#b0e0e6' },
+                        grid: { color: '#333' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
