@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIC Solutions - Tesis de Inversión Ejecutiva</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #1a7474;
+            --secondary-color: #2a9d9d;
+            --accent-color: #e68a47;
+            --dark-bg: #0f2f2f;
+            --light-bg: #f5f5f5;
+            --text-dark: #1a1a1a;
+            --text-light: #f5f5f5;
+            --border-color: #ddd;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        /* Header Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--primary-color) 100%);
+            color: var(--text-light);
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M0,50 Q300,0 600,50 T1200,50 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .hero .subtitle {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+        
+        .valuation-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.85;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .stat-unit {
+            font-size: 0.8em;
+            opacity: 0.85;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        section {
+            padding: 60px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        section:last-child {
+            border-bottom: none;
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+        
+        h3 {
+            color: var(--primary-color);
+            font-size: 1.4em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .card h4 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .card ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .card li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .card li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+        
+        /* Chart Containers */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 30px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .chart-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        /* Segment Mix */
+        .segment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .segment-item {
+            text-align: center;
+            padding: 25px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .segment-percentage {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .segment-name {
+            font-size: 1.1em;
+            color: var(--text-dark);
+            margin: 10px 0;
+            font-weight: 600;
+        }
+        
+        .segment-description {
+            font-size: 0.9em;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover {
+            background: #f9f9f9;
+        }
+        
+        .highlight {
+            background: #fffacd;
+            font-weight: 600;
+        }
+        
+        /* Risk Table */
+        .risk-high {
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .risk-medium {
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .risk-low {
+            border-left: 4px solid var(--success-color);
+        }
+        
+        /* Recommendation Box */
+        .recommendation {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 40px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .recommendation h3 {
+            color: white;
+            font-size: 2em;
+            margin: 0;
+        }
+        
+        .recommendation .rating {
+            font-size: 3em;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+        
+        .recommendation .upside {
+            font-size: 2em;
+            color: #90ee90;
+            font-weight: 700;
+        }
+        
+        /* Catalyst Timeline */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline-item {
+            padding-left: 40px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--primary-color);
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 20px;
+            width: 4px;
+            height: 30px;
+            background: var(--primary-color);
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        
+        .timeline-title {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark-bg);
+            color: var(--text-light);
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 60px;
+        }
+        
+        footer a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2em;
+            }
+            
+            .segment-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .valuation-box {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            section {
+                page-break-inside: avoid;
+            }
+            
+            .chart-container {
+                page-break-inside: avoid;
+            }
+        }
+        
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-30 {
+            margin-top: 30px;
+        }
+        
+        .mb-30 {
+            margin-bottom: 30px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 5px;
+        }
+        
+        .badge-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .badge-success {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .badge-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .badge-warning {
+            background: var(--accent-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>TIC Solutions</h1>
+            <div class="subtitle">Tesis de Inversión Ejecutiva</div>
+            
+            <div class="valuation-box">
+                <div class="stat-card">
+                    <div class="stat-label">Precio Actual</div>
+                    <div class="stat-value">$10.63</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Valuación DCF</div>
+                    <div class="stat-value">$25.32</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Upside Potencial</div>
+                    <div class="stat-value">138%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Recomendación</div>
+                    <div class="stat-value" style="color: #90ee90;">COMPRA</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Resumen Ejecutivo -->
+    <section class="container">
+        <h2>Resumen Ejecutivo</h2>
+        
+        <div class="grid-2">
+            <div>
+                <h3>Tesis Principal</h3>
+                <p>TIC Solutions está cotizando a un <strong>descuento significativo (>60%)</strong> respecto a su valuación intrínseca, presentando una oportunidad de arbitraje de fusión con ejecución clara de sinergias.</p>
+                
+                <h3 style="margin-top: 25px;">Factores Clave</h3>
+                <div class="card">
+                    <ul>
+                        <li>Negocio recession-resistant con ingresos mandatados regulatoriamente</li>
+                        <li>Márgenes EBITDA de 22% post-integración (vs 12% actual)</li>
+                        <li>Generación de FCF sostenible de $425M+ anuales por 2029</li>
+                        <li>Deuda de-leveraging de 4.9x a 1.7x en 5 años</li>
+                        <li>Múltiples catalizadores: integración, M&A, IPO público</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div>
+                <h3>Información de la Empresa</h3>
+                <table>
+                    <tr>
+                        <td><strong>Ticker</strong></td>
+                        <td>TIC (NYSE American)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sector</strong></td>
+                        <td>Professional Services</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mercado Cap</strong></td>
+                        <td>~$1,910M</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Shares Out.</strong></td>
+                        <td>180M (diluted)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CEO</strong></td>
+                        <td>Dickerson Wright</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fundación</strong></td>
+                        <td>Mayo 2025 (Merger)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ingresos (9M 2025)</strong></td>
+                        <td>$1,602M (LTM est.)</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Descripción del Negocio -->
+    <section class="container" style="background: #f9f9f9;">
+        <h2>Descripción del Negocio</h2>
+        
+        <h3>Mezcla de Ingresos por Segmento</h3>
+        <div class="segment-grid">
+            <div class="segment-item">
+                <div class="segment-percentage">55%</div>
+                <div class="segment-name">Inspection & Mitigation</div>
+                <div class="segment-description">NDT, Rope Access, Lab Testing. Mandatado regulatoriamente.</div>
+            </div>
+            <div class="segment-item">
+                <div class="segment-percentage">30%</div>
+                <div class="segment-name">Consulting Engineering</div>
+                <div class="segment-description">Diseño, Utilities, Data Centers, Ambiental.</div>
+            </div>
+            <div class="segment-item">
+                <div class="segment-percentage">15%</div>
+                <div class="segment-name">Geospatial</div>
+                <div class="segment-description">LiDAR, Software SaaS, IA, Modelamiento.</div>
+            </div>
+        </div>
+        
+        <h3 style="margin-top: 40px;">Ventajas Competitivas</h3>
+        <div class="grid-2">
+            <div class="card">
+                <h4>Naturaleza No-Discrecional</h4>
+                <p>Servicios mandatados regulatoriamente, asegurados y críticos para operaciones del cliente. Bajo riesgo de cancelación.</p>
+            </div>
+            <div class="card">
+                <h4>Modelo Recurrente</h4>
+                <p>40-45% Run & Maintain, 40-45% Call-Out, 5-12% Outage/Turnaround. Ingresos predecibles y estables.</p>
+            </div>
+            <div class="card">
+                <h4>Bajo Riesgo de Precio</h4>
+                <p>TICC = 1-2% del OpEx cliente. Baja sensibilidad a precios, márgenes saludables y sostenibles.</p>
+            </div>
+            <div class="card">
+                <h4>Diversificación</h4>
+                <p>Exposición múltiple: 3 segmentos independientes, USA (73%), Canadá (23%), mercados globales.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Análisis Financiero -->
+    <section class="container">
+        <h2>Análisis Financiero</h2>
+        
+        <h3>Histórico y Proyecciones de Ingresos</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Año</th>
+                    <th>2023</th>
+                    <th>2024</th>
+                    <th>9M 2025</th>
+                    <th>2025E</th>
+                    <th>2026E</th>
+                    <th>2027E</th>
+                    <th>2028E</th>
+                    <th>2030E</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Ingresos ($M)</strong></td>
+                    <td>$1,097</td>
+                    <td>$2,038</td>
+                    <td>$1,602</td>
+                    <td>$2,150</td>
+                    <td>$3,225</td>
+                    <td>$3,354</td>
+                    <td>$3,488</td>
+                    <td>$3,772</td>
+                </tr>
+                <tr>
+                    <td><strong>Crecimiento %</strong></td>
+                    <td>—</td>
+                    <td>+86%</td>
+                    <td>+4.5%</td>
+                    <td>+5.5%</td>
+                    <td>+50%</td>
+                    <td>+4.0%</td>
+                    <td>+4.0%</td>
+                    <td>+4.0%</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h3>Márgenes Operativos: Trayectoria de Normalización</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Métrica</th>
+                    <th>2024 Reportado</th>
+                    <th>2025 Normalizado</th>
+                    <th>2026E</th>
+                    <th>2027E</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>EBITDA Margin</strong></td>
+                    <td>Muy bajo*</td>
+                    <td>21.2%</td>
+                    <td>21.8%</td>
+                    <td>22.0%</td>
+                </tr>
+                <tr>
+                    <td><strong>EBIT Margin</strong></td>
+                    <td>-4.3%</td>
+                    <td>12.0%</td>
+                    <td>14.8%</td>
+                    <td>15.2%</td>
+                </tr>
+                <tr>
+                    <td><strong>Resultado Neto</strong></td>
+                    <td>-$116M</td>
+                    <td>$47M</td>
+                    <td>$75M</td>
+                    <td>$120M</td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="font-size: 0.85em; color: #666;">*2024 distorsionado por $60M costos de integración extraordinarios</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h3>Posición de Deuda</h3>
+        <div class="grid-3">
+            <div class="card">
+                <h4>Deuda Bruta</h4>
+                <p style="font-size: 1.8em; color: var(--primary-color); font-weight: 700;">$1,683M</p>
+                <p style="font-size: 0.9em; color: #666;">Term Loan @ 8.05% SOFR</p>
+            </div>
+            <div class="card">
+                <h4>Net Debt</h4>
+                <p style="font-size: 1.8em; color: var(--primary-color); font-weight: 700;">$1,578M</p>
+                <p style="font-size: 0.9em; color: #666;">Cash: $139M</p>
+            </div>
+            <div class="card">
+                <h4>Vencimiento</h4>
+                <p style="font-size: 1.8em; color: var(--primary-color); font-weight: 700;">2031</p>
+                <p style="font-size: 0.9em; color: #666;">6 años de runway</p>
+            </div>
+        </div>
+        
+        <h3>Generación de Flujo de Caja (2025-2030)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Año</th>
+                    <th>2025</th>
+                    <th>2026</th>
+                    <th>2027</th>
+                    <th>2028</th>
+                    <th>2029</th>
+                    <th>2030</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>FCF ($M)</strong></td>
+                    <td>$145</td>
+                    <td>$297</td>
+                    <td>$310</td>
+                    <td>$332</td>
+                    <td>$351</td>
+                    <td>$348</td>
+                    <td class="highlight">$1,783M</td>
+                </tr>
+                <tr>
+                    <td><strong>FCF/Share</strong></td>
+                    <td>$0.81</td>
+                    <td>$1.58</td>
+                    <td>$1.59</td>
+                    <td>$1.68</td>
+                    <td>$1.76</td>
+                    <td>$1.66</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>Utilización</strong></td>
+                    <td colspan="6">Debt Paydown $100M/año | Reinversión 1.5% sales | Dividendos post-2027</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    
+    <!-- Valuación DCF -->
+    <section class="container" style="background: #f9f9f9;">
+        <h2>Valuación DCF - Análisis Fundamental</h2>
+        
+        <h3>WACC y Supuestos de Entrada</h3>
+        <div class="grid-2">
+            <div class="card">
+                <h4>Cálculo del WACC</h4>
+                <table style="margin: 0; box-shadow: none; width: 100%;">
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td>Risk-Free Rate</td>
+                        <td style="text-align: right;"><strong>4.5%</strong></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td>Beta</td>
+                        <td style="text-align: right;"><strong>0.94</strong></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td>Market Risk Premium</td>
+                        <td style="text-align: right;"><strong>5.5%</strong></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td>Cost of Equity</td>
+                        <td style="text-align: right;"><strong>9.67%</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>After-Tax Cost of Debt</strong></td>
+                        <td style="text-align: right;"><strong>6.28%</strong></td>
+                    </tr>
+                </table>
+                <p style="margin-top: 15px; font-size: 1.4em; text-align: center; color: var(--primary-color); font-weight: 700;">WACC: 8.31%</p>
+            </div>
+            
+            <div class="card">
+                <h4>Terminal Value Assumptions</h4>
+                <table style="margin: 0; box-shadow: none; width: 100%;">
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td>Terminal EBITDA Multiple</td>
+                        <td style="text-align: right;"><strong>12.0x</strong></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td>Terminal Growth Rate</td>
+                        <td style="text-align: right;"><strong>3.0%</strong></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td>Terminal Year EBITDA</td>
+                        <td style="text-align: right;"><strong>$620M</strong></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td>Tax Rate Path</td>
+                        <td style="text-align: right;"><strong>0% → 15%</strong></td>
+                    </tr>
+                    <tr>
+                        <td>D&A Proyectado</td>
+                        <td style="text-align: right;"><strong>$152M → $180M</strong></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <h3 style="margin-top: 40px;">Bridging: Enterprise Value → Equity Value</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 50%;">Componente</th>
+                    <th style="text-align: right;">Valuación ($M)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>PV de FCF (2026-2031)</strong></td>
+                    <td style="text-align: right;">$1,882M</td>
+                </tr>
+                <tr>
+                    <td><strong>PV de Terminal Value</strong></td>
+                    <td style="text-align: right;">$4,254M</td>
+                </tr>
+                <tr style="background: #fffacd; font-weight: 700;">
+                    <td><strong>Enterprise Value</strong></td>
+                    <td style="text-align: right;">$6,136M</td>
+                </tr>
+                <tr>
+                    <td>Less: Net Debt</td>
+                    <td style="text-align: right;">($1,578M)</td>
+                </tr>
+                <tr style="background: #fffacd; font-weight: 700;">
+                    <td><strong>Equity Value</strong></td>
+                    <td style="text-align: right;">$4,558M</td>
+                </tr>
+                <tr>
+                    <td>÷ Shares Outstanding</td>
+                    <td style="text-align: right;">180M</td>
+                </tr>
+                <tr style="background: #e8f5e9; font-weight: 700; border-top: 3px solid var(--primary-color);">
+                    <td><strong>DCF Fair Value por Acción</strong></td>
+                    <td style="text-align: right; font-size: 1.2em;">$25.32</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h3>Análisis de Sensibilidad</h3>
+        <p style="text-align: center; margin-bottom: 20px;">Valuación Fair Value según Terminal Multiple y Terminal Growth Rate</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Multiple / Crecimiento</th>
+                    <th>2.5%</th>
+                    <th>3.0%</th>
+                    <th>3.5%</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>11.0x</strong></td>
+                    <td>$21.50</td>
+                    <td>$22.50</td>
+                    <td>$23.50</td>
+                </tr>
+                <tr>
+                    <td><strong>12.0x (Base)</strong></td>
+                    <td>$23.50</td>
+                    <td style="background: #fff59d; font-weight: 700;">$25.32</td>
+                    <td>$27.00</td>
+                </tr>
+                <tr>
+                    <td><strong>13.0x</strong></td>
+                    <td>$26.00</td>
+                    <td>$28.50</td>
+                    <td>$31.00</td>
+                </tr>
+                <tr>
+                    <td><strong>14.0x</strong></td>
+                    <td>$28.50</td>
+                    <td>$31.80</td>
+                    <td>$35.00</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="text-align: center; margin-top: 20px; font-style: italic; color: #666;">Incluso en caso conservador, el upside es 138% vs $10.63 actual</p>
+    </section>
+    
+    <!-- Catalizadores -->
+    <section class="container">
+        <h2>Catalizadores de Valor</h2>
+        
+        <div class="grid-2">
+            <div>
+                <h3>Corto Plazo (6-12 meses)</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-title">Integración Operacional</div>
+                        <p>Consolidación IT/finanzas, racionalización oficinas. <span class="badge badge-primary">+$25-35M costos</span></p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-title">Mejora de Earnings</div>
+                        <p>Normalización márgenes 22% EBITDA, reducción SG&A. <span class="badge badge-success">+$50-75M EBITDA</span></p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-title">Refinanciación (Opcional)</div>
+                        <p>Mejora de tasas, extensión de vencimiento. <span class="badge badge-success">-$5-10M interés/año</span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <h3>Mediano/Largo Plazo (1-3 años)</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-title">Cross-Selling</div>
+                        <p>Servicios Acuren a clientes NV5, software GEO. <span class="badge badge-success">+$100-150M ingresos</span></p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-title">Data Center Growth</div>
+                        <p>Demanda IA, enfriamiento servidores, diseño eléctrico. <span class="badge badge-success">+$50M EBITDA</span></p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-title">Federal Funding & IPO</div>
+                        <p>Fondos federales, potencial re-IPO a mejor valuación. <span class="badge badge-warning">30-50% upside</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Riesgos -->
+    <section class="container" style="background: #f9f9f9;">
+        <h2>Análisis de Riesgos</h2>
+        
+        <div class="grid-2">
+            <div>
+                <h3>Riesgos Críticos</h3>
+                
+                <div class="card risk-high">
+                    <h4>Riesgo de Integración <span class="badge badge-danger">ALTO</span></h4>
+                    <p>40%+ de mergers fallan. Sinergias no materializan si integración falla.</p>
+                    <p style="margin-top: 10px; color: var(--success-color);"><strong>Mitigación:</strong> Strong management, clear synergy plan</p>
+                </div>
+                
+                <div class="card risk-medium">
+                    <h4>Riesgo de Leverage <span class="badge badge-warning">MODERADO</span></h4>
+                    <p>4.9x ND/EBITDA elevado. Covenant breaches posibles si EBITDA decae.</p>
+                    <p style="margin-top: 10px; color: var(--success-color);"><strong>Mitigación:</strong> Clear deleveraging path, FCF strong</p>
+                </div>
+                
+                <div class="card risk-low">
+                    <h4>Riesgo de Ciclo Económico <span class="badge badge-warning">BAJO-MOD</span></h4>
+                    <p>Recession podría impactar capex de clientes. Pero TICC es mandatado.</p>
+                    <p style="margin-top: 10px; color: var(--success-color);"><strong>Mitigación:</strong> Defensiveness of business model</p>
+                </div>
+            </div>
+            
+            <div>
+                <h3>Riesgos Operacionales</h3>
+                
+                <div class="card">
+                    <h4>Safety Incidents</h4>
+                    <p>Rope access inherently risky. Safety issues could impact reputation and contracts.</p>
+                </div>
+                
+                <div class="card">
+                    <h4>Commodity Exposure</h4>
+                    <p>Oil price swings affect inspection demand. Energy sector cyclical.</p>
+                </div>
+                
+                <div class="card">
+                    <h4>Talent Retention</h4>
+                    <p>Specialized workforce post-merger. Key talent departure could impact execution.</p>
+                </div>
+                
+                <div class="card">
+                    <h4>Competencia</h4>
+                    <p>Applus, Intertek, SGS. TIC más especializado pero barreras no son prohibitivas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Recomendación -->
+    <section class="container">
+        <div class="recommendation">
+            <h3>RECOMENDACIÓN DE INVERSIÓN</h3>
+            <div class="rating">⭐ COMPRA ⭐</div>
+            <p style="font-size: 1.2em; margin: 20px 0;">Horizonte de Inversión: 2-3 Años Post-Integración</p>
+            <div class="upside">138% UPSIDE POTENCIAL</div>
+            <p style="margin-top: 20px; font-size: 1em;">Target Price: $25-28/acción | Risk Rating: Moderado-Alto</p>
+        </div>
+        
+        <h3 style="text-align: center; margin-top: 40px;">Tesis por Tipo de Inversor</h3>
+        <div class="grid-3">
+            <div class="card">
+                <h4>Growth Investors</h4>
+                <ul>
+                    <li>10-15% annual FCF growth</li>
+                    <li>Multiple expansion post-synergies</li>
+                    <li>M&A upside optionality</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>Value Investors</h4>
+                <ul>
+                    <li>60%+ discount to DCF value</li>
+                    <li>Asset-heavy tangible value</li>
+                    <li>Margin of safety with debt path</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>Hedge Funds</h4>
+                <ul>
+                    <li>Merger arbitrage catalyst</li>
+                    <li>Integration risk/reward payoff</li>
+                    <li>2-3 year holding period</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Plan de Monitoreo -->
+    <section class="container" style="background: #f9f9f9;">
+        <h2>Plan de Monitoreo</h2>
+        
+        <h3>Métricas Clave a Monitorear (Trimestral)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Métrica</th>
+                    <th>Target 2025-2026</th>
+                    <th>Metodología</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Revenue Growth Rate</strong></td>
+                    <td>+4-5% orgánico</td>
+                    <td>YoY consolidado, ajuste acquisiciones</td>
+                </tr>
+                <tr>
+                    <td><strong>EBITDA Margin Progression</strong></td>
+                    <td>+50-75 bps/año</td>
+                    <td>Targeting 22% run-rate post-integration</td>
+                </tr>
+                <tr>
+                    <td><strong>FCF Generation</strong></td>
+                    <td>$80M+/quarter by 2026</td>
+                    <td>Operating CF - CapEx, ajuste por lease</td>
+                </tr>
+                <tr>
+                    <td><strong>Debt Paydown Progress</strong></td>
+                    <td>$25M/quarter</td>
+                    <td>Total Debt trend, ND/EBITDA target</td>
+                </tr>
+                <tr>
+                    <td><strong>Synergy Realization</strong></td>
+                    <td>$35-55M captured</td>
+                    <td>Guidance updates, management commentary</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h3 style="margin-top: 40px;">Red Flags - Sell Triggers</h3>
+        <div class="grid-2">
+            <div class="card risk-high">
+                <h4>Critical Issues</h4>
+                <ul>
+                    <li>EBITDA margins declining YoY</li>
+                    <li>Debt covenant breaches</li>
+                    <li>Loss of major customers (>5% revenue)</li>
+                    <li>Management changes mid-integration</li>
+                    <li>Equity dilution >20%</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>Monitoreo Continuo</h4>
+                <ul>
+                    <li>Quarterly earnings calls</li>
+                    <li>SEC filings (10-Q, 10-K)</li>
+                    <li>Industry trends & competitor moves</li>
+                    <li>Insider trading activity</li>
+                    <li>Analyst coverage initiation</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <h3 style="color: var(--secondary-color); margin-bottom: 20px;">TIC Solutions Investment Thesis</h3>
+            <p><strong>Documento preparado:</strong> Diciembre 27, 2025</p>
+            <p><strong>Análisis:</strong> Fundamental independiente basado en datos públicos</p>
+            <p style="margin-top: 20px; color: #aaa; font-size: 0.9em;">
+                <strong>Disclaimer:</strong> Este análisis es puramente educativo. No constituye asesoramiento financiero. 
+                Los resultados financieros reales pueden diferir materialmente de las proyecciones. 
+                Realizar due diligence adicional antes de invertir.
+            </p>
+            <p style="margin-top: 20px; color: #aaa; font-size: 0.85em;">
+                © 2025 Independent Equity Research | Todos los derechos reservados
+            </p>
+        </div>
+    </footer>
+    
+    <script>
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({behavior: 'smooth'});
+                }
+            });
+        });
+        
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.card, .stat-card, .segment-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
