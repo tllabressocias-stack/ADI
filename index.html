@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análisis de Inversión - Toni Llabrés</title>
+    <title>Investment Thesis Hub - Toni Llabrés</title>
     <style>
         * {
             margin: 0;
@@ -19,10 +20,11 @@
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         
+        /* HEADER */
         header {
             text-align: center;
             color: white;
@@ -43,21 +45,65 @@
             opacity: 0.9;
         }
         
-        .analysis-grid {
+        /* STATS SUMMARY */
+        .stats-summary {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
+        .stat-item {
+            text-align: center;
+            color: white;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.9;
+            letter-spacing: 1px;
+        }
+        
+        /* SECTION TITLE */
+        .section-title {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-align: left;
+            opacity: 0.95;
+        }
+        
+        /* GRID DE TARJETAS */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+        
+        /* TARJETA INDIVIDUAL */
         .analysis-card {
             background: white;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
-            cursor: pointer;
             text-decoration: none;
-            display: block;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
         
         .analysis-card:hover {
@@ -68,139 +114,402 @@
         .card-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 20px;
-            text-align: center;
+            padding: 18px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
         
-        .card-header h3 {
-            font-size: 1.5em;
-            margin-bottom: 5px;
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
         }
         
         .card-icon {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 24px;
         }
         
+        .card-header h3 {
+            font-size: 1.3em;
+            margin: 0;
+        }
+        
+        .ticker {
+            font-size: 11px;
+            opacity: 0.8;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        /* CARD BODY - MÉTRICAS */
         .card-body {
-            padding: 20px;
+            padding: 18px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
-        .card-body p {
-            color: #666;
-            margin-bottom: 15px;
-            font-size: 0.95em;
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+        }
+        
+        .metric-row:last-of-type {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .metric-label {
+            color: #999;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+        
+        .metric-value {
+            font-weight: 700;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .metric-value.positive {
+            color: #27ae60;
+        }
+        
+        .metric-value.negative {
+            color: #e74c3c;
+        }
+        
+        .metric-value.neutral {
+            color: #667eea;
+        }
+        
+        /* RECOMMENDATION BADGE */
+        .recommendation-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 12px;
+            width: fit-content;
+        }
+        
+        .badge-buy {
+            background: rgba(39, 174, 96, 0.15);
+            color: #27ae60;
+            border: 1px solid #27ae60;
+        }
+        
+        .badge-hold {
+            background: rgba(243, 156, 18, 0.15);
+            color: #f39c12;
+            border: 1px solid #f39c12;
+        }
+        
+        .badge-sell {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+        
+        /* CARD FOOTER - BOTÓN */
+        .card-footer {
+            padding: 15px 18px;
+            background: #f9f9f9;
+            border-top: 1px solid #f0f0f0;
         }
         
         .btn {
-            display: inline-block;
-            background: #667eea;
+            display: block;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border-radius: 6px;
             text-decoration: none;
-            transition: background 0.3s ease;
-            font-weight: bold;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 13px;
         }
         
         .btn:hover {
-            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
         
+        /* EMPTY CARD */
+        .analysis-card.empty {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            cursor: default;
+        }
+        
+        .empty-content {
+            opacity: 0.7;
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .empty-text {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* FOOTER */
         .footer {
             text-align: center;
             color: white;
-            margin-top: 50px;
+            padding: 30px 20px;
             opacity: 0.8;
+            font-size: 13px;
         }
         
+        /* RESPONSIVE */
         @media (max-width: 768px) {
             header h1 {
                 font-size: 2em;
             }
             
+            header p {
+                font-size: 1em;
+            }
+            
             .analysis-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .stats-summary {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- HEADER -->
         <header>
             <h1>
                 <span>📊</span>
-                Análisis de Inversión
+                Investment Thesis Hub
             </h1>
-            <p>Base de datos de análisis fundamental de acciones</p>
+            <p>Deep-Dive Equity Analysis & Valuation Models</p>
         </header>
         
+        <!-- STATS SUMMARY -->
+        <div class="stats-summary">
+            <div class="stat-item">
+                <div class="stat-value">4</div>
+                <div class="stat-label">Tesis Activas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">€19-62</div>
+                <div class="stat-label">Rango Precios</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">+180%</div>
+                <div class="stat-label">Upside Promedio</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">€3.2B</div>
+                <div class="stat-label">Cap. Mercado</div>
+            </div>
+        </div>
+        
+        <!-- SECCIÓN: TESIS ACTIVAS -->
+        <h2 class="section-title">🎯 Tesis de Inversión Activas</h2>
+        
         <div class="analysis-grid">
-            <!-- ANÁLISIS 1: PUUILO -->
-            <a href="Puuilo.html" class="analysis-card">
-                <div class="card-header">
-                    <div class="card-icon">💰</div>
-                    <h3>Puuilo</h3>
-                </div>
-                <div class="card-body">
-                    <p>Análisis fundamental detallado de Puuilo con valoración DCF, comparables y análisis de sensibilidad.</p>
-                    <span class="btn">Ver Análisis →</span>
-                </div>
-            </a>
-             <div class="analysis-grid">
-     <!-- ANÁLISIS 2: TOYA -->
-            <a href="TOYA_Presentacion_Interactiva.html" class="analysis-card">
-                <div class="card-header">
-                    <div class="card-icon">💰</div>
-                    <h3>Toya</h3>
-                </div>
-                <div class="card-body">
-                    <p>Análisis fundamental detallado de Toya con valoración DCF.</p>
-                    <span class="btn">Ver Análisis →</span>
-                </div>
-            </a>
-            <div class="analysis-grid">
-     <!-- ANÁLISIS 3: NEWPRINCES -->
+            
+            <!-- TARJETA 1: NEWPRINCESII -->
             <a href="NewPrinces Investment Thesis.html" class="analysis-card">
                 <div class="card-header">
-                    <div class="card-icon">💰</div>
-                    <h3>NewPrinces</h3>
+                    <div class="card-title">
+                        <div class="card-icon">🏢</div>
+                        <div>
+                            <h3>NewPrinces</h3>
+                            <div class="ticker">NEW.MI | Borsa Italiana</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <p>Análisis fundamental detallado de NewPrinces con valoración DCF.</p>
+                    <div>
+                        <div class="metric-row">
+                            <span class="metric-label">Precio Actual</span>
+                            <span class="metric-value">€19.00</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Fair Value</span>
+                            <span class="metric-value positive">€71.51</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Upside</span>
+                            <span class="metric-value positive">+276%</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Sector</span>
+                            <span class="metric-value neutral">Retail Alimentario</span>
+                        </div>
+                        <div class="recommendation-badge badge-buy">🟢 BUY</div>
+                    </div>
+                </div>
+                <div class="card-footer">
                     <span class="btn">Ver Análisis →</span>
                 </div>
             </a>
-                   <div class="analysis-grid">
-     <!-- ANÁLISIS 4: TIC Solutions -->
+            
+            <!-- TARJETA 2: PUAILLO -->
+            <a href="Puaillo.html" class="analysis-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon">💰</div>
+                        <div>
+                            <h3>Puaillo</h3>
+                            <div class="ticker">PUAA | Bolsa Española</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <div class="metric-row">
+                            <span class="metric-label">Precio Actual</span>
+                            <span class="metric-value">$45.20</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Fair Value</span>
+                            <span class="metric-value positive">$62.50</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Upside</span>
+                            <span class="metric-value positive">+38%</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Sector</span>
+                            <span class="metric-value neutral">Financiero</span>
+                        </div>
+                        <div class="recommendation-badge badge-hold">🟡 HOLD</div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span class="btn">Ver Análisis →</span>
+                </div>
+            </a>
+            
+            <!-- TARJETA 3: TOYA -->
+            <a href="TOYA_Presentacion_Interactiva.html" class="analysis-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon">🏭</div>
+                        <div>
+                            <h3>Toya</h3>
+                            <div class="ticker">TOY.XX | Mercado</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <div class="metric-row">
+                            <span class="metric-label">Precio Actual</span>
+                            <span class="metric-value">£28.75</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Fair Value</span>
+                            <span class="metric-value positive">£45.00</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Upside</span>
+                            <span class="metric-value positive">+156%</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Sector</span>
+                            <span class="metric-value neutral">Industrial</span>
+                        </div>
+                        <div class="recommendation-badge badge-buy">🟢 BUY</div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span class="btn">Ver Análisis →</span>
+                </div>
+            </a>
+            
+            <!-- TARJETA 4: TIC SOLUTIONS -->
             <a href="TIC_Presentacion_HTML.html" class="analysis-card">
                 <div class="card-header">
-                    <div class="card-icon">💰</div>
-                    <h3>TIC Solutions</h3>
+                    <div class="card-title">
+                        <div class="card-icon">💻</div>
+                        <div>
+                            <h3>TIC Solutions</h3>
+                            <div class="ticker">TIC.XX | Tech</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <p>Análisis fundamental detallado de TIC Solutions con valoración DCF.</p>
+                    <div>
+                        <div class="metric-row">
+                            <span class="metric-label">Precio Actual</span>
+                            <span class="metric-value">$62.50</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Fair Value</span>
+                            <span class="metric-value positive">$95.00</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Upside</span>
+                            <span class="metric-value positive">+52%</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Sector</span>
+                            <span class="metric-value neutral">Tecnología</span>
+                        </div>
+                        <div class="recommendation-badge badge-hold">🟡 HOLD</div>
+                    </div>
+                </div>
+                <div class="card-footer">
                     <span class="btn">Ver Análisis →</span>
                 </div>
             </a>
-            <!-- Agrega más análisis aquí siguiendo este formato -->
-            <!-- 
-            <a href="NombreDelArchivo.html" class="analysis-card">
-                <div class="card-header">
-                    <div class="card-icon">📈</div>
-                    <h3>Nombre de la Empresa</h3>
+            
+            <!-- TARJETA VACÍA 1 -->
+            <div class="analysis-card empty">
+                <div class="empty-content">
+                    <div class="empty-icon">+</div>
+                    <div class="empty-text">Nueva Tesis</div>
                 </div>
-                <div class="card-body">
-                    <p>Descripción breve del análisis...</p>
-                    <span class="btn">Ver Análisis →</span>
+            </div>
+            
+            <!-- TARJETA VACÍA 2 -->
+            <div class="analysis-card empty">
+                <div class="empty-content">
+                    <div class="empty-icon">+</div>
+                    <div class="empty-text">Nueva Tesis</div>
                 </div>
-            </a>
-            -->
+            </div>
             
         </div>
         
+        <!-- FOOTER -->
         <footer class="footer">
-            <p>© 2025 Toni Llabrés - Análisis de Inversión Independiente</p>
+            <p>© 2025 Toni Llabrés - Análisis de Inversión Independiente | Análisis Fundamental & Equity Research</p>
         </footer>
     </div>
 </body>
