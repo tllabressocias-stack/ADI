@@ -360,7 +360,7 @@
         <!-- HEADER -->
         <header>
             <h1>📊 Investment Thesis Hub</h1>
-            <p>Research & Special Situations</p>
+            <p>Deep-dive equity analysis & special situations</p>
         </header>
         
         <!-- STATS SUMMARY -->
@@ -486,11 +486,11 @@
                     name: "Puuilo",
                     ticker: "PUUILO",
                     icon: "🌲",
-                    thesis: "Consolidación en sector forestal",
-                    summary: "Empresa finlandesa de gestión forestal con potencial de revalorización.",
+                    thesis: "Expansion y mejora de márgenes",
+                    summary: "Empresa finlandesa - Industrial.",
                     exchange: "HE",  // Helsinki Stock Exchange
                     targetPrice: "€15.00",
-                    thesisFile: "Puuilo.html"
+                    thesisFile: "Puuilo-tesis.html"
                 }
             ],
             spinoff: [],
@@ -532,31 +532,77 @@
             }
         }
         
-        // Función para extraer Target Price del HTML de la tesis
+        // ============================================================
+        // FUNCIÓN: Extraer Target Price automáticamente del HTML
+        // ============================================================
+        // Esta función se aplica a TODAS las tesis que subas.
+        // Solo necesitas añadir UNA de estas líneas en tu HTML:
+        //
+        // OPCIÓN 1 (RECOMENDADA): <div id="fairValue">€26,62</div>
+        // OPCIÓN 2: <div class="recommendation-value">€26,62</div>
+        // OPCIÓN 3: <div class="kpi-value">€26,62</div>
+        // OPCIÓN 4: Fair Value: €26,62
+        // ============================================================
         async function extractTargetPriceFromThesis(thesisFile) {
             try {
                 const response = await fetch(thesisFile);
                 const html = await response.text();
                 
-                // Busca patrones comunes: "Target: €X", "Price Target: €X", "PT: €X"
-                const patterns = [
-                    /Target\s*Price\s*[:=]\s*[€$]?(\d+\.?\d*)/gi,
-                    /Target\s*[:=]\s*[€$]?(\d+\.?\d*)/gi,
-                    /PT\s*[:=]\s*[€$]?(\d+\.?\d*)/gi,
-                    /Price\s*Target\s*[:=]\s*[€$]?(\d+\.?\d*)/gi
-                ];
+                console.log(`📄 Buscando Target Price en: ${thesisFile}`);
                 
-                for (let pattern of patterns) {
-                    const match = html.match(pattern);
-                    if (match) {
-                        const value = match[0].match(/(\d+\.?\d*)/)[0];
-                        return `€${value}`;
-                    }
+                // PATRÓN 1: ID específico (más directo) - RECOMENDADO
+                let match = html.match(/<div[^>]*id="fairValue"[^>]*>[^<]*€\s*([0-9,\.]+)/i);
+                if (match) {
+                    const value = match[1].replace(',', '.');
+                    console.log(`✓ Target Price encontrado (id="fairValue"): €${value}`);
+                    return `€${value}`;
                 }
                 
+                // PATRÓN 2: Class recommendation-value
+                match = html.match(/<div[^>]*class="recommendation-value"[^>]*>[^<]*€\s*([0-9,\.]+)/i);
+                if (match) {
+                    const value = match[1].replace(',', '.');
+                    console.log(`✓ Target Price encontrado (recommendation-value): €${value}`);
+                    return `€${value}`;
+                }
+                
+                // PATRÓN 3: Class kpi-value
+                match = html.match(/<div[^>]*class="kpi-value"[^>]*>[^<]*€\s*([0-9,\.]+)/i);
+                if (match) {
+                    const value = match[1].replace(',', '.');
+                    console.log(`✓ Target Price encontrado (kpi-value): €${value}`);
+                    return `€${value}`;
+                }
+                
+                // PATRÓN 4: "Fair Value" seguido de €
+                match = html.match(/Fair\s*Value[\s\w:]*€\s*([0-9,\.]+)/i);
+                if (match) {
+                    const value = match[1].replace(',', '.');
+                    console.log(`✓ Target Price encontrado (Fair Value text): €${value}`);
+                    return `€${value}`;
+                }
+                
+                // PATRÓN 5: Price Target o Target Price
+                match = html.match(/(?:Price\s*)?Target[\s\w:]*€\s*([0-9,\.]+)/i);
+                if (match) {
+                    const value = match[1].replace(',', '.');
+                    console.log(`✓ Target Price encontrado (Target text): €${value}`);
+                    return `€${value}`;
+                }
+                
+                // PATRÓN 6: Búsqueda genérica de €X
+                const allPrices = html.match(/€\s*([0-9,\.]+)/g);
+                if (allPrices && allPrices.length > 0) {
+                    const prices = allPrices.map(p => parseFloat(p.match(/([0-9,\.]+)/)[1].replace(',', '.')));
+                    const maxPrice = Math.max(...prices);
+                    console.warn(`⚠️ NO encontrado con patrones específicos. Usando máximo: €${maxPrice}`);
+                    return `€${maxPrice.toFixed(2)}`;
+                }
+                
+                console.error(`❌ NO se encontró Target Price en ${thesisFile}`);
                 return null;
             } catch (error) {
-                console.warn(`Could not extract target price from ${thesisFile}:`, error);
+                console.error(`❌ Error extrayendo precio de ${thesisFile}:`, error);
                 return null;
             }
         }
@@ -579,10 +625,14 @@
                             priceStatus = currentPrice ? 'loaded' : 'error';
                         }
                         
-                        // Extraer Target Price del HTML si no está definido
-                        let targetPrice = company.targetPrice;
-                        if (!targetPrice && company.thesisFile) {
+                        // Extraer SIEMPRE Target Price del HTML (aplica a todas las tesis)
+                        let targetPrice = null;
+                        if (company.thesisFile) {
                             targetPrice = await extractTargetPriceFromThesis(company.thesisFile);
+                        }
+                        // Si no se encuentra en HTML, usa el fallback definido
+                        if (!targetPrice) {
+                            targetPrice = company.targetPrice;
                         }
                         
                         // Formato de precios para mostrar
