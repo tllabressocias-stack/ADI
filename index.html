@@ -505,13 +505,25 @@
             'PA': { code: 'EURONEXT', format: 'dot' },     // Paris → TICKER.EURONEXT
             'AM': { code: 'EURONEXT', format: 'dot' },     // Amsterdam → TICKER.EURONEXT
             'SA': { code: 'EURONEXT', format: 'dot' },     // Lisboa → TICKER.EURONEXT
-            'WSE': { code: 'WSE', format: 'dot' },         // Varsovia → TICKER.WSE
+            'WSE': { code: 'WSE', format: 'dot' },          // Varsovia → TICKER.WSE
         };
         
         // Cache de precios
         let priceCache = {};
         let cacheTimestamp = {};
         const CACHE_DURATION = 60000; // 1 minuto
+        
+        // ============================================================
+        // PRECIOS FALLBACK MANUAL - Para microcaps sin cobertura API
+        // ============================================================
+        // Actualiza estos precios manualmente si las APIs fallan
+        // Formato: { current: número, currency: 'EUR'|'GBP'|'USD' }
+        // ============================================================
+        const manualPrices = {
+            'PUUILO': { current: 12.46, currency: 'EUR' },
+            'TOA': { current: 9.75, currency: 'PLN' },
+            'NWL': { current: 19.90, currency: 'EUR' }
+        };
         
         // Datos de empresas
         const companiesData = {
@@ -520,43 +532,43 @@
                     name: "Puuilo",
                     ticker: "PUUILO",
                     icon: "🌲",
-                    thesis: "Consolidación xxxx",
-                    summary: "Empresa finlandesa xxx.",
-                    exchange: "HE",  // Helsinki Stock Exchange
-                    targetPrice: "xx",
+                    thesis: "Consolidación XXX",
+                    summary: "Empresa finlandesa XXXX.",
+                    exchange: "HE",
+                    targetPrice: "XXXX",
                     thesisFile: "Puuilo.html",
                     positionType: "long"
                 },
                 {
                     name: "Toya",
                     ticker: "TOA",
-                    icon: "🌲",
-                    thesis: "Consolidación xxx",
-                    summary: "Empresa polaca xxx.",
-                    exchange: "WSE",  // 
-                    targetPrice: "xx",
+                    icon: "🌊",
+                    thesis: "Consolidación xxxx",
+                    summary: "Empresa polaca xxxx",
+                    exchange: "WSE",
+                    targetPrice: "xxx",
                     thesisFile: "TOYA_Presentacion_Interactiva.html",
                     positionType: "long"
                 },
                 {
                     name: "TIC Solutions",
                     ticker: "TIC",
-                    icon: "🌲",
-                    thesis: "Consolidación xxx",
-                    summary: "Empresa EEUU xxx.",
-                    exchange: "NYSE",  // 
-                    targetPrice: "xx",
+                    icon: "🏢",
+                    thesis: "Consolidación xxxx",
+                    summary: "Empresa EEUU xxxx",
+                    exchange: "NYSE",
+                    targetPrice: "xxxx",
                     thesisFile: "TIC_Presentacion_HTML.html",
                     positionType: "long"
                 },
                 {
                     name: "Newprinces",
                     ticker: "NWL",
-                    icon: "🌲",
-                    thesis: "Consolidación xxx",
-                    summary: "Empresa EEUU xxx.",
-                    exchange: "MI",  // 
-                    targetPrice: "xx",
+                    icon: "📰",
+                    thesis: "Consolidación xxxx",
+                    summary: "Empresa Italiana xxxx",
+                    exchange: "MI",
+                    targetPrice: "xxx",
                     thesisFile: "NewPrinces Investment Thesis.html",
                     positionType: "long"
                 }
@@ -594,39 +606,53 @@
             }
         }
         
-        // Función para obtener precio en tiempo real
+        // Función para obtener precio en tiempo real con FALLBACK
         async function getRealtimePrice(ticker, exchange) {
             try {
                 const now = Date.now();
+                
+                // ⭐ PASO 1: Intentar cache primero
                 if (priceCache[ticker] && cacheTimestamp[ticker] && (now - cacheTimestamp[ticker]) < CACHE_DURATION) {
                     console.log(`✅ Cache hit para ${ticker}`);
                     return priceCache[ticker];
                 }
                 
-                // ⭐ Construir ticker CORRECTAMENTE para Finnhub
+                // ⭐ PASO 2: Intentar Finnhub API
                 const fullTicker = buildFinnhubTicker(ticker, exchange);
                 console.log(`🔍 ${ticker} (${exchange}) → Finnhub: ${fullTicker}`);
                 
-                const response = await fetch(`${FINNHUB_URL}?symbol=${fullTicker}&token=${FINNHUB_API_KEY}`);
-                const data = await response.json();
-                
-                if (data.c) {
-                    priceCache[ticker] = data.c;
-                    cacheTimestamp[ticker] = now;
-                    console.log(`✅ Precio: ${ticker} = €${data.c.toFixed(2)}`);
-                    return data.c;
-                } else if (data.error || data.message) {
-                    console.error(`❌ Error (${fullTicker}):`, data.error || data.message);
-                    if (data.error === 'Unauthorized') {
-                        console.error(`⚠️ API KEY INVÁLIDA. Verifica: https://finnhub.io/dashboard`);
+                try {
+                    const response = await fetch(`${FINNHUB_URL}?symbol=${fullTicker}&token=${FINNHUB_API_KEY}`, { timeout: 3000 });
+                    const data = await response.json();
+                    
+                    if (data.c && data.c > 0) {
+                        priceCache[ticker] = data.c;
+                        cacheTimestamp[ticker] = now;
+                        console.log(`✅ Precio Finnhub: ${ticker} = €${data.c.toFixed(2)}`);
+                        return data.c;
                     }
-                    return null;
-                } else {
-                    console.warn(`⚠️ Sin datos para ${fullTicker}`);
-                    return null;
+                } catch (apiError) {
+                    console.warn(`⚠️ Finnhub falló para ${fullTicker}:`, apiError.message);
                 }
+                
+                // ⭐ PASO 3: Fallback a precios manuales
+                if (manualPrices[ticker]) {
+                    const manualPrice = manualPrices[ticker].current;
+                    priceCache[ticker] = manualPrice;
+                    cacheTimestamp[ticker] = now;
+                    console.log(`📌 Usando precio manual para ${ticker} = ${manualPrice}`);
+                    return manualPrice;
+                }
+                
+                console.warn(`⚠️ Sin datos disponibles para ${ticker}`);
+                return null;
             } catch (error) {
-                console.error(`❌ Error de red:`, error);
+                console.error(`❌ Error en getRealtimePrice:`, error);
+                
+                // ⭐ PASO 4: Último intento con manual
+                if (manualPrices[ticker]) {
+                    return manualPrices[ticker].current;
+                }
                 return null;
             }
         }
@@ -702,7 +728,14 @@
                         
                         if (company.ticker && company.exchange) {
                             currentPrice = await getRealtimePrice(company.ticker, company.exchange);
-                            priceStatus = currentPrice ? 'loaded' : 'error';
+                            // Determinar source: API, Manual, o Error
+                            if (currentPrice && manualPrices[company.ticker]) {
+                                priceStatus = 'manual'; // Precio fallback manual
+                            } else if (currentPrice) {
+                                priceStatus = 'loaded'; // Precio de API
+                            } else {
+                                priceStatus = 'error'; // Sin precio
+                            }
                         }
                         
                         let targetPrice = null;
@@ -752,7 +785,7 @@
                             </div>
                             <div class="card-footer" ${cardClick} ${cursorStyle}>
                                 <div class="price-info">
-                                    <div class="price-label">Current Price <span style="font-size: 9px; color: ${priceStatus === 'error' ? '#ef4444' : '#10b981'}">${priceStatus === 'loaded' ? '✓' : priceStatus === 'error' ? '✗' : '⟳'}</span></div>
+                                    <div class="price-label">Current Price <span style="font-size: 9px; color: ${priceStatus === 'error' ? '#ef4444' : priceStatus === 'manual' ? '#f59e0b' : '#10b981'}">${priceStatus === 'loaded' ? '✓ API' : priceStatus === 'manual' ? '📌 Manual' : priceStatus === 'error' ? '✗' : '⟳'}</span></div>
                                     <div class="price-value">${displayPrice}</div>
                                 </div>
                                 <div class="target-price">
