@@ -473,52 +473,70 @@
         // ============================================================
         // CONFIGURACIÓN API FINNHUB
         // ============================================================
-        // ⚠️ IMPORTANTE: Necesitas tu PROPIA API KEY de Finnhub
-        // 
-        // Pasos para obtener tu API key:
-        // 1. Ve a https://finnhub.io/
-        // 2. Regístrate (es GRATIS) - recibirás 60 llamadas/minuto
-        // 3. Ve a tu Dashboard y copia tu API Key
-        // 4. Reemplaza 'TU_API_KEY_AQUI' por tu clave real
-        // 5. Guarda el archivo
-        //
-        // La clave actual es de demostración y tiene límites muy restrictivos.
-        // Con tu propia clave obtendrás datos en tiempo real sin problemas.
-        // ============================================================
-        const FINNHUB_API_KEY = 'd5bvi7pr01qsbmghj0sgd5bvi7pr01qsbmghj0t0';  // REEMPLAZA CON TU CLAVE
+        const FINNHUB_API_KEY = 'd5bvi7pr01qsbmghj0sgd5bvi7pr01qsbmghj0t0';  // ✅ TU API KEY
         const FINNHUB_URL = 'https://finnhub.io/api/v1/quote';
         
-        // Cache de precios (para evitar quemar API calls)
+        // ============================================================
+        // MAPEO DE EXCHANGES - Solución UNIVERSAL
+        // ============================================================
+        // IMPORTANTE: Cada exchange tiene un formato ÚNICO
+        // No todos usan TICKER.CÓDIGO
+        // 
+        // Formato 'dot': TICKER.CÓDIGO (ej: PUUILO.HE, AAPL.US)
+        // Formato 'none': solo TICKER (ej: AAPL para NASDAQ puro)
+        // 
+        // Si añades una nueva bolsa que no conoces:
+        // 1. Intenta con format 'dot' primero
+        // 2. Si no funciona, prueba con 'none'
+        // ============================================================
+        const EXCHANGE_CODES = {
+            'HE': { code: 'HE', format: 'dot' },           // Helsinki → PUUILO.HE ✅
+            'ES': { code: 'MC', format: 'dot' },           // Madrid → TICKER.MC
+            'LSE': { code: 'LON', format: 'dot' },         // Londres → TICKER.LON
+            'US': { code: '', format: 'none' },            // US NASDAQ → TICKER (sin código)
+            'NYSE': { code: '', format: 'none' },          // NYSE → TICKER (sin código)
+            'TSE': { code: 'T', format: 'dot' },           // Tokyo → TICKER.T
+            'ASX': { code: 'AX', format: 'dot' },          // Australia → TICKER.AX
+            'TO': { code: 'TO', format: 'dot' },           // Toronto → TICKER.TO
+            'SB': { code: 'ST', format: 'dot' },           // Stockholm → TICKER.ST
+            'VX': { code: 'SIX', format: 'dot' },          // Suiza → TICKER.SIX
+            'MI': { code: 'MI', format: 'dot' },           // Milan → TICKER.MI
+            'BR': { code: 'EURONEXT', format: 'dot' },     // Bruselas → TICKER.EURONEXT
+            'PA': { code: 'EURONEXT', format: 'dot' },     // Paris → TICKER.EURONEXT
+            'AM': { code: 'EURONEXT', format: 'dot' },     // Amsterdam → TICKER.EURONEXT
+            'SA': { code: 'EURONEXT', format: 'dot' },     // Lisboa → TICKER.EURONEXT
+            'WSE': { code: 'WSE', format: 'dot' },         // Varsovia → TICKER.WSE
+        };
+        
+        // Cache de precios
         let priceCache = {};
         let cacheTimestamp = {};
-        const CACHE_DURATION = 60000; // 1 minuto en milisegundos
+        const CACHE_DURATION = 60000; // 1 minuto
         
-        // Datos de empresas con links a tesis HTML
-        // Parámetro "positionType": "long" = busca precio más ALTO (target > current)
-        //                            "short" = busca precio más BAJO (target < current)
+        // Datos de empresas
         const companiesData = {
             long: [
                 {
                     name: "Puuilo",
                     ticker: "PUUILO",
                     icon: "🌲",
-                    thesis: "xxx",
-                    summary: "Empresa finlandesa xxx",
+                    thesis: "Consolidación xxxx",
+                    summary: "Empresa finlandesa xxx.",
                     exchange: "HE",  // Helsinki Stock Exchange
-                    targetPrice: "xxx",
+                    targetPrice: "xx",
                     thesisFile: "Puuilo.html",
-                    positionType: "long"  // LONG = busca el precio MÁS ALTO
-                },
-                   {
+                    positionType: "long"
+                }
+                {
                     name: "Toya",
                     ticker: "TOA",
                     icon: "🌲",
-                    thesis: "xxx",
-                    summary: "Empresa polaca xxx",
-                    exchange: "WU",  // 
-                    targetPrice: "xxx",
+                    thesis: "Consolidación xxx",
+                    summary: "Empresa polaca xxx.",
+                    exchange: "WSE",  // 
+                    targetPrice: "xx",
                     thesisFile: "TOYA_Presentacion_Interactiva.html",
-                    positionType: "long"  // LONG = busca el precio MÁS ALTO
+                    positionType: "long"
                 }
             ],
             spinoff: [],
@@ -531,17 +549,41 @@
             reverse: []
         };
         
-        // Función para obtener precio en tiempo real desde Finnhub
+        // ============================================================
+        // FUNCIÓN UNIVERSAL: Construir ticker según el exchange
+        // ============================================================
+        function buildFinnhubTicker(ticker, exchange) {
+            if (!exchange || !EXCHANGE_CODES[exchange]) {
+                // Exchange desconocido: intenta genérico
+                return exchange ? `${ticker}.${exchange}` : ticker;
+            }
+            
+            const config = EXCHANGE_CODES[exchange];
+            
+            if (config.format === 'dot' && config.code) {
+                // Formato: TICKER.CÓDIGO
+                return `${ticker}.${config.code}`;
+            } else if (config.format === 'none') {
+                // Formato: solo TICKER
+                return ticker;
+            } else {
+                // Por defecto: intenta con punto
+                return `${ticker}.${config.code}`;
+            }
+        }
+        
+        // Función para obtener precio en tiempo real
         async function getRealtimePrice(ticker, exchange) {
             try {
-                // Verificar cache
                 const now = Date.now();
                 if (priceCache[ticker] && cacheTimestamp[ticker] && (now - cacheTimestamp[ticker]) < CACHE_DURATION) {
+                    console.log(`✅ Cache hit para ${ticker}`);
                     return priceCache[ticker];
                 }
                 
-                // Formato de ticker para Finnhub
-                const fullTicker = exchange ? `${ticker}.${exchange}` : ticker;
+                // ⭐ Construir ticker CORRECTAMENTE para Finnhub
+                const fullTicker = buildFinnhubTicker(ticker, exchange);
+                console.log(`🔍 ${ticker} (${exchange}) → Finnhub: ${fullTicker}`);
                 
                 const response = await fetch(`${FINNHUB_URL}?symbol=${fullTicker}&token=${FINNHUB_API_KEY}`);
                 const data = await response.json();
@@ -549,37 +591,25 @@
                 if (data.c) {
                     priceCache[ticker] = data.c;
                     cacheTimestamp[ticker] = now;
+                    console.log(`✅ Precio: ${ticker} = €${data.c.toFixed(2)}`);
                     return data.c;
                 } else if (data.error || data.message) {
-                    console.error(`❌ Error Finnhub (${fullTicker}):`, data.error || data.message);
+                    console.error(`❌ Error (${fullTicker}):`, data.error || data.message);
                     if (data.error === 'Unauthorized') {
-                        console.error(`⚠️ API KEY INVÁLIDA. Verifica tu clave en: https://finnhub.io/dashboard`);
+                        console.error(`⚠️ API KEY INVÁLIDA. Verifica: https://finnhub.io/dashboard`);
                     }
                     return null;
                 } else {
-                    console.warn(`⚠️ Sin datos de precio para ${fullTicker}`);
+                    console.warn(`⚠️ Sin datos para ${fullTicker}`);
                     return null;
                 }
             } catch (error) {
-                console.error(`❌ Error obteniendo precio de ${ticker}:`, error);
-                console.warn(`💡 Verifica que tu API Key sea válida en https://finnhub.io/`);
+                console.error(`❌ Error de red:`, error);
                 return null;
             }
         }
         
-        // ============================================================
-        // FUNCIÓN: Extraer Target Price automáticamente del HTML
-        // ============================================================
-        // AGNÓSTICO A MONEDAS: Funciona con €, PLN, £, $, ¥, etc.
-        // Soporta 25+ códigos de moneda internacionales
-        // INTELIGENTE PARA LONG/SHORT: Busca máximo para LONG, mínimo para SHORT
-        //
-        // Solo necesitas que tu HTML tenga UN elemento con:
-        // OPCIÓN 1 (RECOMENDADA): <div id="fairValue">21.05 PLN</div>
-        // OPCIÓN 2: <div class="recommendation-value">€26,62</div>
-        // OPCIÓN 3: <div class="metric-value">$100.50</div>
-        // OPCIÓN 4: Fair Value: 21.05 PLN (cualquier moneda)
-        // ============================================================
+        // Extraer Target Price del HTML
         async function extractTargetPriceFromThesis(thesisFile, positionType = 'long') {
             try {
                 const response = await fetch(thesisFile);
@@ -587,126 +617,52 @@
                 
                 console.log(`📄 Buscando Target Price en: ${thesisFile}`);
                 
-                // PATRÓN 1: ID específico "fairValue" (RECOMENDADO - MÁS DIRECTO)
+                // Patrón 1: ID "fairValue"
                 let match = html.match(/<div[^>]*id="fairValue"[^>]*>([^<]*)/i);
                 if (match) {
-                    const content = match[1].trim();
-                    const result = extractPriceFromContent(content);
+                    const result = extractPriceFromContent(match[1].trim());
                     if (result) {
-                        console.log(`✓ Target Price encontrado (id="fairValue"): ${result}`);
+                        console.log(`✓ Target Price (fairValue): ${result}`);
                         return result;
                     }
                 }
                 
-                // PATRÓN 2: Buscar TODAS las ocurrencias y seleccionar según positionType
-                // LONG: precio más ALTO (target > current)
-                // SHORT: precio más BAJO (target < current)
+                // Patrón 2: TODAS las ocurrencias de metric-value
                 const allMetricMatches = html.matchAll(/<div[^>]*class="(?:recommendation-value|metric-value)"[^>]*>([^<]*)/gi);
                 let allPrices = [];
                 for (const m of allMetricMatches) {
-                    const content = m[1].trim();
-                    const result = extractPriceFromContent(content);
+                    const result = extractPriceFromContent(m[1].trim());
                     if (result) {
                         const numValue = parseFloat(result.match(/([0-9]+[,\.][0-9]+)/)[1].replace(',', '.'));
                         allPrices.push({ price: result, value: numValue });
                     }
                 }
                 if (allPrices.length > 0) {
-                    let selectedPrice;
-                    if (positionType === 'short') {
-                        // SHORT: coger el MENOR (precio objetivo de bajada)
-                        selectedPrice = allPrices.reduce((prev, current) => 
-                            current.value < prev.value ? current : prev
-                        );
-                        console.log(`✓ Target Price encontrado (SHORT - MÍNIMO): ${selectedPrice.price}`);
-                    } else {
-                        // LONG (default): coger el MAYOR (precio objetivo de subida)
-                        selectedPrice = allPrices.reduce((prev, current) => 
-                            current.value > prev.value ? current : prev
-                        );
-                        console.log(`✓ Target Price encontrado (LONG - MÁXIMO): ${selectedPrice.price}`);
-                    }
+                    let selectedPrice = positionType === 'short' ?
+                        allPrices.reduce((p, c) => c.value < p.value ? c : p) :
+                        allPrices.reduce((p, c) => c.value > p.value ? c : p);
+                    
+                    console.log(`✓ Target Price (${positionType}): ${selectedPrice.price}`);
                     return selectedPrice.price;
                 }
                 
-                // PATRÓN 3: Class "kpi-value"
-                match = html.match(/<div[^>]*class="kpi-value"[^>]*>([^<]*)/i);
-                if (match) {
-                    const content = match[1].trim();
-                    const result = extractPriceFromContent(content);
-                    if (result) {
-                        console.log(`✓ Target Price encontrado (kpi-value): ${result}`);
-                        return result;
-                    }
-                }
-                
-                // PATRÓN 4: "Fair Value" + número + moneda (flexible)
-                match = html.match(/Fair\s*Value[\s\w:]*([0-9,\.]+)\s*([A-Z€£¥₹]{1,3})/i);
-                if (match) {
-                    const value = match[1].replace(',', '.');
-                    const currency = match[2];
-                    const result = `${value} ${currency}`;
-                    console.log(`✓ Target Price encontrado (Fair Value): ${result}`);
-                    return result;
-                }
-                
-                // PATRÓN 5: "Price Target" + número + moneda
-                match = html.match(/(?:Price\s*)?Target[\s\w:]*([0-9,\.]+)\s*([A-Z€£¥₹]{1,3})/i);
-                if (match) {
-                    const value = match[1].replace(',', '.');
-                    const currency = match[2];
-                    const result = `${value} ${currency}`;
-                    console.log(`✓ Target Price encontrado (Target): ${result}`);
-                    return result;
-                }
-                
-                // PATRÓN 6: Moneda + número
-                match = html.match(/(€|£|\$|¥|₹|PLN|GBP|USD|EUR|JPY|AUD|CAD|CHF|INR|NZD|SGD|HKD|SEK|NOK|DKK|CZK|HUF|RON|BGN|HRK|RUB|UAH|BRL|MXN|ARS|CLP|PEN|COP)\s*([0-9]+[,\.][0-9]+)/i);
-                if (match) {
-                    const currency = match[1];
-                    const value = match[2].replace(',', '.');
-                    const result = `${value} ${currency}`;
-                    console.log(`✓ Target Price encontrado (moneda+número): ${result}`);
-                    return result;
-                }
-                
-                // PATRÓN 7: Número + moneda
-                match = html.match(/([0-9]+[,\.][0-9]+)\s*(€|£|\$|¥|₹|PLN|GBP|USD|EUR|JPY|AUD|CAD|CHF|INR|NZD|SGD|HKD|SEK|NOK|DKK|CZK|HUF|RON|BGN|HRK|RUB|UAH|BRL|MXN|ARS|CLP|PEN|COP)/i);
-                if (match) {
-                    const value = match[1].replace(',', '.');
-                    const currency = match[2];
-                    const result = `${value} ${currency}`;
-                    console.log(`✓ Target Price encontrado (número+moneda): ${result}`);
-                    return result;
-                }
-                
-                console.error(`❌ NO se encontró Target Price en ${thesisFile}`);
+                console.error(`❌ NO se encontró Target Price`);
                 return null;
             } catch (error) {
-                console.error(`❌ Error extrayendo precio de ${thesisFile}:`, error);
+                console.error(`❌ Error extrayendo precio:`, error);
                 return null;
             }
         }
         
-        // Función auxiliar para extraer precio de un contenido
         function extractPriceFromContent(content) {
             if (!content) return null;
-            
-            // Busca: [moneda] [número] o [número] [moneda]
-            const priceRegex = /(€|£|\$|¥|₹|PLN|GBP|USD|EUR|JPY|AUD|CAD|CHF|INR|NZD|SGD|HKD|SEK|NOK|DKK|CZK|HUF|RON|BGN|HRK|RUB|UAH|BRL|MXN|ARS|CLP|PEN|COP)?\s*([0-9]+[,\.][0-9]+)\s*(€|£|\$|¥|₹|PLN|GBP|USD|EUR|JPY|AUD|CAD|CHF|INR|NZD|SGD|HKD|SEK|NOK|DKK|CZK|HUF|RON|BGN|HRK|RUB|UAH|BRL|MXN|ARS|CLP|PEN|COP)?/i;
-            const match = content.match(priceRegex);
-            
+            const regex = /(€|£|\$|¥|₹|PLN|GBP|USD|EUR|JPY|AUD|CAD|CHF|INR|NZD|SGD|HKD|SEK|NOK|DKK|CZK|HUF|RON|BGN|HRK|RUB|UAH|BRL|MXN|ARS|CLP|PEN|COP)?\s*([0-9]+[,\.][0-9]+)\s*(€|£|\$|¥|₹|PLN|GBP|USD|EUR|JPY|AUD|CAD|CHF|INR|NZD|SGD|HKD|SEK|NOK|DKK|CZK|HUF|RON|BGN|HRK|RUB|UAH|BRL|MXN|ARS|CLP|PEN|COP)?/i;
+            const match = content.match(regex);
             if (match) {
                 const value = match[2].replace(',', '.');
                 const currency = match[1] || match[3] || '';
-                
-                if (currency) {
-                    return `${value} ${currency}`;
-                } else {
-                    return `${value}`;
-                }
+                return currency ? `${value} ${currency}` : `${value}`;
             }
-            
             return null;
         }
         
@@ -719,36 +675,25 @@
                     gridContainer.innerHTML = '<div class="empty-state"><p>No positions in this category yet</p></div>';
                 } else {
                     for (const company of companies) {
-                        // Obtener precio en tiempo real
                         let currentPrice = null;
                         let priceStatus = 'loading';
                         
                         if (company.ticker && company.exchange) {
-                            // Validar que la API key está configurada
-                            if (FINNHUB_API_KEY === 'TU_API_KEY_AQUI') {
-                                console.warn(`⚠️ API KEY no configurada. Ver instrucciones en la consola.`);
-                                priceStatus = 'no-api';
-                            } else {
-                                currentPrice = await getRealtimePrice(company.ticker, company.exchange);
-                                priceStatus = currentPrice ? 'loaded' : 'error';
-                            }
+                            currentPrice = await getRealtimePrice(company.ticker, company.exchange);
+                            priceStatus = currentPrice ? 'loaded' : 'error';
                         }
                         
-                        // Extraer SIEMPRE Target Price del HTML (aplica a todas las tesis)
                         let targetPrice = null;
                         if (company.thesisFile) {
                             targetPrice = await extractTargetPriceFromThesis(company.thesisFile, company.positionType || 'long');
                         }
-                        // Si no se encuentra en HTML, usa el fallback definido
                         if (!targetPrice) {
                             targetPrice = company.targetPrice;
                         }
                         
-                        // Formato de precios para mostrar
                         const displayPrice = currentPrice ? `€${currentPrice.toFixed(2)}` : 'N/A';
                         const displayTargetPrice = targetPrice || 'N/A';
                         
-                        // Calcular upside
                         let upside = 'N/A';
                         let upsideClass = 'neutral';
                         if (currentPrice && targetPrice) {
@@ -757,13 +702,11 @@
                             upsideClass = upside >= 0 ? 'positive' : 'negative';
                         }
                         
-                        // Timestamp de última actualización
                         const lastUpdate = priceStatus === 'loaded' ? new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'}) : '-';
                         
                         const card = document.createElement('div');
                         card.className = 'analysis-card';
                         
-                        // Si tiene archivo HTML de tesis, lo hace clickeable
                         const cardClick = company.thesisFile ? `onclick="window.location.href='${company.thesisFile}'"` : '';
                         const cursorStyle = company.thesisFile ? 'style="cursor: pointer;"' : '';
                         
@@ -787,7 +730,7 @@
                             </div>
                             <div class="card-footer" ${cardClick} ${cursorStyle}>
                                 <div class="price-info">
-                                    <div class="price-label">Current Price <span style="font-size: 9px; color: ${priceStatus === 'error' ? '#ef4444' : priceStatus === 'no-api' ? '#f59e0b' : '#10b981'}">${priceStatus === 'loaded' ? '✓' : priceStatus === 'error' ? '✗' : priceStatus === 'no-api' ? '⚙️' : '⟳'}</span></div>
+                                    <div class="price-label">Current Price <span style="font-size: 9px; color: ${priceStatus === 'error' ? '#ef4444' : '#10b981'}">${priceStatus === 'loaded' ? '✓' : priceStatus === 'error' ? '✗' : '⟳'}</span></div>
                                     <div class="price-value">${displayPrice}</div>
                                 </div>
                                 <div class="target-price">
@@ -804,53 +747,38 @@
         }
         
         function showSection(sectionId) {
-            // Oculta todas las secciones
-            document.querySelectorAll('.section-content').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Desactiva todos los botones
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Muestra la sección seleccionada
+            document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
-            
-            // Activa el botón correspondiente
             event.target.classList.add('active');
         }
         
         function updateStats() {
-            let totalPositions = 0;
-            let longPositions = 0;
-            let shortPositions = 0;
-            let specialSituations = 0;
+            let total = 0, long = 0, short = 0, special = 0;
             
-            for (const [category, companies] of Object.entries(companiesData)) {
-                totalPositions += companies.length;
-                
-                if (category === 'long') longPositions = companies.length;
-                else if (category === 'short') shortPositions = companies.length;
-                else if (['spinoff', 'ma', 'tender', 'demerger', 'turnaround', 'reverse', 'uplisting'].includes(category)) {
-                    specialSituations += companies.length;
+            for (const [cat, cos] of Object.entries(companiesData)) {
+                total += cos.length;
+                if (cat === 'long') long = cos.length;
+                else if (cat === 'short') short = cos.length;
+                else if (['spinoff', 'ma', 'tender', 'demerger', 'turnaround', 'reverse', 'uplisting'].includes(cat)) {
+                    special += cos.length;
                 }
             }
             
-            document.getElementById('total-positions').textContent = totalPositions;
-            document.getElementById('long-positions').textContent = longPositions;
-            document.getElementById('short-positions').textContent = shortPositions;
-            document.getElementById('special-situations').textContent = specialSituations;
+            document.getElementById('total-positions').textContent = total;
+            document.getElementById('long-positions').textContent = long;
+            document.getElementById('short-positions').textContent = short;
+            document.getElementById('special-situations').textContent = special;
         }
         
         // Inicializar
         renderCards();
         
-        // Actualizar precios cada 5 minutos
+        // Actualizar cada 5 minutos
         setInterval(() => {
-            console.log('Actualizando precios...');
+            console.log('🔄 Actualizando precios...');
             renderCards();
-        }, 300000); // 5 minutos
+        }, 300000);
     </script>
 </body>
 </html>
