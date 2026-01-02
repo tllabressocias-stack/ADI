@@ -490,22 +490,22 @@
         // 2. Si no funciona, prueba con 'none'
         // ============================================================
         const EXCHANGE_CODES = {
-            'HE': { code: 'HE', format: 'dot' },           // Helsinki → PUUILO.HE ✅
-            'ES': { code: 'MC', format: 'dot' },           // Madrid → TICKER.MC
-            'LSE': { code: 'LON', format: 'dot' },         // Londres → TICKER.LON
-            'US': { code: '', format: 'none' },            // US NASDAQ → TICKER (sin código)
-            'NYSE': { code: '', format: 'none' },          // NYSE → TICKER (sin código)
-            'TSE': { code: 'T', format: 'dot' },           // Tokyo → TICKER.T
-            'ASX': { code: 'AX', format: 'dot' },          // Australia → TICKER.AX
-            'TO': { code: 'TO', format: 'dot' },           // Toronto → TICKER.TO
-            'SB': { code: 'ST', format: 'dot' },           // Stockholm → TICKER.ST
-            'VX': { code: 'SIX', format: 'dot' },          // Suiza → TICKER.SIX
-            'MI': { code: 'MI', format: 'dot' },           // Milan → TICKER.MI
-            'BR': { code: 'EURONEXT', format: 'dot' },     // Bruselas → TICKER.EURONEXT
-            'PA': { code: 'EURONEXT', format: 'dot' },     // Paris → TICKER.EURONEXT
-            'AM': { code: 'EURONEXT', format: 'dot' },     // Amsterdam → TICKER.EURONEXT
-            'SA': { code: 'EURONEXT', format: 'dot' },     // Lisboa → TICKER.EURONEXT
-            'WSE': { code: 'WA', format: 'dot' },          // Varsovia → TICKER.WA
+            'HE': { code: 'HE', format: 'dot', currency: 'EUR' },           // Helsinki → PUUILO.HE ✅
+            'ES': { code: 'MC', format: 'dot', currency: 'EUR' },           // Madrid → TICKER.MC
+            'LSE': { code: 'LON', format: 'dot', currency: 'GBP' },         // Londres → TICKER.LON
+            'US': { code: '', format: 'none', currency: 'USD' },            // US NASDAQ → TICKER (sin código)
+            'NYSE': { code: '', format: 'none', currency: 'USD' },          // NYSE → TICKER (sin código)
+            'TSE': { code: 'T', format: 'dot', currency: 'JPY' },           // Tokyo → TICKER.T
+            'ASX': { code: 'AX', format: 'dot', currency: 'AUD' },          // Australia → TICKER.AX
+            'TO': { code: 'TO', format: 'dot', currency: 'CAD' },           // Toronto → TICKER.TO
+            'SB': { code: 'ST', format: 'dot', currency: 'SEK' },           // Stockholm → TICKER.ST
+            'VX': { code: 'SIX', format: 'dot', currency: 'CHF' },          // Suiza → TICKER.SIX
+            'MI': { code: 'MI', format: 'dot', currency: 'EUR' },           // Milan → TICKER.MI
+            'BR': { code: 'EURONEXT', format: 'dot', currency: 'EUR' },     // Bruselas → TICKER.EURONEXT
+            'PA': { code: 'EURONEXT', format: 'dot', currency: 'EUR' },     // Paris → TICKER.EURONEXT
+            'AM': { code: 'EURONEXT', format: 'dot', currency: 'EUR' },     // Amsterdam → TICKER.EURONEXT
+            'SA': { code: 'EURONEXT', format: 'dot', currency: 'EUR' },     // Lisboa → TICKER.EURONEXT
+            'WSE': { code: 'WA', format: 'dot', currency: 'EUR' },          // Varsovia → PUUILO.WA
         };
         
         // Cache de precios
@@ -548,10 +548,10 @@
                     name: "Puuilo",
                     ticker: "PUUILO",
                     icon: "🌲",
-                    thesis: "Consolidación XXX",
-                    summary: "Empresa finlandesa XXX.",
+                    thesis: "Consolidación xxx",
+                    summary: "Empresa finlandesa xxx",
                     exchange: "HE",
-                    targetPrice: "XXX",
+                    targetPrice: "xxx",
                     thesisFile: "Puuilo.html",
                     positionType: "long"
                 },
@@ -573,8 +573,8 @@
                     thesis: "Consolidación xxxx",
                     summary: "Empresa EEUU xxxx",
                     exchange: "NYSE",
-                    targetPrice: "XXX",
-                    thesisFile: "TOYA_Presentacion_Interactiva.html",
+                    targetPrice: "25.32 $",
+                    thesisFile: "TIC_Presentacion_HTML.html",
                     positionType: "long"
                 },
                 {
@@ -584,8 +584,8 @@
                     thesis: "Consolidación xxxx",
                     summary: "Empresa Italia xxxx",
                     exchange: "MI",
-                    targetPrice: "XXX",
-                    thesisFile: "NewPrinces Investment Thesis.html",
+                    targetPrice: "71.51 €",
+                    thesisFile: "NewPrinces Investment Thesis",
                     positionType: "long"
                 }
             ],
@@ -762,12 +762,18 @@
                             targetPrice = company.targetPrice;
                         }
                         
-                        // Obtener símbolo de moneda
+                        // Obtener símbolo de moneda - Prioridad: Manual > Exchange > Defecto
                         let priceSymbol = '€'; // Por defecto
-                        if (company.manualPriceCurrency && currencySymbols[company.manualPriceCurrency]) {
-                            priceSymbol = currencySymbols[company.manualPriceCurrency];
-                        } else if (manualPrices[company.ticker] && currencySymbols[manualPrices[company.ticker].currency]) {
-                            priceSymbol = currencySymbols[manualPrices[company.ticker].currency];
+                        
+                        // 1. Si viene de manual, usar su moneda
+                        if (priceStatus === 'manual' && manualPrices[company.ticker]) {
+                            const manualCurrency = manualPrices[company.ticker].currency;
+                            priceSymbol = currencySymbols[manualCurrency] || manualCurrency;
+                        }
+                        // 2. Si viene de API, usar moneda del exchange
+                        else if (priceStatus === 'loaded' && company.exchange && EXCHANGE_CODES[company.exchange]) {
+                            const exchangeCurrency = EXCHANGE_CODES[company.exchange].currency;
+                            priceSymbol = currencySymbols[exchangeCurrency] || exchangeCurrency;
                         }
                         
                         const displayPrice = currentPrice ? `${currentPrice.toFixed(2)} ${priceSymbol}` : 'N/A';
