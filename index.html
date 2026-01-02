@@ -494,26 +494,31 @@
         const CACHE_DURATION = 60000; // 1 minuto en milisegundos
         
         // Datos de empresas con links a tesis HTML
+        // Parámetro "positionType": "long" = busca precio más ALTO (target > current)
+        //                            "short" = busca precio más BAJO (target < current)
         const companiesData = {
             long: [
                 {
                     name: "Puuilo",
                     ticker: "PUUILO",
                     icon: "🌲",
-                    thesis: "Consolidación sector indtrustrial",
-                    summary: "Empresa finlandesa XXXXX.",
+                    thesis: "xxx",
+                    summary: "Empresa finlandesa xxx",
                     exchange: "HE",  // Helsinki Stock Exchange
-                    targetPrice: "xx",
-                    thesisFile: "Puuilo.html"
-                } ,  {
-                    name: "TOYA",
+                    targetPrice: "xxx",
+                    thesisFile: "Puuilo.html",
+                    positionType: "long"  // LONG = busca el precio MÁS ALTO
+                },
+                   {
+                    name: "Toya",
                     ticker: "TOA",
                     icon: "🌲",
-                    thesis: "Consolidación sector indtrustrial",
-                    summary: "Empresa finlandesa XXXXX.",
-                    exchange: "WU",  
-                    targetPrice: "xx",
-                    thesisFile: "TOYA_Presentacion_Interactiva.html"
+                    thesis: "xxx",
+                    summary: "Empresa polaca xxx",
+                    exchange: "WU",  // 
+                    targetPrice: "xxx",
+                    thesisFile: "TOYA_Presentacion_Interactiva.html",
+                    positionType: "long"  // LONG = busca el precio MÁS ALTO
                 }
             ],
             spinoff: [],
@@ -567,6 +572,7 @@
         // ============================================================
         // AGNÓSTICO A MONEDAS: Funciona con €, PLN, £, $, ¥, etc.
         // Soporta 25+ códigos de moneda internacionales
+        // INTELIGENTE PARA LONG/SHORT: Busca máximo para LONG, mínimo para SHORT
         //
         // Solo necesitas que tu HTML tenga UN elemento con:
         // OPCIÓN 1 (RECOMENDADA): <div id="fairValue">21.05 PLN</div>
@@ -574,7 +580,7 @@
         // OPCIÓN 3: <div class="metric-value">$100.50</div>
         // OPCIÓN 4: Fair Value: 21.05 PLN (cualquier moneda)
         // ============================================================
-        async function extractTargetPriceFromThesis(thesisFile) {
+        async function extractTargetPriceFromThesis(thesisFile, positionType = 'long') {
             try {
                 const response = await fetch(thesisFile);
                 const html = await response.text();
@@ -592,15 +598,35 @@
                     }
                 }
                 
-                // PATRÓN 2: Class "recommendation-value" o "metric-value"
-                match = html.match(/<div[^>]*class="(?:recommendation-value|metric-value)"[^>]*>([^<]*)/i);
-                if (match) {
-                    const content = match[1].trim();
+                // PATRÓN 2: Buscar TODAS las ocurrencias y seleccionar según positionType
+                // LONG: precio más ALTO (target > current)
+                // SHORT: precio más BAJO (target < current)
+                const allMetricMatches = html.matchAll(/<div[^>]*class="(?:recommendation-value|metric-value)"[^>]*>([^<]*)/gi);
+                let allPrices = [];
+                for (const m of allMetricMatches) {
+                    const content = m[1].trim();
                     const result = extractPriceFromContent(content);
                     if (result) {
-                        console.log(`✓ Target Price encontrado (metric-value): ${result}`);
-                        return result;
+                        const numValue = parseFloat(result.match(/([0-9]+[,\.][0-9]+)/)[1].replace(',', '.'));
+                        allPrices.push({ price: result, value: numValue });
                     }
+                }
+                if (allPrices.length > 0) {
+                    let selectedPrice;
+                    if (positionType === 'short') {
+                        // SHORT: coger el MENOR (precio objetivo de bajada)
+                        selectedPrice = allPrices.reduce((prev, current) => 
+                            current.value < prev.value ? current : prev
+                        );
+                        console.log(`✓ Target Price encontrado (SHORT - MÍNIMO): ${selectedPrice.price}`);
+                    } else {
+                        // LONG (default): coger el MAYOR (precio objetivo de subida)
+                        selectedPrice = allPrices.reduce((prev, current) => 
+                            current.value > prev.value ? current : prev
+                        );
+                        console.log(`✓ Target Price encontrado (LONG - MÁXIMO): ${selectedPrice.price}`);
+                    }
+                    return selectedPrice.price;
                 }
                 
                 // PATRÓN 3: Class "kpi-value"
@@ -711,7 +737,7 @@
                         // Extraer SIEMPRE Target Price del HTML (aplica a todas las tesis)
                         let targetPrice = null;
                         if (company.thesisFile) {
-                            targetPrice = await extractTargetPriceFromThesis(company.thesisFile);
+                            targetPrice = await extractTargetPriceFromThesis(company.thesisFile, company.positionType || 'long');
                         }
                         // Si no se encuentra en HTML, usa el fallback definido
                         if (!targetPrice) {
