@@ -637,6 +637,23 @@
                 console.error(`❌ Error extrayendo precio de ${thesisFile}:`, error);
                 return null;
             }
+
+            // PATRÓN 7: PLN sin € (para TOYA y otros en moneda local)
+            match = html.match(/Fair\s*Value[^<]*?(\d+[\.,]\d+)\s*PLN/i);
+                if (match) {
+                    const value = match[1].replace(',', '.');
+                console.log(`✓ Target Price encontrado (PLN): ${value} PLN`);
+                        return `${value} PLN`;
+                    }
+
+        // PATRÓN 8: Búsqueda genérica de números con PLN
+        const allPricesPlN = html.match(/(\d+[\.,]\d+)\s*PLN/g);
+                    if (allPricesPlN && allPricesPlN.length > 0) {
+                      const prices = allPricesPlN.map(p => parseFloat(p.match(/(\d+[\.,]\d+)/)[1].replace(',', '.')));
+                        const maxPrice = Math.max(...prices);
+                         console.warn(`⚠️ Usando máximo PLN: ${maxPrice}`);
+                            return `${maxPrice.toFixed(2)} PLN`;
+    }       
         }
         
         async function renderCards() {
