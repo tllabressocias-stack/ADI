@@ -359,8 +359,8 @@
     <div class="container">
         <!-- HEADER -->
         <header>
-            <h1>📊 Investment Thesis</h1>
-            <p>Research & special situations</p>
+            <h1>📊 Investment Thesis Hub</h1>
+            <p>Deep-dive equity analysis & special situations</p>
         </header>
         
         <!-- STATS SUMMARY -->
@@ -470,18 +470,27 @@
     </div>
     
     <script>
+        // CONFIGURACIÓN API FINNHUB
+        const FINNHUB_API_KEY = 'd5bt99pr01qsbmgh603gd5bt99pr01qsbmgh6040';
+        const FINNHUB_URL = 'https://finnhub.io/api/v1/quote';
+        
+        // Cache de precios (para evitar quemar API calls)
+        let priceCache = {};
+        let cacheTimestamp = {};
+        const CACHE_DURATION = 60000; // 1 minuto en milisegundos
+        
         // Datos de empresas con links a tesis HTML
         const companiesData = {
             long: [
                 {
                     name: "Puuilo",
-                    ticker: "PUUILO.HE",
-                    icon: "📈",
-                    thesis: "Growth opportunity",
-                    summary: "xxx.",
-                    price: "xxx",
-                    targetPrice: "xxx",
-                    thesisFile: "Puuilo.html"
+                    ticker: "PUUILO",
+                    icon: "🌲",
+                    thesis: "Consolidación en sector forestal",
+                    summary: "Empresa finlandesa de gestión forestal con potencial de revalorización.",
+                    exchange: "HE",  // Helsinki Stock Exchange
+                    targetPrice: "€15.00",
+                    thesisFile: "tesis/long/puuilo-tesis.html"
                 }
             ],
             spinoff: [],
@@ -494,7 +503,65 @@
             reverse: []
         };
         
-        function renderCards() {
+        // Función para obtener precio en tiempo real desde Finnhub
+        async function getRealtimePrice(ticker, exchange) {
+            try {
+                // Verificar cache
+                const now = Date.now();
+                if (priceCache[ticker] && cacheTimestamp[ticker] && (now - cacheTimestamp[ticker]) < CACHE_DURATION) {
+                    return priceCache[ticker];
+                }
+                
+                // Formato de ticker para Finnhub
+                const fullTicker = exchange ? `${ticker}.${exchange}` : ticker;
+                
+                const response = await fetch(`${FINNHUB_URL}?symbol=${fullTicker}&token=${FINNHUB_API_KEY}`);
+                const data = await response.json();
+                
+                if (data.c) {
+                    priceCache[ticker] = data.c;
+                    cacheTimestamp[ticker] = now;
+                    return data.c;
+                } else {
+                    console.warn(`No price data for ${fullTicker}`);
+                    return null;
+                }
+            } catch (error) {
+                console.error(`Error fetching price for ${ticker}:`, error);
+                return null;
+            }
+        }
+        
+        // Función para extraer Target Price del HTML de la tesis
+        async function extractTargetPriceFromThesis(thesisFile) {
+            try {
+                const response = await fetch(thesisFile);
+                const html = await response.text();
+                
+                // Busca patrones comunes: "Target: €X", "Price Target: €X", "PT: €X"
+                const patterns = [
+                    /Target\s*Price\s*[:=]\s*[€$]?(\d+\.?\d*)/gi,
+                    /Target\s*[:=]\s*[€$]?(\d+\.?\d*)/gi,
+                    /PT\s*[:=]\s*[€$]?(\d+\.?\d*)/gi,
+                    /Price\s*Target\s*[:=]\s*[€$]?(\d+\.?\d*)/gi
+                ];
+                
+                for (let pattern of patterns) {
+                    const match = html.match(pattern);
+                    if (match) {
+                        const value = match[0].match(/(\d+\.?\d*)/)[0];
+                        return `€${value}`;
+                    }
+                }
+                
+                return null;
+            } catch (error) {
+                console.warn(`Could not extract target price from ${thesisFile}:`, error);
+                return null;
+            }
+        }
+        
+        async function renderCards() {
             for (const [category, companies] of Object.entries(companiesData)) {
                 const gridContainer = document.querySelector(`#${category} .analysis-grid`);
                 gridContainer.innerHTML = '';
@@ -502,15 +569,40 @@
                 if (companies.length === 0) {
                     gridContainer.innerHTML = '<div class="empty-state"><p>No positions in this category yet</p></div>';
                 } else {
-                    companies.forEach(company => {
-                        const card = document.createElement('div');
-                        card.className = 'analysis-card';
+                    for (const company of companies) {
+                        // Obtener precio en tiempo real
+                        let currentPrice = null;
+                        let priceStatus = 'loading';
+                        
+                        if (company.ticker && company.exchange) {
+                            currentPrice = await getRealtimePrice(company.ticker, company.exchange);
+                            priceStatus = currentPrice ? 'loaded' : 'error';
+                        }
+                        
+                        // Extraer Target Price del HTML si no está definido
+                        let targetPrice = company.targetPrice;
+                        if (!targetPrice && company.thesisFile) {
+                            targetPrice = await extractTargetPriceFromThesis(company.thesisFile);
+                        }
+                        
+                        // Formato de precios para mostrar
+                        const displayPrice = currentPrice ? `€${currentPrice.toFixed(2)}` : 'N/A';
+                        const displayTargetPrice = targetPrice || 'N/A';
                         
                         // Calcular upside
-                        const priceNum = parseFloat(company.price.replace('€', '').replace(',', '.'));
-                        const targetNum = parseFloat(company.targetPrice.replace('€', '').replace(',', '.'));
-                        const upside = ((targetNum - priceNum) / priceNum * 100).toFixed(1);
-                        const upsideClass = upside >= 0 ? 'positive' : 'negative';
+                        let upside = 'N/A';
+                        let upsideClass = 'neutral';
+                        if (currentPrice && targetPrice) {
+                            const targetNum = parseFloat(targetPrice.replace('€', '').replace(',', '.'));
+                            upside = ((targetNum - currentPrice) / currentPrice * 100).toFixed(1);
+                            upsideClass = upside >= 0 ? 'positive' : 'negative';
+                        }
+                        
+                        // Timestamp de última actualización
+                        const lastUpdate = priceStatus === 'loaded' ? new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'}) : '-';
+                        
+                        const card = document.createElement('div');
+                        card.className = 'analysis-card';
                         
                         // Si tiene archivo HTML de tesis, lo hace clickeable
                         const cardClick = company.thesisFile ? `onclick="window.location.href='${company.thesisFile}'"` : '';
@@ -530,22 +622,23 @@
                                     <span class="metric-value">${company.thesis}</span>
                                 </div>
                                 ${company.summary ? `<div class="summary-text">${company.summary}</div>` : ''}
-                                <div class="upside-badge ${upsideClass}">📈 Upside: ${upside}%</div>
+                                <div class="upside-badge ${upsideClass}">📈 Upside: ${upside === 'N/A' ? 'N/A' : upside + '%'}</div>
+                                <div style="font-size: 10px; color: #999; margin-top: 6px;">🕐 Actualizado: ${lastUpdate}</div>
                                 ${company.thesisFile ? '<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e8e8e8; color: #667eea; font-size: 12px; font-weight: 600;">📄 Ver Tesis Completa →</div>' : ''}
                             </div>
                             <div class="card-footer" ${cardClick} ${cursorStyle}>
                                 <div class="price-info">
-                                    <div class="price-label">Current Price</div>
-                                    <div class="price-value">${company.price}</div>
+                                    <div class="price-label">Current Price <span style="font-size: 9px; color: ${priceStatus === 'error' ? '#ef4444' : '#10b981'}">${priceStatus === 'loaded' ? '✓' : priceStatus === 'error' ? '✗' : '⟳'}</span></div>
+                                    <div class="price-value">${displayPrice}</div>
                                 </div>
                                 <div class="target-price">
                                     <div class="target-label">Target Price</div>
-                                    <div class="target-value">${company.targetPrice}</div>
+                                    <div class="target-value">${displayTargetPrice}</div>
                                 </div>
                             </div>
                         `;
                         gridContainer.appendChild(card);
-                    });
+                    }
                 }
             }
             updateStats();
@@ -593,6 +686,12 @@
         
         // Inicializar
         renderCards();
+        
+        // Actualizar precios cada 5 minutos
+        setInterval(() => {
+            console.log('Actualizando precios...');
+            renderCards();
+        }, 300000); // 5 minutos
     </script>
 </body>
 </html>
