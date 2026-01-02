@@ -505,7 +505,7 @@
             'PA': { code: 'EURONEXT', format: 'dot' },     // Paris → TICKER.EURONEXT
             'AM': { code: 'EURONEXT', format: 'dot' },     // Amsterdam → TICKER.EURONEXT
             'SA': { code: 'EURONEXT', format: 'dot' },     // Lisboa → TICKER.EURONEXT
-            'WSE': { code: 'WSE', format: 'dot' },          // Varsovia → TICKER.WSE
+            'WSE': { code: 'WA', format: 'dot' },          // Varsovia → TICKER.WA
         };
         
         // Cache de precios
@@ -517,12 +517,28 @@
         // PRECIOS FALLBACK MANUAL - Para microcaps sin cobertura API
         // ============================================================
         // Actualiza estos precios manualmente si las APIs fallan
-        // Formato: { current: número, currency: 'EUR'|'GBP'|'USD' }
+        // Formato: { current: número, currency: 'EUR'|'GBP'|'USD'|'SEK'|'PLN' }
         // ============================================================
         const manualPrices = {
-            'PUUILO': { current: 12.46, currency: 'EUR' },
+            'PUUILO': { current: 12.48, currency: 'EUR' },
             'TOA': { current: 9.75, currency: 'PLN' },
             'NWL': { current: 19.90, currency: 'EUR' }
+        };
+        
+        // Mapa de símbolos de monedas
+        const currencySymbols = {
+            'EUR': '€',
+            'USD': '$',
+            'GBP': '£',
+            'SEK': 'SEK',
+            'PLN': 'PLN',
+            'JPY': '¥',
+            'AUD': 'A$',
+            'CAD': 'C$',
+            'CHF': 'CHF',
+            'NOK': 'NOK',
+            'DKK': 'DKK',
+            'CZK': 'CZK'
         };
         
         // Datos de empresas
@@ -533,9 +549,9 @@
                     ticker: "PUUILO",
                     icon: "🌲",
                     thesis: "Consolidación XXX",
-                    summary: "Empresa finlandesa XXXX.",
+                    summary: "Empresa finlandesa XXX.",
                     exchange: "HE",
-                    targetPrice: "XXXX",
+                    targetPrice: "XXX",
                     thesisFile: "Puuilo.html",
                     positionType: "long"
                 },
@@ -545,7 +561,7 @@
                     icon: "🌊",
                     thesis: "Consolidación xxxx",
                     summary: "Empresa polaca xxxx",
-                    exchange: "WSE",
+                    exchange: "WA",
                     targetPrice: "xxx",
                     thesisFile: "TOYA_Presentacion_Interactiva.html",
                     positionType: "long"
@@ -557,8 +573,8 @@
                     thesis: "Consolidación xxxx",
                     summary: "Empresa EEUU xxxx",
                     exchange: "NYSE",
-                    targetPrice: "xxxx",
-                    thesisFile: "TIC_Presentacion_HTML.html",
+                    targetPrice: "XXX",
+                    thesisFile: "TOYA_Presentacion_Interactiva.html",
                     positionType: "long"
                 },
                 {
@@ -566,9 +582,9 @@
                     ticker: "NWL",
                     icon: "📰",
                     thesis: "Consolidación xxxx",
-                    summary: "Empresa Italiana xxxx",
+                    summary: "Empresa Italia xxxx",
                     exchange: "MI",
-                    targetPrice: "xxx",
+                    targetPrice: "XXX",
                     thesisFile: "NewPrinces Investment Thesis.html",
                     positionType: "long"
                 }
@@ -746,7 +762,15 @@
                             targetPrice = company.targetPrice;
                         }
                         
-                        const displayPrice = currentPrice ? `€${currentPrice.toFixed(2)}` : 'N/A';
+                        // Obtener símbolo de moneda
+                        let priceSymbol = '€'; // Por defecto
+                        if (company.manualPriceCurrency && currencySymbols[company.manualPriceCurrency]) {
+                            priceSymbol = currencySymbols[company.manualPriceCurrency];
+                        } else if (manualPrices[company.ticker] && currencySymbols[manualPrices[company.ticker].currency]) {
+                            priceSymbol = currencySymbols[manualPrices[company.ticker].currency];
+                        }
+                        
+                        const displayPrice = currentPrice ? `${currentPrice.toFixed(2)} ${priceSymbol}` : 'N/A';
                         const displayTargetPrice = targetPrice || 'N/A';
                         
                         let upside = 'N/A';
