@@ -541,28 +541,12 @@
         const FINNHUB_API_KEY = 'd5bvi7pr01qsbmghj0sgd5bvi7pr01qsbmghj0t0';
         const FINNHUB_URL = 'https://finnhub.io/api/v1/quote';
 
-        // EXCHANGE CODES
-        const EXCHANGE_CODES = {
-            HE: { code: 'HE', format: 'dot', currency: 'EUR' },
-            MC: { code: 'MC', format: 'dot', currency: 'EUR' },
-            LON: { code: 'LON', format: 'dot', currency: 'GBP' },
-            US: { code: '', format: 'none', currency: 'USD' },
-            NYSE: { code: '', format: 'none', currency: 'USD' },
-            TSE: { code: 'T', format: 'dot', currency: 'JPY' },
-            AX: { code: 'AX', format: 'dot', currency: 'AUD' },
-            TO: { code: 'TO', format: 'dot', currency: 'CAD' },
-            ST: { code: 'ST', format: 'dot', currency: 'SEK' },
-            SIX: { code: 'SIX', format: 'dot', currency: 'CHF' },
-            MI: { code: 'MI', format: 'dot', currency: 'EUR' },
-            WA: { code: 'WA', format: 'dot', currency: 'PLN' }
-        };
-
         // PRECIOS MANUALES - FALLBACK
         const manualPrices = {
-            'PUUILO': { current: 12.48, currency: 'EUR' },
-            'TOA': { current: 9.75, currency: 'PLN' },
-            'NWL': { current: 19.90, currency: 'EUR' },
-            'TIC': { current: 9.89, currency: 'USD' }
+            'PUUILO.HE': { current: 12.48 },
+            'TOA.WA': { current: 9.75 },
+            'NWL.MI': { current: 19.90 },
+            'TIC': { current: 9.89 }
         };
 
         const currencySymbols = {
@@ -570,26 +554,26 @@
             AUD: 'A$', CAD: 'C$', CHF: 'Fr', NOK: 'kr', DKK: 'kr', CZK: 'Kč'
         };
 
-        // DATOS DE EMPRESAS
+        // DATOS DE EMPRESAS - SIMPLIFICADO (ticker ya es el Finnhub ticker)
         const companiesData = {
             long: [
                 {
                     name: 'Puuilo',
-                    ticker: 'PUUILO',
+                    ticker: 'PUUILO.HE',
                     icon: '🇫🇮',
                     thesis: 'Consolidación en el sector',
                     summary: 'Empresa finlandesa de materiales, oportunidad de consolidación',
-                    exchange: 'HE',
+                    currency: 'EUR',
                     thesisFile: 'puuilo/',
                     positionType: 'long',
                 },
                 {
                     name: 'Toya',
-                    ticker: 'TOA',
+                    ticker: 'TOA.WA',
                     icon: '🇵🇱',
                     thesis: 'Expansión Regional',
                     summary: 'Empresa polaca en crecimiento, mercado europeo emergente',
-                    exchange: 'WA',
+                    currency: 'PLN',
                     thesisFile: 'toya/',
                     positionType: 'long',
                 },
@@ -599,18 +583,18 @@
                     icon: '🇺🇸',
                     thesis: 'Turnaround Tech',
                     summary: 'Soluciones de tecnología empresarial, recuperación en curso',
-                    exchange: 'US',
+                    currency: 'USD',
                     thesisFile: 'tic-solutions/',
                     positionType: 'long',
                 },
                 {
                     name: 'NewPrices Investment',
-                    ticker: 'NWL',
+                    ticker: 'NWL.MI',
                     icon: '🇮🇹',
                     thesis: 'Digital Transformation',
                     summary: 'Plataforma italiana de inversión, transformación digital en marcha',
-                    exchange: 'MI',
-                    thesisFile: 'newprinces/',
+                    currency: 'EUR',
+                    thesisFile: 'newprices/',
                     positionType: 'long',
                 },
             ],
@@ -626,23 +610,10 @@
 
         // Cache de precios + tracking de fuente
         let priceCache = {};
-        let priceSource = {}; // 'api' o 'manual'
+        let priceSource = {};
         let targetPriceCache = {};
         let cacheTimestamp = {};
         const CACHE_DURATION = 60000;
-
-        // Construir ticker para Finnhub
-        function buildFinnhubTicker(ticker, exchange) {
-            if (!exchange || !EXCHANGE_CODES[exchange]) {
-                console.warn(`Exchange desconocido: ${exchange}`);
-                return ticker;
-            }
-            const config = EXCHANGE_CODES[exchange];
-            if (config.format === 'dot') {
-                return `${ticker}.${config.code}`;
-            }
-            return ticker;
-        }
 
         // Mostrar Toast Notification
         function showToast(message, type = 'info', duration = 3000) {
@@ -685,23 +656,23 @@
                     if (priceMatch) {
                         const price = parseFloat(priceMatch[1]);
                         if (price > 0) {
-                            console.log(`✅ Fair Value extraído de ${thesisFile}: ${price}`);
+                            console.log(`✅ Fair Value extraído: ${price}`);
                             return price;
                         }
                     }
                 }
 
-                console.warn(`⚠️ No se encontró id="fairValue" en ${thesisFile}`);
+                console.warn(`⚠️ No se encontró id="fairValue"`);
                 return null;
 
             } catch (error) {
-                console.warn(`❌ Error extrayendo Fair Value de ${thesisFile}:`, error.message);
+                console.warn(`❌ Error extrayendo Fair Value:`, error.message);
                 return null;
             }
         }
 
         // Obtener precio en tiempo real (Finnhub + fallback manual)
-        async function getRealtimePrice(ticker, exchange) {
+        async function getRealtimePrice(ticker) {
             try {
                 const now = Date.now();
 
@@ -710,11 +681,11 @@
                     return priceCache[ticker];
                 }
 
-                // Intentar Finnhub API
-                const fullTicker = buildFinnhubTicker(ticker, exchange);
+                // Intentar Finnhub API - DIRECTO con el ticker
+                console.log(`🔍 Buscando precio para: ${ticker}`);
 
                 try {
-                    const response = await fetch(`${FINNHUB_URL}?symbol=${fullTicker}&token=${FINNHUB_API_KEY}`, {
+                    const response = await fetch(`${FINNHUB_URL}?symbol=${ticker}&token=${FINNHUB_API_KEY}`, {
                         signal: AbortSignal.timeout(3000)
                     });
                     const data = await response.json();
@@ -723,10 +694,13 @@
                         priceCache[ticker] = data.c;
                         priceSource[ticker] = 'api';
                         cacheTimestamp[ticker] = now;
+                        console.log(`✅ Precio API ${ticker}: ${data.c}`);
                         return data.c;
+                    } else {
+                        console.warn(`⚠️ Finnhub sin datos para ${ticker}:`, data);
                     }
                 } catch (apiError) {
-                    console.warn(`⚠️ Finnhub timeout/error para ${fullTicker}`);
+                    console.warn(`⚠️ Finnhub error para ${ticker}:`, apiError.message);
                 }
 
                 // Fallback a precios manuales
@@ -735,6 +709,7 @@
                     priceCache[ticker] = manualPrice;
                     priceSource[ticker] = 'manual';
                     cacheTimestamp[ticker] = now;
+                    console.log(`📌 Precio manual ${ticker}: ${manualPrice}`);
                     return manualPrice;
                 }
 
@@ -774,11 +749,9 @@
 
             const pricePromises = [];
             companyList.forEach(({ company }) => {
-                if (company.ticker && company.exchange) {
-                    pricePromises.push(
-                        getRealtimePrice(company.ticker, company.exchange)
-                    );
-                }
+                pricePromises.push(
+                    getRealtimePrice(company.ticker)
+                );
             });
 
             await Promise.all(pricePromises);
@@ -802,25 +775,14 @@
                 }
 
                 for (const company of companies) {
-                    const currentPrice = priceCache[company.ticker] || 
-                                       (manualPrices[company.ticker]?.current) || null;
+                    const currentPrice = priceCache[company.ticker] || null;
                     const source = priceSource[company.ticker] || 'unknown';
                     
                     const targetPrice = targetPriceCache[company.ticker] || null;
-                    const targetCurrency = company.exchange ? EXCHANGE_CODES[company.exchange]?.currency : 'USD';
+                    const currencySymbol = currencySymbols[company.currency] || company.currency;
 
-                    let priceSymbol = '$';
-                    if (manualPrices[company.ticker]) {
-                        const manualCurrency = manualPrices[company.ticker].currency;
-                        priceSymbol = currencySymbols[manualCurrency] || manualCurrency;
-                    } else if (company.exchange && EXCHANGE_CODES[company.exchange]) {
-                        const exchangeCurrency = EXCHANGE_CODES[company.exchange].currency;
-                        priceSymbol = currencySymbols[exchangeCurrency] || exchangeCurrency;
-                    }
-
-                    const targetPriceSymbol = currencySymbols[targetCurrency] || targetCurrency;
-                    const displayPrice = currentPrice ? `${priceSymbol}${currentPrice.toFixed(2)}` : 'NA';
-                    const displayTargetPrice = targetPrice ? `${targetPriceSymbol}${targetPrice.toFixed(2)}` : 'NA';
+                    const displayPrice = currentPrice ? `${currencySymbol}${currentPrice.toFixed(2)}` : 'NA';
+                    const displayTargetPrice = targetPrice ? `${currencySymbol}${targetPrice.toFixed(2)}` : 'NA';
 
                     let upside = 'NA';
                     let upsideClass = 'neutral';
