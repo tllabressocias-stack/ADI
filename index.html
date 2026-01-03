@@ -463,7 +463,7 @@
             AUD: 'A$', CAD: 'C$', CHF: 'Fr', NOK: 'kr', DKK: 'kr', CZK: 'Kč'
         };
 
-        // DATOS DE EMPRESAS - CON TARGET PRICE INTEGRADO (SIN CORS)
+        // DATOS DE EMPRESAS - SIN TARGET PRICE (se extrae de la tesis con id="fairValue")
         const companiesData = {
             long: [
                 {
@@ -475,8 +475,6 @@
                     exchange: 'HE',
                     thesisFile: 'puuilo/',
                     positionType: 'long',
-                    targetPrice: 18.50,
-                    currency: 'EUR'
                 },
                 {
                     name: 'Toya',
@@ -487,8 +485,6 @@
                     exchange: 'WA',
                     thesisFile: 'toya/',
                     positionType: 'long',
-                    targetPrice: 15.00,
-                    currency: 'PLN'
                 },
                 {
                     name: 'TIC Solutions',
@@ -499,11 +495,9 @@
                     exchange: 'US',
                     thesisFile: 'tic-solutions/',
                     positionType: 'long',
-                    targetPrice: 25.00,
-                    currency: 'USD'
                 },
                 {
-                    name: 'NewPrices',
+                    name: 'NewPrices Investment',
                     ticker: 'NWL',
                     icon: '🇮🇹',
                     thesis: 'Digital Transformation',
@@ -511,8 +505,6 @@
                     exchange: 'MI',
                     thesisFile: 'newprices/',
                     positionType: 'long',
-                    targetPrice: 35.50,
-                    currency: 'EUR'
                 },
             ],
             spinoff: [],
@@ -527,6 +519,7 @@
 
         // Cache de precios
         let priceCache = {};
+        let targetPriceCache = {};
         let cacheTimestamp = {};
         const CACHE_DURATION = 60000;
 
@@ -543,33 +536,66 @@
             return ticker;
         }
 
-        // Obtener precio en tiempo real
+        // 🔑 FUNCIÓN CRÍTICA: Extrae Fair Value buscando id="fairValue" en el HTML
+        async function extractTargetPriceFromThesis(thesisFile) {
+            try {
+                const response = await fetch(thesisFile);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const html = await response.text();
+                
+                // 🎯 BÚSQUEDA ESPECÍFICA: <*d id="fairValue">XX.XX</*d>
+                // Acepta cualquier tag (span, div, td, strong, etc.)
+                const match = html.match(/id=["']fairValue["'][^>]*>([^<]+)</i);
+                
+                if (match && match[1]) {
+                    const content = match[1].trim();
+                    const priceMatch = content.match(/([\d.]+)/);
+                    
+                    if (priceMatch) {
+                        const price = parseFloat(priceMatch[1]);
+                        if (price > 0) {
+                            console.log(`✅ Fair Value extraído de ${thesisFile}: ${price}`);
+                            return price;
+                        }
+                    }
+                }
+
+                console.warn(`⚠️ No se encontró id="fairValue" en ${thesisFile}`);
+                return null;
+
+            } catch (error) {
+                console.warn(`❌ Error extrayendo Fair Value de ${thesisFile}:`, error.message);
+                return null;
+            }
+        }
+
+        // Obtener precio en tiempo real (Finnhub + fallback manual)
         async function getRealtimePrice(ticker, exchange) {
             try {
                 const now = Date.now();
 
                 // Intentar cache
                 if (priceCache[ticker] && cacheTimestamp[ticker] && (now - cacheTimestamp[ticker]) < CACHE_DURATION) {
-                    console.log(`✅ Cache hit para ${ticker}`);
                     return priceCache[ticker];
                 }
 
                 // Intentar Finnhub API
                 const fullTicker = buildFinnhubTicker(ticker, exchange);
-                console.log(`📡 Buscando ${ticker} en ${exchange}`);
 
                 try {
-                    const response = await fetch(`${FINNHUB_URL}?symbol=${fullTicker}&token=${FINNHUB_API_KEY}`);
+                    const response = await fetch(`${FINNHUB_URL}?symbol=${fullTicker}&token=${FINNHUB_API_KEY}`, {
+                        signal: AbortSignal.timeout(3000) // Timeout 3s
+                    });
                     const data = await response.json();
 
                     if (data.c && data.c > 0) {
                         priceCache[ticker] = data.c;
                         cacheTimestamp[ticker] = now;
-                        console.log(`✅ Precio Finnhub ${ticker}: ${data.c.toFixed(2)}`);
                         return data.c;
                     }
                 } catch (apiError) {
-                    console.warn(`⚠️ Finnhub falló para ${fullTicker}`);
+                    console.warn(`⚠️ Finnhub timeout/error para ${fullTicker}`);
                 }
 
                 // Fallback a precios manuales
@@ -577,11 +603,9 @@
                     const manualPrice = manualPrices[ticker].current;
                     priceCache[ticker] = manualPrice;
                     cacheTimestamp[ticker] = now;
-                    console.log(`📌 Usando precio manual para ${ticker}: ${manualPrice}`);
                     return manualPrice;
                 }
 
-                console.warn(`❌ Sin datos disponibles para ${ticker}`);
                 return null;
             } catch (error) {
                 console.error(`Error en getRealtimePrice:`, error);
@@ -592,11 +616,48 @@
             }
         }
 
-        // ELIMINADA: Ya no necesitamos extraer Target Price del HTML (CORS bloqueado)
-        // Los target prices están ahora integrados en companiesData
-
-        // Renderizar tarjetas
+        // Renderizar tarjetas - SINCRÓNICO, carga TODOS en paralelo luego renderiza DE GOLPE
         async function renderCards() {
+            // PASO 1: Pre-cargar TODOS los fair values en paralelo
+            console.log('⏳ Extrayendo Fair Values de tesis...');
+            const targetPricePromises = [];
+            const companyList = [];
+
+            for (const [category, companies] of Object.entries(companiesData)) {
+                for (const company of companies) {
+                    companyList.push({ category, company });
+                    if (company.thesisFile) {
+                        targetPricePromises.push(
+                            extractTargetPriceFromThesis(company.thesisFile)
+                                .then(price => ({ ticker: company.ticker, price }))
+                        );
+                    }
+                }
+            }
+
+            // Esperar a que todos los fair values se carguen
+            const targetPrices = await Promise.all(targetPricePromises);
+            targetPrices.forEach(tp => {
+                if (tp.price) targetPriceCache[tp.ticker] = tp.price;
+            });
+
+            console.log('✅ Fair Values cargados:', targetPriceCache);
+
+            // PASO 2: Pre-cargar TODOS los precios actuales en paralelo
+            console.log('⏳ Cargando precios actuales...');
+            const pricePromises = [];
+            companyList.forEach(({ company }) => {
+                if (company.ticker && company.exchange) {
+                    pricePromises.push(
+                        getRealtimePrice(company.ticker, company.exchange)
+                    );
+                }
+            });
+
+            await Promise.all(pricePromises);
+            console.log('✅ Precios actuales cargados');
+
+            // PASO 3: AHORA sí, renderizar TODAS las tarjetas DE GOLPE
             for (const [category, companies] of Object.entries(companiesData)) {
                 const gridContainer = document.querySelector(`#${category} .analysis-grid`);
                 if (!gridContainer) continue;
@@ -609,35 +670,27 @@
                 }
 
                 for (const company of companies) {
-                    let currentPrice = null;
-                    let priceStatus = 'loading';
-
-                    if (company.ticker && company.exchange) {
-                        currentPrice = await getRealtimePrice(company.ticker, company.exchange);
-                        priceStatus = currentPrice ? (manualPrices[company.ticker] ? 'manual' : 'api') : 'error';
-                    }
-
-                    // Target price YA ESTÁ en companiesData (sin CORS)
-                    const targetPrice = company.targetPrice;
-                    const targetCurrency = company.currency || EXCHANGE_CODES[company.exchange]?.currency || 'USD';
+                    const currentPrice = priceCache[company.ticker] || 
+                                       (manualPrices[company.ticker]?.current) || null;
+                    
+                    const targetPrice = targetPriceCache[company.ticker] || null;
+                    const targetCurrency = company.exchange ? EXCHANGE_CODES[company.exchange]?.currency : 'USD';
 
                     // Símbolo para precio actual
                     let priceSymbol = '$';
-                    if (priceStatus === 'manual' && manualPrices[company.ticker]) {
+                    if (manualPrices[company.ticker]) {
                         const manualCurrency = manualPrices[company.ticker].currency;
                         priceSymbol = currencySymbols[manualCurrency] || manualCurrency;
-                    } else if (priceStatus === 'api' && company.exchange && EXCHANGE_CODES[company.exchange]) {
+                    } else if (company.exchange && EXCHANGE_CODES[company.exchange]) {
                         const exchangeCurrency = EXCHANGE_CODES[company.exchange].currency;
                         priceSymbol = currencySymbols[exchangeCurrency] || exchangeCurrency;
                     }
 
-                    // Símbolo para target price (desde companiesData)
                     const targetPriceSymbol = currencySymbols[targetCurrency] || targetCurrency;
 
                     const displayPrice = currentPrice ? `${priceSymbol}${currentPrice.toFixed(2)}` : 'NA';
                     const displayTargetPrice = targetPrice ? `${targetPriceSymbol}${targetPrice.toFixed(2)}` : 'NA';
 
-                    // CÁLCULO CORRECTO DE UPSIDE (mismo símbolo de moneda en ambos lados)
                     let upside = 'NA';
                     let upsideClass = 'neutral';
                     
@@ -646,7 +699,9 @@
                         upsideClass = upside >= 0 ? 'positive' : 'negative';
                     }
 
-                    const lastUpdate = priceStatus === 'api' ? new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '-';
+                    const lastUpdate = priceCache[company.ticker] 
+                        ? new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+                        : '-';
 
                     const card = document.createElement('div');
                     card.className = 'analysis-card';
@@ -720,6 +775,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🚀 Investment Thesis Hub inicializado');
             renderCards();
+            
+            // Actualizar cada 5 minutos
             setInterval(() => {
                 console.log('🔄 Actualizando precios...');
                 renderCards();
