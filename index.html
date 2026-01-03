@@ -250,6 +250,14 @@
             font-size: 16px;
             font-weight: 700;
             color: #333;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .price-icon {
+            font-size: 14px;
+            cursor: help;
         }
 
         .target-price {
@@ -322,6 +330,95 @@
             text-align: center;
         }
 
+        /* TOAST NOTIFICATION */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .toast {
+            background: white;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .toast.success {
+            border-left-color: #10b981;
+        }
+
+        .toast.info {
+            border-left-color: #3b82f6;
+        }
+
+        .toast-icon {
+            font-size: 20px;
+        }
+
+        .toast-text {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* TOOLTIP */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .last-update {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
         @media (max-width: 768px) {
             header h1 {
                 font-size: 2em;
@@ -342,10 +439,18 @@
             .tab-btn {
                 width: 100%;
             }
+
+            .toast-container {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="toast-container" id="toastContainer"></div>
+
     <div class="container">
         <header>
             <h1>📊 Investment Thesis Hub</h1>
@@ -427,6 +532,8 @@
             <h2 class="section-title">Reverse Split</h2>
             <div class="analysis-grid"></div>
         </section>
+
+        <div class="last-update" id="lastUpdate"></div>
     </div>
 
     <script>
@@ -463,7 +570,7 @@
             AUD: 'A$', CAD: 'C$', CHF: 'Fr', NOK: 'kr', DKK: 'kr', CZK: 'Kč'
         };
 
-        // DATOS DE EMPRESAS - SIN TARGET PRICE (se extrae de la tesis con id="fairValue")
+        // DATOS DE EMPRESAS
         const companiesData = {
             long: [
                 {
@@ -497,7 +604,7 @@
                     positionType: 'long',
                 },
                 {
-                    name: 'NewPrices',
+                    name: 'NewPrices Investment',
                     ticker: 'NWL',
                     icon: '🇮🇹',
                     thesis: 'Digital Transformation',
@@ -517,8 +624,9 @@
             reverse: [],
         };
 
-        // Cache de precios
+        // Cache de precios + tracking de fuente
         let priceCache = {};
+        let priceSource = {}; // 'api' o 'manual'
         let targetPriceCache = {};
         let cacheTimestamp = {};
         const CACHE_DURATION = 60000;
@@ -536,16 +644,38 @@
             return ticker;
         }
 
-        // 🔑 FUNCIÓN CRÍTICA: Extrae Fair Value buscando id="fairValue" en el HTML
+        // Mostrar Toast Notification
+        function showToast(message, type = 'info', duration = 3000) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const iconMap = {
+                'success': '✅',
+                'info': 'ℹ️',
+                'error': '❌'
+            };
+            
+            toast.innerHTML = `
+                <span class="toast-icon">${iconMap[type]}</span>
+                <span class="toast-text">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        // Extrae Fair Value del HTML de la tesis
         async function extractTargetPriceFromThesis(thesisFile) {
             try {
                 const response = await fetch(thesisFile);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 
                 const html = await response.text();
-                
-                // 🎯 BÚSQUEDA ESPECÍFICA: <*d id="fairValue">XX.XX</*d>
-                // Acepta cualquier tag (span, div, td, strong, etc.)
                 const match = html.match(/id=["']fairValue["'][^>]*>([^<]+)</i);
                 
                 if (match && match[1]) {
@@ -585,12 +715,13 @@
 
                 try {
                     const response = await fetch(`${FINNHUB_URL}?symbol=${fullTicker}&token=${FINNHUB_API_KEY}`, {
-                        signal: AbortSignal.timeout(3000) // Timeout 3s
+                        signal: AbortSignal.timeout(3000)
                     });
                     const data = await response.json();
 
                     if (data.c && data.c > 0) {
                         priceCache[ticker] = data.c;
+                        priceSource[ticker] = 'api';
                         cacheTimestamp[ticker] = now;
                         return data.c;
                     }
@@ -602,6 +733,7 @@
                 if (manualPrices[ticker]) {
                     const manualPrice = manualPrices[ticker].current;
                     priceCache[ticker] = manualPrice;
+                    priceSource[ticker] = 'manual';
                     cacheTimestamp[ticker] = now;
                     return manualPrice;
                 }
@@ -610,16 +742,16 @@
             } catch (error) {
                 console.error(`Error en getRealtimePrice:`, error);
                 if (manualPrices[ticker]) {
+                    priceSource[ticker] = 'manual';
                     return manualPrices[ticker].current;
                 }
                 return null;
             }
         }
 
-        // Renderizar tarjetas - SINCRÓNICO, carga TODOS en paralelo luego renderiza DE GOLPE
+        // Renderizar tarjetas
         async function renderCards() {
-            // PASO 1: Pre-cargar TODOS los fair values en paralelo
-            console.log('⏳ Extrayendo Fair Values de tesis...');
+            console.log('⏳ Cargando datos...');
             const targetPricePromises = [];
             const companyList = [];
 
@@ -635,16 +767,11 @@
                 }
             }
 
-            // Esperar a que todos los fair values se carguen
             const targetPrices = await Promise.all(targetPricePromises);
             targetPrices.forEach(tp => {
                 if (tp.price) targetPriceCache[tp.ticker] = tp.price;
             });
 
-            console.log('✅ Fair Values cargados:', targetPriceCache);
-
-            // PASO 2: Pre-cargar TODOS los precios actuales en paralelo
-            console.log('⏳ Cargando precios actuales...');
             const pricePromises = [];
             companyList.forEach(({ company }) => {
                 if (company.ticker && company.exchange) {
@@ -655,9 +782,14 @@
             });
 
             await Promise.all(pricePromises);
-            console.log('✅ Precios actuales cargados');
 
-            // PASO 3: AHORA sí, renderizar TODAS las tarjetas DE GOLPE
+            // Contar cuántos precios vinieron de API
+            const apiPricesCount = Object.values(priceSource).filter(s => s === 'api').length;
+            if (apiPricesCount > 0) {
+                showToast(`🌐 ${apiPricesCount} precio(s) actualizado(s) desde API`, 'success', 2000);
+            }
+
+            // Renderizar todas las tarjetas
             for (const [category, companies] of Object.entries(companiesData)) {
                 const gridContainer = document.querySelector(`#${category} .analysis-grid`);
                 if (!gridContainer) continue;
@@ -672,11 +804,11 @@
                 for (const company of companies) {
                     const currentPrice = priceCache[company.ticker] || 
                                        (manualPrices[company.ticker]?.current) || null;
+                    const source = priceSource[company.ticker] || 'unknown';
                     
                     const targetPrice = targetPriceCache[company.ticker] || null;
                     const targetCurrency = company.exchange ? EXCHANGE_CODES[company.exchange]?.currency : 'USD';
 
-                    // Símbolo para precio actual
                     let priceSymbol = '$';
                     if (manualPrices[company.ticker]) {
                         const manualCurrency = manualPrices[company.ticker].currency;
@@ -687,7 +819,6 @@
                     }
 
                     const targetPriceSymbol = currencySymbols[targetCurrency] || targetCurrency;
-
                     const displayPrice = currentPrice ? `${priceSymbol}${currentPrice.toFixed(2)}` : 'NA';
                     const displayTargetPrice = targetPrice ? `${targetPriceSymbol}${targetPrice.toFixed(2)}` : 'NA';
 
@@ -699,9 +830,11 @@
                         upsideClass = upside >= 0 ? 'positive' : 'negative';
                     }
 
-                    const lastUpdate = priceCache[company.ticker] 
-                        ? new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
-                        : '-';
+                    // Icono de fuente del precio
+                    const priceSourceIcon = source === 'api' ? '🌐' : '📌';
+                    const priceSourceTooltip = source === 'api' 
+                        ? 'Precio en tiempo real desde API Finnhub' 
+                        : 'Precio manual (fijo)';
 
                     const card = document.createElement('div');
                     card.className = 'analysis-card';
@@ -726,12 +859,14 @@
                             </div>
                             ${company.summary ? `<div class="summary-text">${company.summary}</div>` : ''}
                             <div class="upside-badge ${upsideClass}">Upside: ${upside !== 'NA' ? upside : 'NA'}%</div>
-                            <div style="font-size: 10px; color: #999; margin-top: 6px;">Actualizado: ${lastUpdate}</div>
                         </div>
                         <div class="card-footer">
                             <div class="price-info">
                                 <div class="price-label">Current Price</div>
-                                <div class="price-value">${displayPrice}</div>
+                                <div class="price-value">
+                                    ${displayPrice}
+                                    <span class="tooltip price-icon" title="${priceSourceTooltip}">${priceSourceIcon}</span>
+                                </div>
                             </div>
                             <div class="target-price">
                                 <div class="target-label">Target Price</div>
@@ -746,6 +881,24 @@
             }
 
             updateStats();
+            updateLastUpdate();
+        }
+
+        // Actualizar timestamp de última actualización
+        function updateLastUpdate() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('es-ES', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            const dateString = now.toLocaleDateString('es-ES', { 
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            document.getElementById('lastUpdate').textContent = `Última actualización: ${dateString} a las ${timeString}`;
         }
 
         // Mostrar/ocultar secciones
