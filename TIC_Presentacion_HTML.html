@@ -80,6 +80,17 @@
             font-size: 2em;
             color: #00ff88;
             font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .kpi-value.updating {
+            animation: pulse 0.6s ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0% { color: #00ff88; }
+            50% { color: #00d4ff; }
+            100% { color: #00ff88; }
         }
         
         .kpi-subtitle {
@@ -286,7 +297,7 @@
         <div class="kpi-section">
             <div class="kpi-card">
                 <div class="kpi-label">Precio Actual</div>
-                <div class="kpi-value">$10.63</div>
+                <div class="kpi-value" id="ticCurrentPrice">$10.63</div>
                 <div class="kpi-subtitle">NYSE AMERICAN: TIC</div>
             </div>
             <div class="kpi-card">
@@ -296,7 +307,7 @@
             </div>
             <div class="kpi-card">
                 <div class="kpi-label">Upside Potencial</div>
-                <div class="kpi-value">94%</div>
+                <div class="kpi-value" id="ticUpsidePercent">94%</div>
                 <div class="kpi-subtitle">Risk/Reward Favorable</div>
             </div>
             <div class="kpi-card">
@@ -346,7 +357,7 @@
             <div class="recommendation-box">
                 <div class="recommendation-title">FAIR VALUE VALUATION</div>
                 <div class="recommendation-value">$20.63</div>
-                <p style="font-size: 1.2em;">vs Precio Actual $10.63 = <span class="positive">+94% Upside</span></p>
+                <p style="font-size: 1.2em;">vs Precio Actual <span id="ticCurrentPriceInline">$10.63</span> = <span class="positive" id="ticUpsidePercentInline">+94% Upside</span></p>
             </div>
             
             <h3>Componentes DCF</h3>
@@ -671,7 +682,7 @@
                 <div class="recommendation-title">RATING: BUY</div>
                 <div class="recommendation-value">$20.63</div>
                 <p style="font-size: 1.1em; margin-top: 15px;">
-                    Precio Actual: <strong>$10.63</strong> | Upside: <strong>+94%</strong><br>
+                    Precio Actual: <strong id="ticPriceDisplay">$10.63</strong> | Upside: <strong id="ticUpsideDisplay">+94%</strong><br>
                     Riesgo: <strong>MODERADO-ALTO</strong> | Horizonte: <strong>2-3 años</strong>
                 </p>
             </div>
@@ -994,7 +1005,7 @@
         new Chart(shareholdersCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Institucionales (45.3%)', 'Hedge Funds (22.1%)', 'Insiders &amp; PE (12.9%)', 'Public Float (19.6%)'],
+                labels: ['Institucionales (45.3%)', 'Hedge Funds (22.1%)', 'Insiders & PE (12.9%)', 'Public Float (19.6%)'],
                 datasets: [{
                     data: [45.3, 22.1, 12.9, 19.6],
                     backgroundColor: [
@@ -1113,8 +1124,113 @@
                 }
             }
         });
+
+        // =====================================================
+        // FINNHUB API INTEGRATION - Dynamic Price & Upside Update
+        // =====================================================
+        
+        const FINNHUB_API_KEY = 'd5bvi7pr01qsbmghj0sgd5bvi7pr01qsbmghj0t0';
+        const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1';
+        const TIC_SYMBOL = 'TIC';
+        const FAIR_VALUE = 20.63;
+        const DEFAULT_PRICE = 10.63;
+        
+        // Función para obtener precio de Finnhub
+        async function getPriceFromFinnhub(symbol) {
+            try {
+                const response = await fetch(
+                    `${FINNHUB_BASE_URL}/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`
+                );
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Finnhub devuelve 'c' para current price
+                if (data.c && typeof data.c === 'number') {
+                    return data.c;
+                }
+                
+                return null;
+            } catch (error) {
+                console.error(`Error fetching price for ${symbol}:`, error);
+                return null;
+            }
+        }
+        
+        // Función para calcular el upside %
+        function calculateUpside(currentPrice, fairValue) {
+            if (!currentPrice || currentPrice <= 0) return 0;
+            return ((fairValue - currentPrice) / currentPrice) * 100;
+        }
+        
+        // Función para actualizar el elemento DOM con el precio
+        function updatePriceDisplay(price, elementId) {
+            const element = document.getElementById(elementId);
+            if (element && price) {
+                element.textContent = `$${price.toFixed(2)}`;
+                // Agregar animación visual
+                element.classList.add('updating');
+                setTimeout(() => {
+                    element.classList.remove('updating');
+                }, 600);
+            }
+        }
+        
+        // Función para actualizar el upside %
+        function updateUpsideDisplay(upside, elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = `${upside > 0 ? '+' : ''}${upside.toFixed(1)}%`;
+                element.classList.add('updating');
+                setTimeout(() => {
+                    element.classList.remove('updating');
+                }, 600);
+            }
+        }
+        
+        // Función maestra que actualiza precio y upside
+        async function updatePriceAndUpside(symbol, priceElementId, upsideElementId, fairValue, fallbackPrice) {
+            const price = await getPriceFromFinnhub(symbol);
+            const currentPrice = price || fallbackPrice;
+            
+            // Actualizar precio
+            updatePriceDisplay(currentPrice, priceElementId);
+            
+            // Calcular y actualizar upside
+            const upside = calculateUpside(currentPrice, fairValue);
+            updateUpsideDisplay(upside, upsideElementId);
+            
+            // Actualizar todos los elementos que muestren precio e upside
+            document.getElementById('ticCurrentPriceInline').textContent = `$${currentPrice.toFixed(2)}`;
+            document.getElementById('ticUpsidePercentInline').textContent = `${upside > 0 ? '+' : ''}${upside.toFixed(1)}% Upside`;
+            document.getElementById('ticPriceDisplay').textContent = `$${currentPrice.toFixed(2)}`;
+            document.getElementById('ticUpsideDisplay').textContent = `${upside > 0 ? '+' : ''}${upside.toFixed(1)}%`;
+            
+            if (price) {
+                console.log(`✅ Successfully fetched ${symbol} price: $${currentPrice.toFixed(2)} | Upside: ${upside.toFixed(1)}%`);
+            } else {
+                console.warn(`⚠️ Using fallback price for ${symbol}: $${fallbackPrice}`);
+            }
+        }
+        
+        // Ejecutar al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Inicializando Finnhub Price & Upside Update...');
+            
+            // Actualizar precio e upside inmediatamente
+            updatePriceAndUpside(TIC_SYMBOL, 'ticCurrentPrice', 'ticUpsidePercent', FAIR_VALUE, DEFAULT_PRICE);
+            
+            // Actualizar cada 5 minutos (300000 ms)
+            setInterval(() => {
+                console.log('🔄 Actualizando precio y upside...');
+                updatePriceAndUpside(TIC_SYMBOL, 'ticCurrentPrice', 'ticUpsidePercent', FAIR_VALUE, DEFAULT_PRICE);
+            }, 300000);
+        });
     </script>
-      <!-- BOTÓN VOLVER AL INDEX - AGREGAR AQUÍ -->
+    <!-- BOTÓN VOLVER AL INDEX - AGREGAR AQUÍ -->
     <div style="text-align: center; padding: 40px 20px; background: rgba(0,0,0,0.02); margin-top: 50px;">
         <a href="index.html" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;" 
            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(102, 126, 234, 0.4)';" 
