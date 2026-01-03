@@ -674,6 +674,63 @@
             }
         }
         
+        // Extraer Target Price del HTML
+        async function extractTargetPriceFromThesis(thesisFile, positionType = 'long') {
+            try {
+                const response = await fetch(thesisFile);
+                const html = await response.text();
+                
+                console.log(`📄 Buscando Target Price en: ${thesisFile}`);
+                
+                // Patrón 1: ID "fairValue"
+                let match = html.match(/<div[^>]*id="fairValue"[^>]*>([^<]*)/i);
+                if (match) {
+                    const result = extractPriceFromContent(match[1].trim());
+                    if (result) {
+                        console.log(`✓ Target Price (fairValue): ${result}`);
+                        return result;
+                    }
+                }
+                
+                // Patrón 2: TODAS las ocurrencias de metric-value
+                const allMetricMatches = html.matchAll(/<div[^>]*class="(?:recommendation-value|metric-value)"[^>]*>([^<]*)/gi);
+                let allPrices = [];
+                for (const m of allMetricMatches) {
+                    const result = extractPriceFromContent(m[1].trim());
+                    if (result) {
+                        const numValue = parseFloat(result.match(/([0-9]+[,\.][0-9]+)/)[1].replace(',', '.'));
+                        allPrices.push({ price: result, value: numValue });
+                    }
+                }
+                if (allPrices.length > 0) {
+                    let selectedPrice = positionType === 'short' ?
+                        allPrices.reduce((p, c) => c.value < p.value ? c : p) :
+                        allPrices.reduce((p, c) => c.value > p.value ? c : p);
+                    
+                    console.log(`✓ Target Price (${positionType}): ${selectedPrice.price}`);
+                    return selectedPrice.price;
+                }
+                
+                console.error(`❌ NO se encontró Target Price`);
+                return null;
+            } catch (error) {
+                console.error(`❌ Error extrayendo precio:`, error);
+                return null;
+            }
+        }
+        
+        function extractPriceFromContent(content) {
+            if (!content) return null;
+            const regex = /(€|£|\$|¥|₹|PLN|GBP|USD|EUR|JPY|AUD|CAD|CHF|INR|NZD|SGD|HKD|SEK|NOK|DKK|CZK|HUF|RON|BGN|HRK|RUB|UAH|BRL|MXN|ARS|CLP|PEN|COP)?\s*([0-9]+[,\.][0-9]+)\s*(€|£|\$|¥|₹|PLN|GBP|USD|EUR|JPY|AUD|CAD|CHF|INR|NZD|SGD|HKD|SEK|NOK|DKK|CZK|HUF|RON|BGN|HRK|RUB|UAH|BRL|MXN|ARS|CLP|PEN|COP)?/i;
+            const match = content.match(regex);
+            if (match) {
+                const value = match[2].replace(',', '.');
+                const currency = match[1] || match[3] || '';
+                return currency ? `${value} ${currency}` : `${value}`;
+            }
+            return null;
+        }
+        
         async function renderCards() {
             for (const [category, companies] of Object.entries(companiesData)) {
                 const gridContainer = document.querySelector(`#${category} .analysis-grid`);
@@ -697,7 +754,13 @@
                                 priceStatus = 'error'; // Sin precio
                             }
                         }
-                      let targetPrice = company.targetPrice;
+                        
+                        let targetPrice = null;
+                        if (company.thesisFile) {
+                            targetPrice = await extractTargetPriceFromThesis(company.thesisFile, company.positionType || 'long');
+                        }
+                        if (!targetPrice) {
+                            targetPrice = company.targetPrice;
                         }
                         
                         // Obtener símbolo de moneda - Prioridad: Manual > Exchange > Defecto
