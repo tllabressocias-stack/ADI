@@ -754,13 +754,7 @@
                                 priceStatus = 'error'; // Sin precio
                             }
                         }
-                        
-                        let targetPrice = null;
-                        if (company.thesisFile) {
-                            targetPrice = await extractTargetPriceFromThesis(company.thesisFile, company.positionType || 'long');
-                        }
-                        if (!targetPrice) {
-                            targetPrice = company.targetPrice;
+                      let targetPrice = company.targetPrice;
                         }
                         
                         // Obtener símbolo de moneda - Prioridad: Manual > Exchange > Defecto
