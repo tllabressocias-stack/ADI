@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -23,6 +24,7 @@
             margin: 0 auto;
         }
         
+        /* HEADER */
         header {
             text-align: center;
             color: white;
@@ -43,6 +45,7 @@
             opacity: 0.9;
         }
         
+        /* STATS SUMMARY */
         .stats-summary {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -73,6 +76,7 @@
             letter-spacing: 1px;
         }
         
+        /* NAVIGATION TABS */
         .tabs-container {
             display: flex;
             gap: 8px;
@@ -106,6 +110,7 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         }
         
+        /* SECTION TITLE */
         .section-title {
             color: white;
             font-size: 28px;
@@ -114,6 +119,7 @@
             opacity: 0.95;
         }
         
+        /* SECTION CONTENT */
         .section-content {
             display: none;
         }
@@ -134,6 +140,7 @@
             }
         }
         
+        /* GRID DE TARJETAS */
         .analysis-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -141,6 +148,7 @@
             margin-bottom: 50px;
         }
         
+        /* TARJETA INDIVIDUAL */
         .analysis-card {
             background: white;
             border-radius: 12px;
@@ -189,6 +197,7 @@
             letter-spacing: 0.5px;
         }
         
+        /* CARD BODY - MÉTRICAS */
         .card-body {
             padding: 18px;
             flex-grow: 1;
@@ -223,6 +232,19 @@
             color: #333;
         }
         
+        .metric-value.positive {
+            color: #10b981;
+        }
+        
+        .metric-value.negative {
+            color: #ef4444;
+        }
+        
+        .metric-value.neutral {
+            color: #f59e0b;
+        }
+        
+        /* CARD FOOTER */
         .card-footer {
             padding: 15px 18px;
             background: #f8f9fa;
@@ -268,6 +290,7 @@
             color: #667eea;
         }
         
+        /* UPSIDE BADGE */
         .upside-badge {
             display: inline-block;
             padding: 6px 12px;
@@ -287,6 +310,7 @@
             color: #7f1d1d;
         }
         
+        /* SUMMARY TEXT */
         .summary-text {
             font-size: 13px;
             color: #555;
@@ -295,6 +319,7 @@
             font-style: italic;
         }
         
+        /* EMPTY STATE */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -306,6 +331,7 @@
             opacity: 0.8;
         }
         
+        /* RESPONSIVE */
         @media (max-width: 768px) {
             header h1 {
                 font-size: 2em;
@@ -331,11 +357,13 @@
 </head>
 <body>
     <div class="container">
+        <!-- HEADER -->
         <header>
             <h1>📊 Investment Thesis Hub</h1>
             <p>Deep-dive equity analysis & special situations</p>
         </header>
         
+        <!-- STATS SUMMARY -->
         <div class="stats-summary">
             <div class="stat-item">
                 <div class="stat-value" id="total-positions">0</div>
@@ -355,8 +383,9 @@
             </div>
         </div>
         
+        <!-- NAVIGATION TABS -->
         <div class="tabs-container">
-            <button class="tab-btn active" onclick="showSection('long')">💚 Long</button>
+            <button class="tab-btn" onclick="showSection('long')">💚 Long</button>
             <button class="tab-btn" onclick="showSection('spinoff')">🔄 Spin-Off</button>
             <button class="tab-btn" onclick="showSection('ma')">🤝 M&A - Takeovers</button>
             <button class="tab-btn" onclick="showSection('tender')">🎫 Tender Offers</button>
@@ -367,127 +396,197 @@
             <button class="tab-btn" onclick="showSection('reverse')">↩️ Reverse Split</button>
         </div>
         
-        <section class="section-content active" id="long">
+        <!-- LONG POSITIONS -->
+        <section class="section-content" id="long">
             <h2 class="section-title">💚 Long Positions</h2>
-            <div class="analysis-grid"></div>
+            <div class="analysis-grid">
+                <!-- Aquí irán tus tarjetas de LONG -->
+            </div>
         </section>
         
+        <!-- SPIN-OFF POSITIONS -->
         <section class="section-content" id="spinoff">
             <h2 class="section-title">🔄 Spin-Off Opportunities</h2>
-            <div class="analysis-grid"></div>
+            <div class="analysis-grid">
+                <!-- Aquí irán tus tarjetas de SPIN-OFF -->
+            </div>
         </section>
         
+        <!-- M&A TAKEOVERS -->
         <section class="section-content" id="ma">
             <h2 class="section-title">🤝 M&A - Takeovers</h2>
-            <div class="analysis-grid"></div>
+            <div class="analysis-grid">
+                <!-- Aquí irán tus tarjetas de M&A -->
+            </div>
         </section>
         
+        <!-- TENDER OFFERS -->
         <section class="section-content" id="tender">
             <h2 class="section-title">🎫 Tender Offers - Odd Lots</h2>
-            <div class="analysis-grid"></div>
+            <div class="analysis-grid">
+                <!-- Aquí irán tus tarjetas de TENDER -->
+            </div>
         </section>
         
+        <!-- SHORT POSITIONS -->
         <section class="section-content" id="short">
             <h2 class="section-title">🔴 Short Positions</h2>
-            <div class="analysis-grid"></div>
+            <div class="analysis-grid">
+                <!-- Aquí irán tus tarjetas de SHORT -->
+            </div>
         </section>
         
+        <!-- UPLISTING -->
         <section class="section-content" id="uplisting">
             <h2 class="section-title">📈 Uplisting</h2>
-            <div class="analysis-grid"></div>
+            <div class="analysis-grid">
+                <!-- Aquí irán tus tarjetas de UPLISTING -->
+            </div>
         </section>
         
+        <!-- DEMERGERS -->
         <section class="section-content" id="demerger">
             <h2 class="section-title">📋 Demergers</h2>
-            <div class="analysis-grid"></div>
+            <div class="analysis-grid">
+                <!-- Aquí irán tus tarjetas de DEMERGERS -->
+            </div>
         </section>
         
+        <!-- TURNAROUND -->
         <section class="section-content" id="turnaround">
             <h2 class="section-title">🔧 Turn Around</h2>
-            <div class="analysis-grid"></div>
+            <div class="analysis-grid">
+                <!-- Aquí irán tus tarjetas de TURNAROUND -->
+            </div>
         </section>
         
+        <!-- REVERSE SPLIT -->
         <section class="section-content" id="reverse">
             <h2 class="section-title">↩️ Reverse Split</h2>
-            <div class="analysis-grid"></div>
+            <div class="analysis-grid">
+                <!-- Aquí irán tus tarjetas de REVERSE SPLIT -->
+            </div>
         </section>
     </div>
     
     <script>
-        const FINNHUB_API_KEY = 'd5bvi7pr01qsbmghj0sgd5bvi7pr01qsbmghj0t0';
+        // ============================================================
+        // CONFIGURACIÓN API FINNHUB
+        // ============================================================
+        const FINNHUB_API_KEY = 'd5bvi7pr01qsbmghj0sgd5bvi7pr01qsbmghj0t0';  // ✅ TU API KEY
         const FINNHUB_URL = 'https://finnhub.io/api/v1/quote';
         
+        // ============================================================
+        // MAPEO DE EXCHANGES - Solución UNIVERSAL
+        // ============================================================
+        // IMPORTANTE: Cada exchange tiene un formato ÚNICO
+        // No todos usan TICKER.CÓDIGO
+        // 
+        // Formato 'dot': TICKER.CÓDIGO (ej: PUUILO.HE, AAPL.US)
+        // Formato 'none': solo TICKER (ej: AAPL para NASDAQ puro)
+        // 
+        // Si añades una nueva bolsa que no conoces:
+        // 1. Intenta con format 'dot' primero
+        // 2. Si no funciona, prueba con 'none'
+        // ============================================================
         const EXCHANGE_CODES = {
-            'HE': { code: 'HE', format: 'dot', currency: 'EUR' },
-            'ES': { code: 'MC', format: 'dot', currency: 'EUR' },
-            'LSE': { code: 'LON', format: 'dot', currency: 'GBP' },
-            'US': { code: '', format: 'none', currency: 'USD' },
-            'NYSE': { code: '', format: 'none', currency: 'USD' },
-            'TSE': { code: 'T', format: 'dot', currency: 'JPY' },
-            'ASX': { code: 'AX', format: 'dot', currency: 'AUD' },
-            'TO': { code: 'TO', format: 'dot', currency: 'CAD' },
-            'SB': { code: 'ST', format: 'dot', currency: 'SEK' },
-            'VX': { code: 'SIX', format: 'dot', currency: 'CHF' },
-            'MI': { code: 'MI', format: 'dot', currency: 'EUR' },
-            'WA': { code: 'WA', format: 'dot', currency: 'PLN' }
+            'HE': { code: 'HE', format: 'dot', currency: 'EUR' },           // Helsinki → PUUILO.HE ✅
+            'ES': { code: 'MC', format: 'dot', currency: 'EUR' },           // Madrid → TICKER.MC
+            'LSE': { code: 'LON', format: 'dot', currency: 'GBP' },         // Londres → TICKER.LON
+            'US': { code: '', format: 'none', currency: 'USD' },            // US NASDAQ → TICKER (sin código)
+            'NYSE': { code: '', format: 'none', currency: 'USD' },          // NYSE → TICKER (sin código)
+            'TSE': { code: 'T', format: 'dot', currency: 'JPY' },           // Tokyo → TICKER.T
+            'ASX': { code: 'AX', format: 'dot', currency: 'AUD' },          // Australia → TICKER.AX
+            'TO': { code: 'TO', format: 'dot', currency: 'CAD' },           // Toronto → TICKER.TO
+            'SB': { code: 'ST', format: 'dot', currency: 'SEK' },           // Stockholm → TICKER.ST
+            'VX': { code: 'SIX', format: 'dot', currency: 'CHF' },          // Suiza → TICKER.SIX
+            'MI': { code: 'MI', format: 'dot', currency: 'EUR' },           // Milan → TICKER.MI
+            'BR': { code: 'EURONEXT', format: 'dot', currency: 'EUR' },     // Bruselas → TICKER.EURONEXT
+            'PA': { code: 'EURONEXT', format: 'dot', currency: 'EUR' },     // Paris → TICKER.EURONEXT
+            'AM': { code: 'EURONEXT', format: 'dot', currency: 'EUR' },     // Amsterdam → TICKER.EURONEXT
+            'SA': { code: 'EURONEXT', format: 'dot', currency: 'EUR' },     // Lisboa → TICKER.EURONEXT
+            'WSE': { code: 'WA', format: 'dot', currency: 'EUR' },          // Varsovia → PUUILO.WA
         };
         
+        // Cache de precios
+        let priceCache = {};
+        let cacheTimestamp = {};
+        const CACHE_DURATION = 60000; // 1 minuto
+        
+        // ============================================================
+        // PRECIOS FALLBACK MANUAL - Para microcaps sin cobertura API
+        // ============================================================
+        // Actualiza estos precios manualmente si las APIs fallan
+        // Formato: { current: número, currency: 'EUR'|'GBP'|'USD'|'SEK'|'PLN' }
+        // ============================================================
         const manualPrices = {
             'PUUILO': { current: 12.48, currency: 'EUR' },
             'TOA': { current: 9.75, currency: 'PLN' },
-            'NWL': { current: 19.90, currency: 'EUR' },
+            'NWL': { current: 19.90, currency: 'EUR' }
             'TIC': { current: 9.89, currency: 'USD' }
         };
         
+        // Mapa de símbolos de monedas
         const currencySymbols = {
-            'EUR': '€', 'USD': '$', 'GBP': '£', 'SEK': 'SEK', 'PLN': 'PLN', 'JPY': '¥',
-            'AUD': 'A$', 'CAD': 'C$', 'CHF': 'CHF', 'NOK': 'NOK', 'DKK': 'DKK', 'CZK': 'CZK'
+            'EUR': '€',
+            'USD': '$',
+            'GBP': '£',
+            'SEK': 'SEK',
+            'PLN': 'PLN',
+            'JPY': '¥',
+            'AUD': 'A$',
+            'CAD': 'C$',
+            'CHF': 'CHF',
+            'NOK': 'NOK',
+            'DKK': 'DKK',
+            'CZK': 'CZK'
         };
         
+        // Datos de empresas
         const companiesData = {
             long: [
                 {
                     name: "Puuilo",
                     ticker: "PUUILO",
                     icon: "🌲",
-                    thesis: "Consolidación sector",
-                    summary: "Empresa finlandesa de materiales",
+                    thesis: "Consolidación xxx",
+                    summary: "Empresa finlandesa xxx",
                     exchange: "HE",
-                    targetPrice: 18.50,
-                    thesisFile: "puuilo/",
+                    targetPrice: "xxx",
+                    thesisFile: "puuilo/index.html",
                     positionType: "long"
                 },
                 {
                     name: "Toya",
                     ticker: "TOA",
                     icon: "🌊",
-                    thesis: "Expansión Regional",
-                    summary: "Empresa polaca en crecimiento",
+                    thesis: "Consolidación xxxx",
+                    summary: "Empresa polaca xxxx",
                     exchange: "WA",
-                    targetPrice: 15.00,
-                    thesisFile: "toya/",
+                    targetPrice: "xxx",
+                    thesisFile: "toya/index.html",
                     positionType: "long"
                 },
                 {
                     name: "TIC Solutions",
                     ticker: "TIC",
                     icon: "🏢",
-                    thesis: "Turnaround Tech",
-                    summary: "Soluciones tecnología empresarial",
+                    thesis: "Consolidación xxxx",
+                    summary: "Empresa EEUU xxxx",
                     exchange: "NYSE",
-                    targetPrice: 25.00,
-                    thesisFile: "tic-solutions/",
+                    targetPrice: "xx",
+                    thesisFile: "tic-solutions/index.html",
                     positionType: "long"
                 },
                 {
-                    name: "NewPrices",
+                    name: "Newprinces",
                     ticker: "NWL",
                     icon: "📰",
-                    thesis: "Digital Transformation",
-                    summary: "Plataforma italiana de inversión",
+                    thesis: "Consolidación xxxx",
+                    summary: "Empresa Italia xxxx",
                     exchange: "MI",
-                    targetPrice: 35.50,
-                    thesisFile: "newprices/",
+                    targetPrice: "xx",
+                    thesisFile: "newprices/index.html",
                     positionType: "long"
                 }
             ],
@@ -501,50 +600,73 @@
             reverse: []
         };
         
-        let priceCache = {};
-        let cacheTimestamp = {};
-        const CACHE_DURATION = 60000;
-        
+        // ============================================================
+        // FUNCIÓN UNIVERSAL: Construir ticker según el exchange
+        // ============================================================
         function buildFinnhubTicker(ticker, exchange) {
             if (!exchange || !EXCHANGE_CODES[exchange]) {
-                return ticker;
+                // Exchange desconocido: intenta genérico
+                return exchange ? `${ticker}.${exchange}` : ticker;
             }
+            
             const config = EXCHANGE_CODES[exchange];
-            return config.format === 'dot' && config.code ? `${ticker}.${config.code}` : ticker;
+            
+            if (config.format === 'dot' && config.code) {
+                // Formato: TICKER.CÓDIGO
+                return `${ticker}.${config.code}`;
+            } else if (config.format === 'none') {
+                // Formato: solo TICKER
+                return ticker;
+            } else {
+                // Por defecto: intenta con punto
+                return `${ticker}.${config.code}`;
+            }
         }
         
+        // Función para obtener precio en tiempo real con FALLBACK
         async function getRealtimePrice(ticker, exchange) {
             try {
                 const now = Date.now();
                 
+                // ⭐ PASO 1: Intentar cache primero
                 if (priceCache[ticker] && cacheTimestamp[ticker] && (now - cacheTimestamp[ticker]) < CACHE_DURATION) {
+                    console.log(`✅ Cache hit para ${ticker}`);
                     return priceCache[ticker];
                 }
                 
+                // ⭐ PASO 2: Intentar Finnhub API
                 const fullTicker = buildFinnhubTicker(ticker, exchange);
+                console.log(`🔍 ${ticker} (${exchange}) → Finnhub: ${fullTicker}`);
                 
                 try {
-                    const response = await fetch(`${FINNHUB_URL}?symbol=${fullTicker}&token=${FINNHUB_API_KEY}`);
+                    const response = await fetch(`${FINNHUB_URL}?symbol=${fullTicker}&token=${FINNHUB_API_KEY}`, { timeout: 3000 });
                     const data = await response.json();
                     
                     if (data.c && data.c > 0) {
                         priceCache[ticker] = data.c;
                         cacheTimestamp[ticker] = now;
+                        console.log(`✅ Precio Finnhub: ${ticker} = €${data.c.toFixed(2)}`);
                         return data.c;
                     }
-                } catch (e) {
-                    console.warn(`API error para ${ticker}`);
+                } catch (apiError) {
+                    console.warn(`⚠️ Finnhub falló para ${fullTicker}:`, apiError.message);
                 }
                 
+                // ⭐ PASO 3: Fallback a precios manuales
                 if (manualPrices[ticker]) {
-                    priceCache[ticker] = manualPrices[ticker].current;
+                    const manualPrice = manualPrices[ticker].current;
+                    priceCache[ticker] = manualPrice;
                     cacheTimestamp[ticker] = now;
-                    return manualPrices[ticker].current;
+                    console.log(`📌 Usando precio manual para ${ticker} = ${manualPrice}`);
+                    return manualPrice;
                 }
                 
+                console.warn(`⚠️ Sin datos disponibles para ${ticker}`);
                 return null;
             } catch (error) {
-                console.error(`Error en getRealtimePrice:`, error);
+                console.error(`❌ Error en getRealtimePrice:`, error);
+                
+                // ⭐ PASO 4: Último intento con manual
                 if (manualPrices[ticker]) {
                     return manualPrices[ticker].current;
                 }
@@ -552,11 +674,66 @@
             }
         }
         
+        // Extraer Target Price del HTML
+        async function extractTargetPriceFromThesis(thesisFile, positionType = 'long') {
+            try {
+                const response = await fetch(thesisFile);
+                const html = await response.text();
+                
+                console.log(`📄 Buscando Target Price en: ${thesisFile}`);
+                
+                // Patrón 1: ID "fairValue"
+                let match = html.match(/<div[^>]*id="fairValue"[^>]*>([^<]*)/i);
+                if (match) {
+                    const result = extractPriceFromContent(match[1].trim());
+                    if (result) {
+                        console.log(`✓ Target Price (fairValue): ${result}`);
+                        return result;
+                    }
+                }
+                
+                // Patrón 2: TODAS las ocurrencias de metric-value
+                const allMetricMatches = html.matchAll(/<div[^>]*class="(?:recommendation-value|metric-value)"[^>]*>([^<]*)/gi);
+                let allPrices = [];
+                for (const m of allMetricMatches) {
+                    const result = extractPriceFromContent(m[1].trim());
+                    if (result) {
+                        const numValue = parseFloat(result.match(/([0-9]+[,\.][0-9]+)/)[1].replace(',', '.'));
+                        allPrices.push({ price: result, value: numValue });
+                    }
+                }
+                if (allPrices.length > 0) {
+                    let selectedPrice = positionType === 'short' ?
+                        allPrices.reduce((p, c) => c.value < p.value ? c : p) :
+                        allPrices.reduce((p, c) => c.value > p.value ? c : p);
+                    
+                    console.log(`✓ Target Price (${positionType}): ${selectedPrice.price}`);
+                    return selectedPrice.price;
+                }
+                
+                console.error(`❌ NO se encontró Target Price`);
+                return null;
+            } catch (error) {
+                console.error(`❌ Error extrayendo precio:`, error);
+                return null;
+            }
+        }
+        
+        function extractPriceFromContent(content) {
+            if (!content) return null;
+            const regex = /(€|£|\$|¥|₹|PLN|GBP|USD|EUR|JPY|AUD|CAD|CHF|INR|NZD|SGD|HKD|SEK|NOK|DKK|CZK|HUF|RON|BGN|HRK|RUB|UAH|BRL|MXN|ARS|CLP|PEN|COP)?\s*([0-9]+[,\.][0-9]+)\s*(€|£|\$|¥|₹|PLN|GBP|USD|EUR|JPY|AUD|CAD|CHF|INR|NZD|SGD|HKD|SEK|NOK|DKK|CZK|HUF|RON|BGN|HRK|RUB|UAH|BRL|MXN|ARS|CLP|PEN|COP)?/i;
+            const match = content.match(regex);
+            if (match) {
+                const value = match[2].replace(',', '.');
+                const currency = match[1] || match[3] || '';
+                return currency ? `${value} ${currency}` : `${value}`;
+            }
+            return null;
+        }
+        
         async function renderCards() {
             for (const [category, companies] of Object.entries(companiesData)) {
                 const gridContainer = document.querySelector(`#${category} .analysis-grid`);
-                if (!gridContainer) continue;
-                
                 gridContainer.innerHTML = '';
                 
                 if (companies.length === 0) {
@@ -568,60 +745,78 @@
                         
                         if (company.ticker && company.exchange) {
                             currentPrice = await getRealtimePrice(company.ticker, company.exchange);
-                            priceStatus = currentPrice ? (manualPrices[company.ticker] ? 'manual' : 'api') : 'error';
+                            // Determinar source: API, Manual, o Error
+                            if (currentPrice && manualPrices[company.ticker]) {
+                                priceStatus = 'manual'; // Precio fallback manual
+                            } else if (currentPrice) {
+                                priceStatus = 'loaded'; // Precio de API
+                            } else {
+                                priceStatus = 'error'; // Sin precio
+                            }
                         }
                         
-                        const targetPrice = company.targetPrice;
+                        let targetPrice = null;
+                        if (company.thesisFile) {
+                            targetPrice = await extractTargetPriceFromThesis(company.thesisFile, company.positionType || 'long');
+                        }
+                        if (!targetPrice) {
+                            targetPrice = company.targetPrice;
+                        }
                         
-                        let priceSymbol = '€';
+                        // Obtener símbolo de moneda - Prioridad: Manual > Exchange > Defecto
+                        let priceSymbol = '€'; // Por defecto
+                        
+                        // 1. Si viene de manual, usar su moneda
                         if (priceStatus === 'manual' && manualPrices[company.ticker]) {
                             const manualCurrency = manualPrices[company.ticker].currency;
                             priceSymbol = currencySymbols[manualCurrency] || manualCurrency;
-                        } else if (priceStatus === 'api' && company.exchange && EXCHANGE_CODES[company.exchange]) {
+                        }
+                        // 2. Si viene de API, usar moneda del exchange
+                        else if (priceStatus === 'loaded' && company.exchange && EXCHANGE_CODES[company.exchange]) {
                             const exchangeCurrency = EXCHANGE_CODES[company.exchange].currency;
                             priceSymbol = currencySymbols[exchangeCurrency] || exchangeCurrency;
                         }
                         
-                        const displayPrice = currentPrice ? `${priceSymbol}${currentPrice.toFixed(2)}` : 'N/A';
-                        const displayTargetPrice = targetPrice ? `${priceSymbol}${targetPrice.toFixed(2)}` : 'N/A';
+                        const displayPrice = currentPrice ? `${currentPrice.toFixed(2)} ${priceSymbol}` : 'N/A';
+                        const displayTargetPrice = targetPrice || 'N/A';
                         
                         let upside = 'N/A';
                         let upsideClass = 'neutral';
                         if (currentPrice && targetPrice) {
-                            upside = (((targetPrice - currentPrice) / currentPrice) * 100).toFixed(1);
+                            const targetNum = parseFloat(targetPrice.replace('€', '').replace(',', '.'));
+                            upside = ((targetNum - currentPrice) / currentPrice * 100).toFixed(1);
                             upsideClass = upside >= 0 ? 'positive' : 'negative';
                         }
                         
-                        const lastUpdate = priceStatus === 'api' ? new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'}) : '-';
+                        const lastUpdate = priceStatus === 'loaded' ? new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'}) : '-';
                         
                         const card = document.createElement('div');
                         card.className = 'analysis-card';
                         
-                        if (company.thesisFile) {
-                            card.style.cursor = 'pointer';
-                            card.onclick = () => window.location.href = company.thesisFile;
-                        }
+                        const cardClick = company.thesisFile ? `onclick="window.location.href='${company.thesisFile}'"` : '';
+                        const cursorStyle = company.thesisFile ? 'style="cursor: pointer;"' : '';
                         
                         card.innerHTML = `
-                            <div class="card-header">
+                            <div class="card-header" ${cardClick} ${cursorStyle}>
                                 <div class="card-title">
                                     <span class="card-icon">${company.icon}</span>
                                     <h3>${company.name}</h3>
                                 </div>
                                 <div class="ticker">${company.ticker}</div>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body" ${cardClick} ${cursorStyle}>
                                 <div class="metric-row">
-                                    <span class="metric-label">Investment Thesis</span>
+                                    <span class="metric-label">Investment Thesis:</span>
                                     <span class="metric-value">${company.thesis}</span>
                                 </div>
                                 ${company.summary ? `<div class="summary-text">${company.summary}</div>` : ''}
-                                <div class="upside-badge ${upsideClass}">Upside: ${upside === 'N/A' ? 'N/A' : upside + '%'}</div>
-                                <div style="font-size: 10px; color: #999; margin-top: 6px;">Actualizado: ${lastUpdate}</div>
+                                <div class="upside-badge ${upsideClass}">📈 Upside: ${upside === 'N/A' ? 'N/A' : upside + '%'}</div>
+                                <div style="font-size: 10px; color: #999; margin-top: 6px;">🕐 Actualizado: ${lastUpdate}</div>
+                                ${company.thesisFile ? '<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e8e8e8; color: #667eea; font-size: 12px; font-weight: 600;">📄 Ver Tesis Completa →</div>' : ''}
                             </div>
-                            <div class="card-footer">
+                            <div class="card-footer" ${cardClick} ${cursorStyle}>
                                 <div class="price-info">
-                                    <div class="price-label">Current Price</div>
+                                    <div class="price-label">Current Price <span style="font-size: 9px; color: ${priceStatus === 'error' ? '#ef4444' : priceStatus === 'manual' ? '#f59e0b' : '#10b981'}">${priceStatus === 'loaded' ? '✓ API' : priceStatus === 'manual' ? '📌 Manual' : priceStatus === 'error' ? '✗' : '⟳'}</span></div>
                                     <div class="price-value">${displayPrice}</div>
                                 </div>
                                 <div class="target-price">
@@ -629,9 +824,7 @@
                                     <div class="target-value">${displayTargetPrice}</div>
                                 </div>
                             </div>
-                            ${company.thesisFile ? `<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e8e8e8; color: #667eea; font-size: 12px; font-weight: 600; text-align: center;">Ver Tesis Completa →</div>` : ''}
                         `;
-                        
                         gridContainer.appendChild(card);
                     }
                 }
@@ -664,14 +857,14 @@
             document.getElementById('special-situations').textContent = special;
         }
         
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 Investment Thesis Hub inicializado');
+        // Inicializar
+        renderCards();
+        
+        // Actualizar cada 5 minutos
+        setInterval(() => {
+            console.log('🔄 Actualizando precios...');
             renderCards();
-            setInterval(() => {
-                console.log('🔄 Actualizando precios...');
-                renderCards();
-            }, 300000);
-        });
+        }, 300000);
     </script>
 </body>
 </html>
