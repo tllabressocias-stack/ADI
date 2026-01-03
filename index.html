@@ -4,33 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investment Thesis Hub - Toni Llabrés</title>
+    <title>Investment Thesis Hub - Toni Llabres</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 40px 20px;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
         }
-        
-        /* HEADER */
+
         header {
             text-align: center;
             color: white;
             margin-bottom: 50px;
         }
-        
+
         header h1 {
             font-size: 3em;
             margin-bottom: 10px;
@@ -39,13 +38,12 @@
             justify-content: center;
             gap: 15px;
         }
-        
+
         header p {
             font-size: 1.2em;
             opacity: 0.9;
         }
-        
-        /* STATS SUMMARY */
+
         .stats-summary {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -57,26 +55,25 @@
             border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         .stat-item {
             text-align: center;
             color: white;
         }
-        
+
         .stat-value {
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 8px;
         }
-        
+
         .stat-label {
             font-size: 12px;
             text-transform: uppercase;
             opacity: 0.9;
             letter-spacing: 1px;
         }
-        
-        /* NAVIGATION TABS */
+
         .tabs-container {
             display: flex;
             gap: 8px;
@@ -84,7 +81,7 @@
             flex-wrap: wrap;
             justify-content: center;
         }
-        
+
         .tab-btn {
             padding: 12px 20px;
             background: rgba(255, 255, 255, 0.2);
@@ -98,19 +95,18 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .tab-btn:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
         }
-        
+
         .tab-btn.active {
             background: white;
             color: #667eea;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         }
-        
-        /* SECTION TITLE */
+
         .section-title {
             color: white;
             font-size: 28px;
@@ -118,17 +114,16 @@
             text-align: left;
             opacity: 0.95;
         }
-        
-        /* SECTION CONTENT */
+
         .section-content {
             display: none;
         }
-        
+
         .section-content.active {
             display: block;
             animation: fadeIn 0.3s ease;
         }
-        
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -139,16 +134,14 @@
                 transform: translateY(0);
             }
         }
-        
-        /* GRID DE TARJETAS */
+
         .analysis-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
             margin-bottom: 50px;
         }
-        
-        /* TARJETA INDIVIDUAL */
+
         .analysis-card {
             background: white;
             border-radius: 12px;
@@ -161,43 +154,42 @@
             height: 100%;
             cursor: pointer;
         }
-        
+
         .analysis-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
         }
-        
+
         .card-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 18px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
-        
+
         .card-title {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 8px;
         }
-        
+
         .card-icon {
             font-size: 24px;
         }
-        
+
         .card-header h3 {
             font-size: 1.3em;
             margin: 0;
         }
-        
+
         .ticker {
             font-size: 11px;
             opacity: 0.8;
             font-weight: 500;
             letter-spacing: 0.5px;
         }
-        
-        /* CARD BODY - MÉTRICAS */
+
         .card-body {
             padding: 18px;
             flex-grow: 1;
@@ -205,7 +197,7 @@
             flex-direction: column;
             justify-content: space-between;
         }
-        
+
         .metric-row {
             display: flex;
             justify-content: space-between;
@@ -215,36 +207,23 @@
             border-bottom: 1px solid #f0f0f0;
             font-size: 13px;
         }
-        
+
         .metric-row:last-of-type {
             border-bottom: none;
             margin-bottom: 0;
             padding-bottom: 0;
         }
-        
+
         .metric-label {
             color: #666;
             font-weight: 500;
         }
-        
+
         .metric-value {
             font-weight: 700;
             color: #333;
         }
-        
-        .metric-value.positive {
-            color: #10b981;
-        }
-        
-        .metric-value.negative {
-            color: #ef4444;
-        }
-        
-        .metric-value.neutral {
-            color: #f59e0b;
-        }
-        
-        /* CARD FOOTER */
+
         .card-footer {
             padding: 15px 18px;
             background: #f8f9fa;
@@ -253,44 +232,43 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .price-info {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
-        
+
         .price-label {
             font-size: 11px;
             color: #999;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .price-value {
             font-size: 16px;
             font-weight: 700;
             color: #333;
         }
-        
+
         .target-price {
             text-align: right;
         }
-        
+
         .target-label {
             font-size: 11px;
             color: #999;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .target-value {
             font-size: 16px;
             font-weight: 700;
             color: #667eea;
         }
-        
-        /* UPSIDE BADGE */
+
         .upside-badge {
             display: inline-block;
             padding: 6px 12px;
@@ -299,18 +277,22 @@
             font-weight: 700;
             margin-top: 8px;
         }
-        
+
         .upside-badge.positive {
             background-color: #d1fae5;
             color: #065f46;
         }
-        
+
         .upside-badge.negative {
             background-color: #fee2e2;
             color: #7f1d1d;
         }
-        
-        /* SUMMARY TEXT */
+
+        .upside-badge.neutral {
+            background-color: #fef3c7;
+            color: #78350f;
+        }
+
         .summary-text {
             font-size: 13px;
             color: #555;
@@ -318,37 +300,45 @@
             margin: 10px 0;
             font-style: italic;
         }
-        
-        /* EMPTY STATE */
+
         .empty-state {
             text-align: center;
             padding: 60px 20px;
             color: white;
         }
-        
+
         .empty-state p {
             font-size: 18px;
             opacity: 0.8;
         }
-        
-        /* RESPONSIVE */
+
+        .thesis-link {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e8e8e8;
+            color: #667eea;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+
         @media (max-width: 768px) {
             header h1 {
                 font-size: 2em;
             }
-            
+
             .section-title {
                 font-size: 20px;
             }
-            
+
             .analysis-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .tabs-container {
                 flex-direction: column;
             }
-            
+
             .tab-btn {
                 width: 100%;
             }
@@ -357,13 +347,11 @@
 </head>
 <body>
     <div class="container">
-        <!-- HEADER -->
         <header>
             <h1>📊 Investment Thesis Hub</h1>
-            <p>Deep-dive equity analysis & special situations</p>
+            <p>Deep-dive equity analysis • Special situations</p>
         </header>
-        
-        <!-- STATS SUMMARY -->
+
         <div class="stats-summary">
             <div class="stat-item">
                 <div class="stat-value" id="total-positions">0</div>
@@ -382,213 +370,150 @@
                 <div class="stat-label">Special Situations</div>
             </div>
         </div>
-        
-        <!-- NAVIGATION TABS -->
+
         <div class="tabs-container">
-            <button class="tab-btn" onclick="showSection('long')">💚 Long</button>
-            <button class="tab-btn" onclick="showSection('spinoff')">🔄 Spin-Off</button>
-            <button class="tab-btn" onclick="showSection('ma')">🤝 M&A - Takeovers</button>
-            <button class="tab-btn" onclick="showSection('tender')">🎫 Tender Offers</button>
-            <button class="tab-btn" onclick="showSection('short')">🔴 Short</button>
-            <button class="tab-btn" onclick="showSection('uplisting')">📈 Uplisting</button>
-            <button class="tab-btn" onclick="showSection('demerger')">📋 Demergers</button>
-            <button class="tab-btn" onclick="showSection('turnaround')">🔧 Turn Around</button>
-            <button class="tab-btn" onclick="showSection('reverse')">↩️ Reverse Split</button>
+            <button class="tab-btn active" onclick="showSection('long')">Long</button>
+            <button class="tab-btn" onclick="showSection('spinoff')">Spin-Off</button>
+            <button class="tab-btn" onclick="showSection('ma')">MA - Takeovers</button>
+            <button class="tab-btn" onclick="showSection('tender')">Tender Offers</button>
+            <button class="tab-btn" onclick="showSection('short')">Short</button>
+            <button class="tab-btn" onclick="showSection('uplisting')">Uplisting</button>
+            <button class="tab-btn" onclick="showSection('demerger')">Demergers</button>
+            <button class="tab-btn" onclick="showSection('turnaround')">Turn Around</button>
+            <button class="tab-btn" onclick="showSection('reverse')">Reverse Split</button>
         </div>
-        
-        <!-- LONG POSITIONS -->
-        <section class="section-content" id="long">
-            <h2 class="section-title">💚 Long Positions</h2>
-            <div class="analysis-grid">
-                <!-- Aquí irán tus tarjetas de LONG -->
-            </div>
+
+        <section class="section-content active" id="long">
+            <h2 class="section-title">Long Positions</h2>
+            <div class="analysis-grid"></div>
         </section>
-        
-        <!-- SPIN-OFF POSITIONS -->
+
         <section class="section-content" id="spinoff">
-            <h2 class="section-title">🔄 Spin-Off Opportunities</h2>
-            <div class="analysis-grid">
-                <!-- Aquí irán tus tarjetas de SPIN-OFF -->
-            </div>
+            <h2 class="section-title">Spin-Off Opportunities</h2>
+            <div class="analysis-grid"></div>
         </section>
-        
-        <!-- M&A TAKEOVERS -->
+
         <section class="section-content" id="ma">
-            <h2 class="section-title">🤝 M&A - Takeovers</h2>
-            <div class="analysis-grid">
-                <!-- Aquí irán tus tarjetas de M&A -->
-            </div>
+            <h2 class="section-title">M&A - Takeovers</h2>
+            <div class="analysis-grid"></div>
         </section>
-        
-        <!-- TENDER OFFERS -->
+
         <section class="section-content" id="tender">
-            <h2 class="section-title">🎫 Tender Offers - Odd Lots</h2>
-            <div class="analysis-grid">
-                <!-- Aquí irán tus tarjetas de TENDER -->
-            </div>
+            <h2 class="section-title">Tender Offers - Odd Lots</h2>
+            <div class="analysis-grid"></div>
         </section>
-        
-        <!-- SHORT POSITIONS -->
+
         <section class="section-content" id="short">
-            <h2 class="section-title">🔴 Short Positions</h2>
-            <div class="analysis-grid">
-                <!-- Aquí irán tus tarjetas de SHORT -->
-            </div>
+            <h2 class="section-title">Short Positions</h2>
+            <div class="analysis-grid"></div>
         </section>
-        
-        <!-- UPLISTING -->
+
         <section class="section-content" id="uplisting">
-            <h2 class="section-title">📈 Uplisting</h2>
-            <div class="analysis-grid">
-                <!-- Aquí irán tus tarjetas de UPLISTING -->
-            </div>
+            <h2 class="section-title">Uplisting</h2>
+            <div class="analysis-grid"></div>
         </section>
-        
-        <!-- DEMERGERS -->
+
         <section class="section-content" id="demerger">
-            <h2 class="section-title">📋 Demergers</h2>
-            <div class="analysis-grid">
-                <!-- Aquí irán tus tarjetas de DEMERGERS -->
-            </div>
+            <h2 class="section-title">Demergers</h2>
+            <div class="analysis-grid"></div>
         </section>
-        
-        <!-- TURNAROUND -->
+
         <section class="section-content" id="turnaround">
-            <h2 class="section-title">🔧 Turn Around</h2>
-            <div class="analysis-grid">
-                <!-- Aquí irán tus tarjetas de TURNAROUND -->
-            </div>
+            <h2 class="section-title">Turn Around</h2>
+            <div class="analysis-grid"></div>
         </section>
-        
-        <!-- REVERSE SPLIT -->
+
         <section class="section-content" id="reverse">
-            <h2 class="section-title">↩️ Reverse Split</h2>
-            <div class="analysis-grid">
-                <!-- Aquí irán tus tarjetas de REVERSE SPLIT -->
-            </div>
+            <h2 class="section-title">Reverse Split</h2>
+            <div class="analysis-grid"></div>
         </section>
     </div>
-    
+
     <script>
-        // ============================================================
-        // CONFIGURACIÓN API FINNHUB
-        // ============================================================
-        const FINNHUB_API_KEY = 'd5bvi7pr01qsbmghj0sgd5bvi7pr01qsbmghj0t0';  // ✅ TU API KEY
+        // API FINNHUB
+        const FINNHUB_API_KEY = 'd5bvi7pr01qsbmghj0sgd5bvi7pr01qsbmghj0t0';
         const FINNHUB_URL = 'https://finnhub.io/api/v1/quote';
-        
-        // ============================================================
-        // MAPEO DE EXCHANGES - Solución UNIVERSAL
-        // ============================================================
-        // IMPORTANTE: Cada exchange tiene un formato ÚNICO
-        // No todos usan TICKER.CÓDIGO
-        // 
-        // Formato 'dot': TICKER.CÓDIGO (ej: PUUILO.HE, AAPL.US)
-        // Formato 'none': solo TICKER (ej: AAPL para NASDAQ puro)
-        // 
-        // Si añades una nueva bolsa que no conoces:
-        // 1. Intenta con format 'dot' primero
-        // 2. Si no funciona, prueba con 'none'
-        // ============================================================
+
+        // EXCHANGE CODES
         const EXCHANGE_CODES = {
-            'HE': { code: 'HE', format: 'dot', currency: 'EUR' },           // Helsinki → PUUILO.HE ✅
-            'ES': { code: 'MC', format: 'dot', currency: 'EUR' },           // Madrid → TICKER.MC
-            'LSE': { code: 'LON', format: 'dot', currency: 'GBP' },         // Londres → TICKER.LON
-            'US': { code: '', format: 'none', currency: 'USD' },            // US NASDAQ → TICKER (sin código)
-            'NYSE': { code: '', format: 'none', currency: 'USD' },          // NYSE → TICKER (sin código)
-            'TSE': { code: 'T', format: 'dot', currency: 'JPY' },           // Tokyo → TICKER.T
-            'ASX': { code: 'AX', format: 'dot', currency: 'AUD' },          // Australia → TICKER.AX
-            'TO': { code: 'TO', format: 'dot', currency: 'CAD' },           // Toronto → TICKER.TO
-            'SB': { code: 'ST', format: 'dot', currency: 'SEK' },           // Stockholm → TICKER.ST
-            'VX': { code: 'SIX', format: 'dot', currency: 'CHF' },          // Suiza → TICKER.SIX
-            'MI': { code: 'MI', format: 'dot', currency: 'EUR' },           // Milan → TICKER.MI
-            'BR': { code: 'EURONEXT', format: 'dot', currency: 'EUR' },     // Bruselas → TICKER.EURONEXT
-            'PA': { code: 'EURONEXT', format: 'dot', currency: 'EUR' },     // Paris → TICKER.EURONEXT
-            'AM': { code: 'EURONEXT', format: 'dot', currency: 'EUR' },     // Amsterdam → TICKER.EURONEXT
-            'SA': { code: 'EURONEXT', format: 'dot', currency: 'EUR' },     // Lisboa → TICKER.EURONEXT
-            'WSE': { code: 'WA', format: 'dot', currency: 'EUR' },          // Varsovia → PUUILO.WA
+            HE: { code: 'HE', format: 'dot', currency: 'EUR' },
+            MC: { code: 'MC', format: 'dot', currency: 'EUR' },
+            LON: { code: 'LON', format: 'dot', currency: 'GBP' },
+            US: { code: '', format: 'none', currency: 'USD' },
+            NYSE: { code: '', format: 'none', currency: 'USD' },
+            TSE: { code: 'T', format: 'dot', currency: 'JPY' },
+            AX: { code: 'AX', format: 'dot', currency: 'AUD' },
+            TO: { code: 'TO', format: 'dot', currency: 'CAD' },
+            ST: { code: 'ST', format: 'dot', currency: 'SEK' },
+            SIX: { code: 'SIX', format: 'dot', currency: 'CHF' },
+            MI: { code: 'MI', format: 'dot', currency: 'EUR' },
+            WA: { code: 'WA', format: 'dot', currency: 'PLN' }
         };
-        
-        // Cache de precios
-        let priceCache = {};
-        let cacheTimestamp = {};
-        const CACHE_DURATION = 60000; // 1 minuto
-        
-        // ============================================================
-        // PRECIOS FALLBACK MANUAL - Para microcaps sin cobertura API
-        // ============================================================
-        // Actualiza estos precios manualmente si las APIs fallan
-        // Formato: { current: número, currency: 'EUR'|'GBP'|'USD'|'SEK'|'PLN' }
-        // ============================================================
+
+        // PRECIOS MANUALES - FALLBACK
         const manualPrices = {
             'PUUILO': { current: 12.48, currency: 'EUR' },
             'TOA': { current: 9.75, currency: 'PLN' },
-            'NWL': { current: 19.90, currency: 'EUR' }
+            'NWL': { current: 19.90, currency: 'EUR' },
             'TIC': { current: 9.89, currency: 'USD' }
         };
-        
-        // Mapa de símbolos de monedas
+
         const currencySymbols = {
-            'EUR': '€',
-            'USD': '$',
-            'GBP': '£',
-            'SEK': 'SEK',
-            'PLN': 'PLN',
-            'JPY': '¥',
-            'AUD': 'A$',
-            'CAD': 'C$',
-            'CHF': 'CHF',
-            'NOK': 'NOK',
-            'DKK': 'DKK',
-            'CZK': 'CZK'
+            EUR: '€', USD: '$', GBP: '£', SEK: 'kr', PLN: 'zł', JPY: '¥',
+            AUD: 'A$', CAD: 'C$', CHF: 'Fr', NOK: 'kr', DKK: 'kr', CZK: 'Kč'
         };
-        
-        // Datos de empresas
+
+        // DATOS DE EMPRESAS - CON TARGET PRICE INTEGRADO (SIN CORS)
         const companiesData = {
             long: [
                 {
-                    name: "Puuilo",
-                    ticker: "PUUILO",
-                    icon: "🌲",
-                    thesis: "Consolidación xxx",
-                    summary: "Empresa finlandesa xxx",
-                    exchange: "HE",
-                    targetPrice: "xxx",
-                    thesisFile: "puuilo/index.html",
-                    positionType: "long"
+                    name: 'Puuilo',
+                    ticker: 'PUUILO',
+                    icon: '🇫🇮',
+                    thesis: 'Consolidación en el sector',
+                    summary: 'Empresa finlandesa de materiales, oportunidad de consolidación',
+                    exchange: 'HE',
+                    thesisFile: 'puuilo/',
+                    positionType: 'long',
+                    targetPrice: 18.50,
+                    currency: 'EUR'
                 },
                 {
-                    name: "Toya",
-                    ticker: "TOA",
-                    icon: "🌊",
-                    thesis: "Consolidación xxxx",
-                    summary: "Empresa polaca xxxx",
-                    exchange: "WA",
-                    targetPrice: "xxx",
-                    thesisFile: "toya/index.html",
-                    positionType: "long"
+                    name: 'Toya',
+                    ticker: 'TOA',
+                    icon: '🇵🇱',
+                    thesis: 'Expansión Regional',
+                    summary: 'Empresa polaca en crecimiento, mercado europeo emergente',
+                    exchange: 'WA',
+                    thesisFile: 'toya/',
+                    positionType: 'long',
+                    targetPrice: 15.00,
+                    currency: 'PLN'
                 },
                 {
-                    name: "TIC Solutions",
-                    ticker: "TIC",
-                    icon: "🏢",
-                    thesis: "Consolidación xxxx",
-                    summary: "Empresa EEUU xxxx",
-                    exchange: "NYSE",
-                    targetPrice: "xx",
-                    thesisFile: "tic-solutions/index.html",
-                    positionType: "long"
+                    name: 'TIC Solutions',
+                    ticker: 'TIC',
+                    icon: '🇺🇸',
+                    thesis: 'Turnaround Tech',
+                    summary: 'Soluciones de tecnología empresarial, recuperación en curso',
+                    exchange: 'US',
+                    thesisFile: 'tic-solutions/',
+                    positionType: 'long',
+                    targetPrice: 25.00,
+                    currency: 'USD'
                 },
                 {
-                    name: "Newprinces",
-                    ticker: "NWL",
-                    icon: "📰",
-                    thesis: "Consolidación xxxx",
-                    summary: "Empresa Italia xxxx",
-                    exchange: "MI",
-                    targetPrice: "xx",
-                    thesisFile: "newprices/index.html",
-                    positionType: "long"
-                }
+                    name: 'NewPrices',
+                    ticker: 'NWL',
+                    icon: '🇮🇹',
+                    thesis: 'Digital Transformation',
+                    summary: 'Plataforma italiana de inversión, transformación digital en marcha',
+                    exchange: 'MI',
+                    thesisFile: 'newprices/',
+                    positionType: 'long',
+                    targetPrice: 35.50,
+                    currency: 'EUR'
+                },
             ],
             spinoff: [],
             ma: [],
@@ -597,274 +522,209 @@
             uplisting: [],
             demerger: [],
             turnaround: [],
-            reverse: []
+            reverse: [],
         };
-        
-        // ============================================================
-        // FUNCIÓN UNIVERSAL: Construir ticker según el exchange
-        // ============================================================
+
+        // Cache de precios
+        let priceCache = {};
+        let cacheTimestamp = {};
+        const CACHE_DURATION = 60000;
+
+        // Construir ticker para Finnhub
         function buildFinnhubTicker(ticker, exchange) {
             if (!exchange || !EXCHANGE_CODES[exchange]) {
-                // Exchange desconocido: intenta genérico
-                return exchange ? `${ticker}.${exchange}` : ticker;
-            }
-            
-            const config = EXCHANGE_CODES[exchange];
-            
-            if (config.format === 'dot' && config.code) {
-                // Formato: TICKER.CÓDIGO
-                return `${ticker}.${config.code}`;
-            } else if (config.format === 'none') {
-                // Formato: solo TICKER
+                console.warn(`Exchange desconocido: ${exchange}`);
                 return ticker;
-            } else {
-                // Por defecto: intenta con punto
+            }
+            const config = EXCHANGE_CODES[exchange];
+            if (config.format === 'dot') {
                 return `${ticker}.${config.code}`;
             }
+            return ticker;
         }
-        
-        // Función para obtener precio en tiempo real con FALLBACK
+
+        // Obtener precio en tiempo real
         async function getRealtimePrice(ticker, exchange) {
             try {
                 const now = Date.now();
-                
-                // ⭐ PASO 1: Intentar cache primero
+
+                // Intentar cache
                 if (priceCache[ticker] && cacheTimestamp[ticker] && (now - cacheTimestamp[ticker]) < CACHE_DURATION) {
                     console.log(`✅ Cache hit para ${ticker}`);
                     return priceCache[ticker];
                 }
-                
-                // ⭐ PASO 2: Intentar Finnhub API
+
+                // Intentar Finnhub API
                 const fullTicker = buildFinnhubTicker(ticker, exchange);
-                console.log(`🔍 ${ticker} (${exchange}) → Finnhub: ${fullTicker}`);
-                
+                console.log(`📡 Buscando ${ticker} en ${exchange}`);
+
                 try {
-                    const response = await fetch(`${FINNHUB_URL}?symbol=${fullTicker}&token=${FINNHUB_API_KEY}`, { timeout: 3000 });
+                    const response = await fetch(`${FINNHUB_URL}?symbol=${fullTicker}&token=${FINNHUB_API_KEY}`);
                     const data = await response.json();
-                    
+
                     if (data.c && data.c > 0) {
                         priceCache[ticker] = data.c;
                         cacheTimestamp[ticker] = now;
-                        console.log(`✅ Precio Finnhub: ${ticker} = €${data.c.toFixed(2)}`);
+                        console.log(`✅ Precio Finnhub ${ticker}: ${data.c.toFixed(2)}`);
                         return data.c;
                     }
                 } catch (apiError) {
-                    console.warn(`⚠️ Finnhub falló para ${fullTicker}:`, apiError.message);
+                    console.warn(`⚠️ Finnhub falló para ${fullTicker}`);
                 }
-                
-                // ⭐ PASO 3: Fallback a precios manuales
+
+                // Fallback a precios manuales
                 if (manualPrices[ticker]) {
                     const manualPrice = manualPrices[ticker].current;
                     priceCache[ticker] = manualPrice;
                     cacheTimestamp[ticker] = now;
-                    console.log(`📌 Usando precio manual para ${ticker} = ${manualPrice}`);
+                    console.log(`📌 Usando precio manual para ${ticker}: ${manualPrice}`);
                     return manualPrice;
                 }
-                
-                console.warn(`⚠️ Sin datos disponibles para ${ticker}`);
+
+                console.warn(`❌ Sin datos disponibles para ${ticker}`);
                 return null;
             } catch (error) {
-                console.error(`❌ Error en getRealtimePrice:`, error);
-                
-                // ⭐ PASO 4: Último intento con manual
+                console.error(`Error en getRealtimePrice:`, error);
                 if (manualPrices[ticker]) {
                     return manualPrices[ticker].current;
                 }
                 return null;
             }
         }
-        
-        // Extraer Target Price del HTML
-        async function extractTargetPriceFromThesis(thesisFile, positionType = 'long') {
-            try {
-                const response = await fetch(thesisFile);
-                const html = await response.text();
-                
-                console.log(`📄 Buscando Target Price en: ${thesisFile}`);
-                
-                // Patrón 1: ID "fairValue"
-                let match = html.match(/<div[^>]*id="fairValue"[^>]*>([^<]*)/i);
-                if (match) {
-                    const result = extractPriceFromContent(match[1].trim());
-                    if (result) {
-                        console.log(`✓ Target Price (fairValue): ${result}`);
-                        return result;
-                    }
-                }
-                
-                // Patrón 2: TODAS las ocurrencias de metric-value
-                const allMetricMatches = html.matchAll(/<div[^>]*class="(?:recommendation-value|metric-value)"[^>]*>([^<]*)/gi);
-                let allPrices = [];
-                for (const m of allMetricMatches) {
-                    const result = extractPriceFromContent(m[1].trim());
-                    if (result) {
-                        const numValue = parseFloat(result.match(/([0-9]+[,\.][0-9]+)/)[1].replace(',', '.'));
-                        allPrices.push({ price: result, value: numValue });
-                    }
-                }
-                if (allPrices.length > 0) {
-                    let selectedPrice = positionType === 'short' ?
-                        allPrices.reduce((p, c) => c.value < p.value ? c : p) :
-                        allPrices.reduce((p, c) => c.value > p.value ? c : p);
-                    
-                    console.log(`✓ Target Price (${positionType}): ${selectedPrice.price}`);
-                    return selectedPrice.price;
-                }
-                
-                console.error(`❌ NO se encontró Target Price`);
-                return null;
-            } catch (error) {
-                console.error(`❌ Error extrayendo precio:`, error);
-                return null;
-            }
-        }
-        
-        function extractPriceFromContent(content) {
-            if (!content) return null;
-            const regex = /(€|£|\$|¥|₹|PLN|GBP|USD|EUR|JPY|AUD|CAD|CHF|INR|NZD|SGD|HKD|SEK|NOK|DKK|CZK|HUF|RON|BGN|HRK|RUB|UAH|BRL|MXN|ARS|CLP|PEN|COP)?\s*([0-9]+[,\.][0-9]+)\s*(€|£|\$|¥|₹|PLN|GBP|USD|EUR|JPY|AUD|CAD|CHF|INR|NZD|SGD|HKD|SEK|NOK|DKK|CZK|HUF|RON|BGN|HRK|RUB|UAH|BRL|MXN|ARS|CLP|PEN|COP)?/i;
-            const match = content.match(regex);
-            if (match) {
-                const value = match[2].replace(',', '.');
-                const currency = match[1] || match[3] || '';
-                return currency ? `${value} ${currency}` : `${value}`;
-            }
-            return null;
-        }
-        
+
+        // ELIMINADA: Ya no necesitamos extraer Target Price del HTML (CORS bloqueado)
+        // Los target prices están ahora integrados en companiesData
+
+        // Renderizar tarjetas
         async function renderCards() {
             for (const [category, companies] of Object.entries(companiesData)) {
                 const gridContainer = document.querySelector(`#${category} .analysis-grid`);
+                if (!gridContainer) continue;
+
                 gridContainer.innerHTML = '';
-                
+
                 if (companies.length === 0) {
                     gridContainer.innerHTML = '<div class="empty-state"><p>No positions in this category yet</p></div>';
-                } else {
-                    for (const company of companies) {
-                        let currentPrice = null;
-                        let priceStatus = 'loading';
-                        
-                        if (company.ticker && company.exchange) {
-                            currentPrice = await getRealtimePrice(company.ticker, company.exchange);
-                            // Determinar source: API, Manual, o Error
-                            if (currentPrice && manualPrices[company.ticker]) {
-                                priceStatus = 'manual'; // Precio fallback manual
-                            } else if (currentPrice) {
-                                priceStatus = 'loaded'; // Precio de API
-                            } else {
-                                priceStatus = 'error'; // Sin precio
-                            }
-                        }
-                        
-                        let targetPrice = null;
-                        if (company.thesisFile) {
-                            targetPrice = await extractTargetPriceFromThesis(company.thesisFile, company.positionType || 'long');
-                        }
-                        if (!targetPrice) {
-                            targetPrice = company.targetPrice;
-                        }
-                        
-                        // Obtener símbolo de moneda - Prioridad: Manual > Exchange > Defecto
-                        let priceSymbol = '€'; // Por defecto
-                        
-                        // 1. Si viene de manual, usar su moneda
-                        if (priceStatus === 'manual' && manualPrices[company.ticker]) {
-                            const manualCurrency = manualPrices[company.ticker].currency;
-                            priceSymbol = currencySymbols[manualCurrency] || manualCurrency;
-                        }
-                        // 2. Si viene de API, usar moneda del exchange
-                        else if (priceStatus === 'loaded' && company.exchange && EXCHANGE_CODES[company.exchange]) {
-                            const exchangeCurrency = EXCHANGE_CODES[company.exchange].currency;
-                            priceSymbol = currencySymbols[exchangeCurrency] || exchangeCurrency;
-                        }
-                        
-                        const displayPrice = currentPrice ? `${currentPrice.toFixed(2)} ${priceSymbol}` : 'N/A';
-                        const displayTargetPrice = targetPrice || 'N/A';
-                        
-                        let upside = 'N/A';
-                        let upsideClass = 'neutral';
-                        if (currentPrice && targetPrice) {
-                            const targetNum = parseFloat(targetPrice.replace('€', '').replace(',', '.'));
-                            upside = ((targetNum - currentPrice) / currentPrice * 100).toFixed(1);
-                            upsideClass = upside >= 0 ? 'positive' : 'negative';
-                        }
-                        
-                        const lastUpdate = priceStatus === 'loaded' ? new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'}) : '-';
-                        
-                        const card = document.createElement('div');
-                        card.className = 'analysis-card';
-                        
-                        const cardClick = company.thesisFile ? `onclick="window.location.href='${company.thesisFile}'"` : '';
-                        const cursorStyle = company.thesisFile ? 'style="cursor: pointer;"' : '';
-                        
-                        card.innerHTML = `
-                            <div class="card-header" ${cardClick} ${cursorStyle}>
-                                <div class="card-title">
-                                    <span class="card-icon">${company.icon}</span>
-                                    <h3>${company.name}</h3>
-                                </div>
-                                <div class="ticker">${company.ticker}</div>
-                            </div>
-                            <div class="card-body" ${cardClick} ${cursorStyle}>
-                                <div class="metric-row">
-                                    <span class="metric-label">Investment Thesis:</span>
-                                    <span class="metric-value">${company.thesis}</span>
-                                </div>
-                                ${company.summary ? `<div class="summary-text">${company.summary}</div>` : ''}
-                                <div class="upside-badge ${upsideClass}">📈 Upside: ${upside === 'N/A' ? 'N/A' : upside + '%'}</div>
-                                <div style="font-size: 10px; color: #999; margin-top: 6px;">🕐 Actualizado: ${lastUpdate}</div>
-                                ${company.thesisFile ? '<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e8e8e8; color: #667eea; font-size: 12px; font-weight: 600;">📄 Ver Tesis Completa →</div>' : ''}
-                            </div>
-                            <div class="card-footer" ${cardClick} ${cursorStyle}>
-                                <div class="price-info">
-                                    <div class="price-label">Current Price <span style="font-size: 9px; color: ${priceStatus === 'error' ? '#ef4444' : priceStatus === 'manual' ? '#f59e0b' : '#10b981'}">${priceStatus === 'loaded' ? '✓ API' : priceStatus === 'manual' ? '📌 Manual' : priceStatus === 'error' ? '✗' : '⟳'}</span></div>
-                                    <div class="price-value">${displayPrice}</div>
-                                </div>
-                                <div class="target-price">
-                                    <div class="target-label">Target Price</div>
-                                    <div class="target-value">${displayTargetPrice}</div>
-                                </div>
-                            </div>
-                        `;
-                        gridContainer.appendChild(card);
+                    continue;
+                }
+
+                for (const company of companies) {
+                    let currentPrice = null;
+                    let priceStatus = 'loading';
+
+                    if (company.ticker && company.exchange) {
+                        currentPrice = await getRealtimePrice(company.ticker, company.exchange);
+                        priceStatus = currentPrice ? (manualPrices[company.ticker] ? 'manual' : 'api') : 'error';
                     }
+
+                    // Target price YA ESTÁ en companiesData (sin CORS)
+                    const targetPrice = company.targetPrice;
+                    const targetCurrency = company.currency || EXCHANGE_CODES[company.exchange]?.currency || 'USD';
+
+                    // Símbolo para precio actual
+                    let priceSymbol = '$';
+                    if (priceStatus === 'manual' && manualPrices[company.ticker]) {
+                        const manualCurrency = manualPrices[company.ticker].currency;
+                        priceSymbol = currencySymbols[manualCurrency] || manualCurrency;
+                    } else if (priceStatus === 'api' && company.exchange && EXCHANGE_CODES[company.exchange]) {
+                        const exchangeCurrency = EXCHANGE_CODES[company.exchange].currency;
+                        priceSymbol = currencySymbols[exchangeCurrency] || exchangeCurrency;
+                    }
+
+                    // Símbolo para target price (desde companiesData)
+                    const targetPriceSymbol = currencySymbols[targetCurrency] || targetCurrency;
+
+                    const displayPrice = currentPrice ? `${priceSymbol}${currentPrice.toFixed(2)}` : 'NA';
+                    const displayTargetPrice = targetPrice ? `${targetPriceSymbol}${targetPrice.toFixed(2)}` : 'NA';
+
+                    // CÁLCULO CORRECTO DE UPSIDE (mismo símbolo de moneda en ambos lados)
+                    let upside = 'NA';
+                    let upsideClass = 'neutral';
+                    
+                    if (currentPrice && targetPrice) {
+                        upside = (((targetPrice - currentPrice) / currentPrice) * 100).toFixed(1);
+                        upsideClass = upside >= 0 ? 'positive' : 'negative';
+                    }
+
+                    const lastUpdate = priceStatus === 'api' ? new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '-';
+
+                    const card = document.createElement('div');
+                    card.className = 'analysis-card';
+                    
+                    if (company.thesisFile) {
+                        card.style.cursor = 'pointer';
+                        card.onclick = () => window.location.href = company.thesisFile;
+                    }
+
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="card-icon">${company.icon}</span>
+                                <h3>${company.name}</h3>
+                            </div>
+                            <div class="ticker">${company.ticker}</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="metric-row">
+                                <span class="metric-label">Investment Thesis</span>
+                                <span class="metric-value">${company.thesis}</span>
+                            </div>
+                            ${company.summary ? `<div class="summary-text">${company.summary}</div>` : ''}
+                            <div class="upside-badge ${upsideClass}">Upside: ${upside !== 'NA' ? upside : 'NA'}%</div>
+                            <div style="font-size: 10px; color: #999; margin-top: 6px;">Actualizado: ${lastUpdate}</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="price-info">
+                                <div class="price-label">Current Price</div>
+                                <div class="price-value">${displayPrice}</div>
+                            </div>
+                            <div class="target-price">
+                                <div class="target-label">Target Price</div>
+                                <div class="target-value">${displayTargetPrice}</div>
+                            </div>
+                        </div>
+                        ${company.thesisFile ? `<div class="thesis-link">Ver Tesis Completa →</div>` : ''}
+                    `;
+
+                    gridContainer.appendChild(card);
                 }
             }
+
             updateStats();
         }
-        
+
+        // Mostrar/ocultar secciones
         function showSection(sectionId) {
             document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
             event.target.classList.add('active');
         }
-        
+
+        // Actualizar estadísticas
         function updateStats() {
             let total = 0, long = 0, short = 0, special = 0;
-            
             for (const [cat, cos] of Object.entries(companiesData)) {
                 total += cos.length;
-                if (cat === 'long') long = cos.length;
-                else if (cat === 'short') short = cos.length;
-                else if (['spinoff', 'ma', 'tender', 'demerger', 'turnaround', 'reverse', 'uplisting'].includes(cat)) {
-                    special += cos.length;
-                }
+                if (cat === 'long') long += cos.length;
+                else if (cat === 'short') short += cos.length;
+                else if (['spinoff', 'ma', 'tender', 'demerger', 'turnaround', 'reverse', 'uplisting'].includes(cat)) special += cos.length;
             }
-            
             document.getElementById('total-positions').textContent = total;
             document.getElementById('long-positions').textContent = long;
             document.getElementById('short-positions').textContent = short;
             document.getElementById('special-situations').textContent = special;
         }
-        
+
         // Inicializar
-        renderCards();
-        
-        // Actualizar cada 5 minutos
-        setInterval(() => {
-            console.log('🔄 Actualizando precios...');
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Investment Thesis Hub inicializado');
             renderCards();
-        }, 300000);
+            setInterval(() => {
+                console.log('🔄 Actualizando precios...');
+                renderCards();
+            }, 300000);
+        });
     </script>
 </body>
 </html>
