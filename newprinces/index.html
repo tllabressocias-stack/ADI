@@ -1426,44 +1426,111 @@
             }
         }
         
-        // Función maestra que actualiza precio y upside
-        async function updatePriceAndUpside(symbol, priceElementId, upsideElementId, fairValue, fallbackPrice) {
-            const price = await getPriceFromFinnhub(symbol);
-            const currentPrice = price || fallbackPrice;
+       <!-- Script de actualización de precios - VERSIÓN SIMPLIFICADA -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Configuración
+    const CONFIG = {
+        symbol: 'NWL.MI',
+        fairValue: 71.51,
+        fallbackPrice: 19.78,
+        priceElementId: 'currentPrice',
+        upsideElementId: 'upsidePercent',
+        fairValueElementId: 'fairValue',
+        currency: '€'
+    };
+    
+    /**
+     * Obtiene precio desde Yahoo Finance (sin API key)
+     */
+    async function fetchPriceFromYahoo(symbol) {
+        try {
+            const response = await fetch(
+                `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1d`,
+                { signal: AbortSignal.timeout(5000) }
+            );
             
-            // Actualizar precio
-            updatePriceDisplay(currentPrice, priceElementId);
+            if (!response.ok) return null;
             
-            // Calcular y actualizar upside
-            const upside = calculateUpside(currentPrice, fairValue);
-            updateUpsideDisplay(upside, upsideElementId);
+            const data = await response.json();
+            const price = data.chart?.result?.[0]?.meta?.regularMarketPrice;
             
-            // Actualizar todos los elementos que muestren precio e upside
-            document.getElementById('ticCurrentPriceInline').textContent = `$${currentPrice.toFixed(2)}`;
-            document.getElementById('ticUpsidePercentInline').textContent = `${upside > 0 ? '+' : ''}${upside.toFixed(1)}% Upside`;
-            document.getElementById('ticPriceDisplay').textContent = `$${currentPrice.toFixed(2)}`;
-            document.getElementById('ticUpsideDisplay').textContent = `${upside > 0 ? '+' : ''}${upside.toFixed(1)}%`;
+            return price ? parseFloat(price) : null;
             
-            if (price) {
-                console.log(`✅ Successfully fetched ${symbol} price: $${currentPrice.toFixed(2)} | Upside: ${upside.toFixed(1)}%`);
-            } else {
-                console.warn(`⚠️ Using fallback price for ${symbol}: $${fallbackPrice}`);
-            }
+        } catch (error) {
+            console.warn(`⚠️ Error fetching ${symbol}:`, error.message);
+            return null;
+        }
+    }
+    
+    /**
+     * Calcula upside
+     */
+    function calculateUpside(currentPrice, fairValue) {
+        return ((fairValue - currentPrice) / currentPrice) * 100;
+    }
+    
+    /**
+     * Actualiza el precio en el DOM
+     */
+    function updateDisplay(currentPrice) {
+        const priceEl = document.getElementById(CONFIG.priceElementId);
+        const upsideEl = document.getElementById(CONFIG.upsideElementId);
+        const fairValueEl = document.getElementById(CONFIG.fairValueElementId);
+        
+        if (priceEl) {
+            priceEl.textContent = `${CONFIG.currency}${currentPrice.toFixed(2)}`;
+            priceEl.classList.add('updating');
+            setTimeout(() => priceEl.classList.remove('updating'), 600);
         }
         
-        // Ejecutar al cargar la página
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Inicializando Finnhub Price & Upside Update...');
+        if (fairValueEl) {
+            fairValueEl.textContent = CONFIG.fairValue.toString();
+        }
+        
+        if (upsideEl) {
+            const upside = calculateUpside(currentPrice, CONFIG.fairValue);
+            const sign = upside >= 0 ? '+' : '';
+            upsideEl.textContent = `${sign}${upside.toFixed(1)}%`;
             
-            // Actualizar precio e upside inmediatamente
-            updatePriceAndUpside(TIC_SYMBOL, 'ticCurrentPrice', 'ticUpsidePercent', FAIR_VALUE, DEFAULT_PRICE);
+            // Cambiar color basado en upside
+            upsideEl.classList.remove('success', 'warning', 'danger');
+            if (upside >= 50) {
+                upsideEl.classList.add('success');
+            } else if (upside >= 0) {
+                upsideEl.classList.add('warning');
+            } else {
+                upsideEl.classList.add('danger');
+            }
             
-            // Actualizar cada 5 minutos (300000 ms)
-            setInterval(() => {
-                console.log('🔄 Actualizando precio y upside...');
-                updatePriceAndUpside(TIC_SYMBOL, 'ticCurrentPrice', 'ticUpsidePercent', FAIR_VALUE, DEFAULT_PRICE);
-            }, 300000);
-        });
+            upsideEl.classList.add('updating');
+            setTimeout(() => upsideEl.classList.remove('updating'), 600);
+        }
+    }
+    
+    /**
+     * Función maestra
+     */
+    async function start() {
+        console.log('🚀 Iniciando actualización de precios...');
+        
+        // Actualizar inmediatamente
+        const price = await fetchPriceFromYahoo(CONFIG.symbol) || CONFIG.fallbackPrice;
+        updateDisplay(price);
+        console.log(`✅ ${CONFIG.symbol}: ${CONFIG.currency}${price.toFixed(2)} | Upside: ${calculateUpside(price, CONFIG.fairValue).toFixed(1)}%`);
+        
+        // Actualizar cada 5 minutos
+        setInterval(async () => {
+            const price = await fetchPriceFromYahoo(CONFIG.symbol) || CONFIG.fallbackPrice;
+            updateDisplay(price);
+            console.log(`🔄 Actualizado: ${CONFIG.symbol} - ${CONFIG.currency}${price.toFixed(2)}`);
+        }, 300000);
+    }
+    
+    // Iniciar
+    start();
+});
+</script>
     </script>
 
     
