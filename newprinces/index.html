@@ -1454,12 +1454,12 @@
             console.log('🚀 Inicializando Finnhub Price & Upside Update...');
             
             // Actualizar precio e upside inmediatamente
-            updatePriceAndUpside(TIC_SYMBOL, 'ticCurrentPrice', 'ticUpsidePercent', FAIR_VALUE, DEFAULT_PRICE);
+            updatePriceAndUpside(TIC_SYMBOL, 'CurrentPrice', 'UpsidePercent', FAIR_VALUE, DEFAULT_PRICE);
             
             // Actualizar cada 5 minutos (300000 ms)
             setInterval(() => {
                 console.log('🔄 Actualizando precio y upside...');
-                updatePriceAndUpside(TIC_SYMBOL, 'ticCurrentPrice', 'ticUpsidePercent', FAIR_VALUE, DEFAULT_PRICE);
+                updatePriceAndUpside(TIC_SYMBOL, 'CurrentPrice', 'UpsidePercent', FAIR_VALUE, DEFAULT_PRICE);
             }, 300000);
         });
     </script>
