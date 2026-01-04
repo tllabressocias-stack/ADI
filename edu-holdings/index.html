@@ -482,8 +482,8 @@
                 </div>
             </div>
             <div class="price-badge">
-                <div class="current">€0.80</div>
-                <div class="target">Target: €2.46 DCF</div>
+                <div class="current id="currentPrice">€0.80</div>
+                <div class="target">Target: A$2.46 DCF</div>
             </div>
         </div>
 
@@ -632,7 +632,7 @@
                     <div class="asymmetry-card upside">
                         <div class="asymmetry-label">Base Case - DCF Fair Value</div>
                         <div class="asymmetry-price">€2.46</div>
-                        <div class="asymmetry-return upside">+207% Upside</div>
+                        <div class="asymmetry-return upside id="upsidePercent">+207% Upside</div>
                         <div class="asymmetry-descriptor">
                             Conservative DCF (11.8% WACC, 6.5x terminal EV/EBITDA, stable margins). Probability: 70%
                         </div>
@@ -1225,6 +1225,31 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('.nav-tab').classList.add('active');
         });
+         <!-- BOTÓN VOLVER AL INDEX - AGREGAR AQUÍ -->
+    <div style="text-align: center; padding: 40px 20px; background: rgba(0,0,0,0.02); margin-top: 50px;">
+        <a href="../" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;" 
+           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(102, 126, 234, 0.4)';" 
+           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+            ← Volver al Porfolio
+        </a>
+    </div>
+    <!-- Script universal de precios -->
+<script src="../shared-price-updater.js"></script>
+
+<!-- Configuración para EDU HOLDINGS -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const updater = new PriceUpdater({
+        symbol: 'EDU.ASX',
+        fairValue: 2.46,
+        fallbackPrice: 0.80,
+        priceElementId: 'currentPrice',      // Cambiar según tu HTML
+        upsideElementId: 'upsidePercent',    // Cambiar según tu HTML
+        currency: 'AUD'
+    });
+    
+    updater.start();
+});
     </script>
 </body>
 </html>
