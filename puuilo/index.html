@@ -307,7 +307,7 @@
         <div class="kpi-section">
             <div class="kpi-card">
                 <div class="kpi-label">Precio Actual</div>
-                <div class="kpi-value">€12,52</div>
+                <div class="kpi-value" id="currentPrice">€12,52</div>
                 <div class="kpi-subtitle">HE: PUULIO</div>
             </div>
             <div class="kpi-card">
@@ -318,7 +318,7 @@
             </div>
             <div class="kpi-card">
                 <div class="kpi-label">Upside Potencial</div>
-                <div class="kpi-value">113%</div>
+                <div class="kpi-value" id="upsidePercent">113%</div>
                 <div class="kpi-subtitle">Risk/Reward Favorable</div>
             </div>
             <div class="kpi-card">
@@ -1196,6 +1196,24 @@
             ← Volver al Porfolio
         </a>
     </div>
+    <!-- Script universal de precios -->
+<script src="../shared-price-updater.js"></script>
+
+<!-- Configuración para PUUILO -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const updater = new PriceUpdater({
+        symbol: 'PUUILO.HE',
+        fairValue: 26.62,
+        fallbackPrice: 12.48,
+        priceElementId: 'currentPrice',      // Cambiar según tu HTML
+        upsideElementId: 'upsidePercent',    // Cambiar según tu HTML
+        currency: '$'
+    });
+    
+    updater.start();
+});
+</script>
 </body>
 </html>
 
