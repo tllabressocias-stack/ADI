@@ -33,27 +33,45 @@ class PriceUpdater {
     }
 
     updateDisplay(currentPrice) {
-        const upside = this.calculateUpside(currentPrice);
-        
-        const priceEl = document.getElementById(this.priceElementId);
-        if (priceEl) {
-            priceEl.textContent = `${this.currency}${currentPrice.toFixed(2)}`;
-        }
-        
-        const upsideEl = document.getElementById(this.upsideElementId);
-        if (upsideEl) {
-            upsideEl.textContent = `${upside > 0 ? '+' : ''}${upside.toFixed(0)}%`;
-            upsideEl.style.color = upside > 0 ? 'var(--color-success)' : 'var(--color-danger)';
-        }
-        
-        localStorage.setItem(`price_${this.symbol}`, JSON.stringify({
-            current: currentPrice,
-            upside: upside,
-            fairValue: this.fairValue,
-            timestamp: new Date().toISOString()
-        }));
-        
-        console.log(`✅ ${this.symbol}: ${this.currency}${currentPrice.toFixed(2)} | Upside: ${upside.toFixed(0)}%`);
+    const upside = this.calculateUpside(currentPrice);
+    const priceText = `${this.currency}${currentPrice.toFixed(2)}`;
+    const upsideText = `${upside > 0 ? '+' : ''}${upside.toFixed(0)}%`;
+    const upsideColor = upside > 0 ? 'var(--color-success)' : 'var(--color-danger)';
+    
+    // Actualizar TODOS los elementos de precio (busca por clase o ID)
+    document.querySelectorAll('[data-price-element]').forEach(el => {
+        el.textContent = priceText;
+    });
+    
+    // Actualizar elemento principal de precio
+    const priceEl = document.getElementById(this.priceElementId);
+    if (priceEl) {
+        priceEl.textContent = priceText;
+    }
+    
+    // Actualizar TODOS los elementos de upside
+    document.querySelectorAll('[data-upside-element]').forEach(el => {
+        el.textContent = upsideText;
+        el.style.color = upsideColor;
+    });
+    
+    // Actualizar elemento principal de upside
+    const upsideEl = document.getElementById(this.upsideElementId);
+    if (upsideEl) {
+        upsideEl.textContent = upsideText;
+        upsideEl.style.color = upsideColor;
+    }
+    
+    localStorage.setItem(`price_${this.symbol}`, JSON.stringify({
+        current: currentPrice,
+        upside: upside,
+        fairValue: this.fairValue,
+        timestamp: new Date().toISOString()
+    }));
+    
+    console.log(`✅ ${this.symbol}: ${priceText} | Upside: ${upsideText}`);
+}
+
     }
 
     async updatePrice() {
