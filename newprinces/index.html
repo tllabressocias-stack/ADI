@@ -515,6 +515,8 @@
         }
     </style>
 </head>
+    <!-- SHARED PRICE UPDATER -->
+<script src="../shared-price-updater.js"></script>
 <body>
     <div class="container">
         <div class="navbar">
@@ -556,7 +558,7 @@
                         <tbody>
                             <tr>
                                 <td>Precio Actual</td>
-                                <td class="number"><strong>€19.00</strong></td>
+                                <td class="number"><strong id="current-price">€19.00</strong></td>
                             </tr>
                              <tr>
                                 <td>DCF Fair Value (Base Case)</td>
@@ -564,7 +566,7 @@
                                 </tr>
                             <tr>
                                 <td>Upside Potencial</td>
-                        <td class="number"><strong id="upsidePercent" style="color: var(--color-success);">+276%</strong></td>
+                        <td><strong id="upsidePercent" style="color: var(--color-success);">+276%</strong></td>
                         </tr>
                         <tr>
                                 <td>12M Price Target</td>
@@ -1471,5 +1473,56 @@
             ← Volver al Porfolio
         </a>
     </div>
+    <script>
+    // Inicializa actualización de precios para NewPrinces
+    const FAIR_VALUE = 71.51;
+    
+    // Función para recalcular upside
+    function updateUpside() {
+        const currentPriceEl = document.getElementById('current-price');
+        const upsideEl = document.getElementById('upsidePercent');
+        const fairValueEl = document.getElementById('fairValue');
+        
+        if (!currentPriceEl) return;
+        
+        const priceText = currentPriceEl.textContent.replace('€', '').trim();
+        const currentPrice = parseFloat(priceText);
+        
+        if (!isNaN(currentPrice)) {
+            const upside = ((FAIR_VALUE - currentPrice) / currentPrice * 100).toFixed(0);
+            const upsidePercent = upside > 0 ? `+${upside}%` : `${upside}%`;
+            
+            if (upsideEl) {
+                upsideEl.textContent = upsidePercent;
+                upsideEl.style.color = upside > 0 ? 'var(--color-success)' : 'var(--color-danger)';
+            }
+        }
+    }
+    
+    // Ejecuta actualización de precio cada 30 segundos
+    async function init() {
+        // Primera actualización inmediata
+        await window.PriceUpdater.updateThesisPrices('newprinces');
+        updateUpside();
+        
+        // Recalcular upside cuando cambie el precio
+        const observer = new MutationObserver(updateUpside);
+        const currentPriceEl = document.getElementById('current-price');
+        if (currentPriceEl) {
+            observer.observe(currentPriceEl, { characterData: true, subtree: true });
+        }
+        
+        // Auto-actualizar cada 30 segundos
+        window.PriceUpdater.startAutoUpdate('newprinces', 0.5); // 0.5 minutos = 30 segundos
+    }
+    
+    // Espera a que el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+</script>
+
 </body>
 </html>
