@@ -1475,66 +1475,138 @@
         </a>
     </div>
    <script>
-    // ==========================================
-    // SINCRONIZACIÓN CON PRECIO DEL INDEX
-    // ==========================================
-    const TICKER_NEWPRINCES = 'NWL.MI';
-    const FAIR_VALUE = 71.51;
-    const MANUAL_PRICE_FALLBACK = 19.78;
+    // =====================================================
+    // UNIVERSAL PRICE & UPSIDE UPDATER - NewPrinces Edition
+    // =====================================================
 
-    function getPriceFromIndexCache() {
-        const cached = localStorage.getItem(`price_${TICKER_NEWPRINCES}`);
-        if (cached) {
+    class PriceUpdater {
+        constructor(config) {
+            this.symbol = config.symbol;
+            this.fairValue = config.fairValue;
+            this.fallbackPrice = config.fallbackPrice || null;
+            this.priceElementId = config.priceElementId;
+            this.upsideElementId = config.upsideElementId;
+            this.currency = config.currency || '$';
+            this.updateInterval = config.updateInterval || 300000;
+            
+            this.FINNHUB_API_KEY = 'd5bvi7pr01qsbmghj0sgd5bvi7pr01qsbmghj0t0';
+            this.FINNHUB_BASE_URL = 'https://finnhub.io/api/v1';
+        }
+
+        async getPriceFromFinnhub() {
             try {
-                const { price } = JSON.parse(cached);
-                return price;
-            } catch (e) {}
+                const response = await fetch(
+                    `${this.FINNHUB_BASE_URL}/quote?symbol=${this.symbol}&token=${this.FINNHUB_API_KEY}`
+                );
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                return (data.c && typeof data.c === 'number') ? data.c : null;
+            } catch (error) {
+                console.error(`❌ Error fetching ${this.symbol}:`, error);
+                return null;
+            }
         }
-        return null;
-    }
 
-    async function updateCurrentPrice() {
-        const priceEl = document.getElementById('current-price');
-        if (!priceEl) return;
-        
-        let price = getPriceFromIndexCache();
-        if (!price || price <= 0) {
-            price = MANUAL_PRICE_FALLBACK;
+        calculateUpside(currentPrice) {
+            if (!currentPrice || currentPrice <= 0) return 0;
+            return ((this.fairValue - currentPrice) / currentPrice) * 100;
         }
-        
-        priceEl.textContent = `€${price.toFixed(2)}`;
-        updateUpside(price);
+
+        updateDisplay(currentPrice) {
+            const upside = this.calculateUpside(currentPrice);
+            
+            const priceEl = document.getElementById(this.priceElementId);
+            if (priceEl) {
+                priceEl.textContent = `${this.currency}${currentPrice.toFixed(2)}`;
+            }
+            
+            const upsideEl = document.getElementById(this.upsideElementId);
+            if (upsideEl) {
+                upsideEl.textContent = `${upside > 0 ? '+' : ''}${upside.toFixed(0)}%`;
+                upsideEl.style.color = upside > 0 ? 'var(--color-success)' : 'var(--color-danger)';
+            }
+            
+            localStorage.setItem(`price_${this.symbol}`, JSON.stringify({
+                current: currentPrice,
+                upside: upside,
+                fairValue: this.fairValue,
+                timestamp: new Date().toISOString()
+            }));
+            
+            console.log(`✅ ${this.symbol}: ${this.currency}${currentPrice.toFixed(2)} | Upside: ${upside.toFixed(0)}%`);
+        }
+
+        async updatePrice() {
+            const price = await this.getPriceFromFinnhub();
+            const currentPrice = price || this.fallbackPrice;
+            
+            if (currentPrice) {
+                this.updateDisplay(currentPrice);
+            } else {
+                console.warn(`⚠️ No price available for ${this.symbol}`);
+            }
+        }
+
+        start() {
+            console.log(`🚀 Iniciando actualización para ${this.symbol}...`);
+            this.updatePrice();
+            this.intervalId = setInterval(() => {
+                this.updatePrice();
+            }, this.updateInterval);
+        }
+
+        stop() {
+            if (this.intervalId) {
+                clearInterval(this.intervalId);
+                console.log(`⏹️ Detenida actualización para ${this.symbol}`);
+            }
+        }
     }
 
-    function updateUpside(currentPrice) {
-        const upsideEl = document.getElementById('upsidePercent');
-        if (!upsideEl || !currentPrice || currentPrice <= 0) return;
-        
-        const upside = ((FAIR_VALUE - currentPrice) / currentPrice * 100).toFixed(0);
-        const upsidePercent = upside > 0 ? `+${upside}%` : `${upside}%`;
-        
-        upsideEl.textContent = upsidePercent;
-        upsideEl.style.color = upside > 0 ? 'var(--color-success)' : 'var(--color-danger)';
-    }
+    // =====================================================
+    // CONFIGURACIÓN NEWPRINCES
+    // =====================================================
+    
+    const newprinceUpdater = new PriceUpdater({
+        symbol: 'NWL.MI',
+        fairValue: 71.51,
+        fallbackPrice: 19.78,
+        priceElementId: 'current-price',
+        upsideElementId: 'upsidePercent',
+        currency: '€',
+        updateInterval: 300000 // 5 minutos
+    });
 
-    // FUNCIONES ORIGINALES
+    // =====================================================
+    // FUNCIONES ORIGINALES (Navigation & Charts)
+    // =====================================================
+    
     function showSection(sectionId) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => section.classList.remove('active'));
         document.getElementById(sectionId).classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        
+        const buttons = document.querySelectorAll('.nav-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
+        
         document.querySelector('.main-panel').scrollTop = 0;
     }
 
     function drawChart(canvasId, type, data) {
         const canvas = document.getElementById(canvasId);
         if (!canvas) return;
+        
         const ctx = canvas.getContext('2d');
         const rect = canvas.getBoundingClientRect();
         canvas.width = rect.width;
         canvas.height = 250;
-        if (type === 'bar') drawBarChart(ctx, data);
-        else if (type === 'line') drawLineChart(ctx, data);
+        
+        if (type === 'bar') {
+            drawBarChart(ctx, data);
+        } else if (type === 'line') {
+            drawLineChart(ctx, data);
+        }
     }
 
     function drawBarChart(ctx, data) {
@@ -1542,6 +1614,7 @@
         const maxValue = Math.max(...data.values);
         const padding = 40;
         const chartHeight = ctx.canvas.height - padding * 2;
+
         ctx.strokeStyle = '#bdc3c7';
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -1549,16 +1622,20 @@
         ctx.lineTo(padding, ctx.canvas.height - padding);
         ctx.lineTo(ctx.canvas.width - padding, ctx.canvas.height - padding);
         ctx.stroke();
+
         ctx.fillStyle = '#2d8a99';
         data.values.forEach((value, index) => {
             const barHeight = (value / maxValue) * chartHeight;
             const x = padding + (index * barWidth * 1.5) + barWidth * 0.25;
             const y = ctx.canvas.height - padding - barHeight;
+            
             ctx.fillRect(x, y, barWidth, barHeight);
+            
             ctx.fillStyle = '#1f5c7a';
             ctx.font = 'bold 12px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('€' + (value / 1000).toFixed(1) + 'B', x + barWidth / 2, y - 5);
+            
             ctx.fillStyle = '#7f8c8d';
             ctx.font = '11px sans-serif';
             ctx.fillText(data.labels[index], x + barWidth / 2, ctx.canvas.height - padding + 20);
@@ -1571,6 +1648,7 @@
         const chartHeight = ctx.canvas.height - padding * 2;
         const pointSpacing = chartWidth / (data.labels.length - 1);
         const maxValue = Math.max(...data.values);
+
         ctx.strokeStyle = '#bdc3c7';
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -1578,16 +1656,22 @@
         ctx.lineTo(padding, ctx.canvas.height - padding);
         ctx.lineTo(ctx.canvas.width - padding, ctx.canvas.height - padding);
         ctx.stroke();
+
         ctx.strokeStyle = '#2d8a99';
         ctx.lineWidth = 3;
         ctx.beginPath();
         data.values.forEach((value, index) => {
             const x = padding + (index * pointSpacing);
             const y = ctx.canvas.height - padding - (value / maxValue) * chartHeight;
-            if (index === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
+            
+            if (index === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
         });
         ctx.stroke();
+
         ctx.fillStyle = '#e8a400';
         data.values.forEach((value, index) => {
             const x = padding + (index * pointSpacing);
@@ -1596,6 +1680,7 @@
             ctx.arc(x, y, 4, 0, Math.PI * 2);
             ctx.fill();
         });
+
         ctx.fillStyle = '#7f8c8d';
         ctx.font = '11px sans-serif';
         ctx.textAlign = 'center';
@@ -1605,11 +1690,15 @@
         });
     }
 
-    // INICIALIZAR
+    // =====================================================
+    // INICIALIZACIÓN
+    // =====================================================
+    
     window.addEventListener('load', function() {
-        updateCurrentPrice();
-        setInterval(updateCurrentPrice, 30 * 1000); // Cada 30 segundos
+        // Iniciar Price Updater
+        newprinceUpdater.start();
         
+        // Dibujar charts
         drawChart('feeEliminationChart', 'bar', {
             labels: ['Carrefour Italia', 'Post-Integration'],
             values: [70, 0]
@@ -1624,6 +1713,8 @@
             labels: ['2025', '2026', '2027', '2028', '2029', '2030', '2031'],
             values: [950, 850, 650, 500, 350, 250, 150]
         });
+        
+        console.log('✅ NewPrinces Thesis iniciada correctamente');
     });
 </script>
   
