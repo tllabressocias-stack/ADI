@@ -1474,70 +1474,41 @@
             ← Volver al Porfolio
         </a>
     </div>
-    <script>
+   <script>
     // ==========================================
-    // CONFIGURACIÓN FINNHUB
+    // SINCRONIZACIÓN CON PRECIO DEL INDEX
     // ==========================================
-    const FINNHUB_API_KEY = 'd5bvi7pr01qsbmghj0sgd5bvi7pr01qsbmghj0t0';
-    const FINNHUB_URL = 'https://finnhub.io/api/v1/quote';
     const TICKER_NEWPRINCES = 'NWL.MI';
     const FAIR_VALUE = 71.51;
+    const MANUAL_PRICE_FALLBACK = 19.78;
 
-    // ==========================================
-    // FUNCIONES DE PRECIO
-    // ==========================================
-    
-    async function getPriceFromFinnhub() {
-        try {
-            const response = await fetch(`${FINNHUB_URL}?symbol=${TICKER_NEWPRINCES}&token=${FINNHUB_API_KEY}`);
-            const data = await response.json();
-            if (data.c !== undefined && data.c > 0) {
-                return data.c;
-            }
-        } catch (error) {
-            console.warn('Error fetching price:', error);
+    function getPriceFromIndexCache() {
+        const cached = localStorage.getItem(`price_${TICKER_NEWPRINCES}`);
+        if (cached) {
+            try {
+                const { price } = JSON.parse(cached);
+                return price;
+            } catch (e) {}
         }
         return null;
-    }
-
-    async function getPriceWithCache() {
-        const cached = localStorage.getItem(`price_${TICKER_NEWPRINCES}`);
-        
-        if (cached) {
-            const { price, timestamp } = JSON.parse(cached);
-            const ageMinutes = (Date.now() - timestamp) / 60000;
-            if (ageMinutes < 5) {
-                return price; // Cache válido
-            }
-        }
-        
-        // Cache expirado, traer de API
-        const price = await getPriceFromFinnhub();
-        if (price) {
-            localStorage.setItem(`price_${TICKER_NEWPRINCES}`, JSON.stringify({
-                price: price,
-                timestamp: Date.now()
-            }));
-        }
-        return price;
     }
 
     async function updateCurrentPrice() {
         const priceEl = document.getElementById('current-price');
         if (!priceEl) return;
         
-        const price = await getPriceWithCache();
-        if (price) {
-            priceEl.textContent = `€${price.toFixed(2)}`;
-            updateUpside(price);
+        let price = getPriceFromIndexCache();
+        if (!price || price <= 0) {
+            price = MANUAL_PRICE_FALLBACK;
         }
+        
+        priceEl.textContent = `€${price.toFixed(2)}`;
+        updateUpside(price);
     }
 
     function updateUpside(currentPrice) {
         const upsideEl = document.getElementById('upsidePercent');
-        if (!upsideEl) return;
-        
-        if (!currentPrice || currentPrice <= 0) return;
+        if (!upsideEl || !currentPrice || currentPrice <= 0) return;
         
         const upside = ((FAIR_VALUE - currentPrice) / currentPrice * 100).toFixed(0);
         const upsidePercent = upside > 0 ? `+${upside}%` : `${upside}%`;
@@ -1545,7 +1516,8 @@
         upsideEl.textContent = upsidePercent;
         upsideEl.style.color = upside > 0 ? 'var(--color-success)' : 'var(--color-danger)';
     }
- // Funciones Originales (Navigation & Charts)
+
+    // FUNCIONES ORIGINALES
     function showSection(sectionId) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(sectionId).classList.add('active');
@@ -1633,13 +1605,25 @@
         });
     }
 
-    // Inicializar
+    // INICIALIZAR
     window.addEventListener('load', function() {
         updateCurrentPrice();
-        setInterval(updateCurrentPrice, 5 * 60 * 1000);
-        drawChart('feeEliminationChart', 'bar', {labels: ['Carrefour Italia', 'Post-Integration'], values: [70, 0]});
-        drawChart('synergiesChart', 'bar', {labels: ['Procurement', 'Logistics', 'Overhead', 'Fee Elim.', 'Private Label'], values: [27.5, 12.5, 7.5, 67.5, 7.5]});
-        drawChart('leverageChart', 'line', {labels: ['2025', '2026', '2027', '2028', '2029', '2030', '2031'], values: [950, 850, 650, 500, 350, 250, 150]});
+        setInterval(updateCurrentPrice, 30 * 1000); // Cada 30 segundos
+        
+        drawChart('feeEliminationChart', 'bar', {
+            labels: ['Carrefour Italia', 'Post-Integration'],
+            values: [70, 0]
+        });
+
+        drawChart('synergiesChart', 'bar', {
+            labels: ['Procurement', 'Logistics', 'Overhead', 'Fee Elim.', 'Private Label'],
+            values: [27.5, 12.5, 7.5, 67.5, 7.5]
+        });
+
+        drawChart('leverageChart', 'line', {
+            labels: ['2025', '2026', '2027', '2028', '2029', '2030', '2031'],
+            values: [950, 850, 650, 500, 350, 250, 150]
+        });
     });
 </script>
   
