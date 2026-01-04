@@ -1,1 +1,29 @@
-
+{
+  "lastUpdate": "2026-01-04T07:59:00Z",
+  "prices": {
+    "PUUILO.HE": {
+      "current": 12.48,
+      "fairValue": 26.62,
+      "currency": "EUR",
+      "source": "manual"
+    },
+    "TOA.WA": {
+      "current": 9.75,
+      "fairValue": 21.05,
+      "currency": "PLN",
+      "source": "manual"
+    },
+    "TIC": {
+      "current": 9.89,
+      "fairValue": 20.63,
+      "currency": "USD",
+      "source": "api"
+    },
+    "NWL.MI": {
+      "current": 19.90,
+      "fairValue": 71.51,
+      "currency": "EUR",
+      "source": "manual"
+    }
+  }
+}
