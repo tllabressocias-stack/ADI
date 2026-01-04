@@ -514,6 +514,7 @@
             font-weight: 600;
         }
     </style>
+    <script src="https://finnhub.io/api/v1/quote"></script>
 </head>
     <!-- SHARED PRICE UPDATER -->
 <script src="../shared-price-updater.js"></script>
@@ -1474,54 +1475,214 @@
         </a>
     </div>
     <script>
-    // Inicializa actualización de precios para NewPrinces
+    // ==========================================
+    // CONFIGURACIÓN FINNHUB
+    // ==========================================
+    const FINNHUB_API_KEY = 'd5bvi7pr01qsbmghj0sgd5bvi7pr01qsbmghj0t0';
+    const FINNHUB_URL = 'https://finnhub.io/api/v1/quote';
+    const TICKER_NEWPRINCES = 'NWL.MI';
     const FAIR_VALUE = 71.51;
+
+    // ==========================================
+    // FUNCIONES DE PRECIO
+    // ==========================================
     
-    // Función para recalcular upside
-    function updateUpside() {
-        const currentPriceEl = document.getElementById('current-price');
-        const upsideEl = document.getElementById('upsidePercent');
-        const fairValueEl = document.getElementById('fairValue');
+    async function getPriceFromFinnhub() {
+        try {
+            const response = await fetch(`${FINNHUB_URL}?symbol=${TICKER_NEWPRINCES}&token=${FINNHUB_API_KEY}`);
+            const data = await response.json();
+            if (data.c !== undefined && data.c > 0) {
+                return data.c;
+            }
+        } catch (error) {
+            console.warn('Error fetching price:', error);
+        }
+        return null;
+    }
+
+    async function getPriceWithCache() {
+        const cached = localStorage.getItem(`price_${TICKER_NEWPRINCES}`);
         
-        if (!currentPriceEl) return;
-        
-        const priceText = currentPriceEl.textContent.replace('€', '').trim();
-        const currentPrice = parseFloat(priceText);
-        
-        if (!isNaN(currentPrice)) {
-            const upside = ((FAIR_VALUE - currentPrice) / currentPrice * 100).toFixed(0);
-            const upsidePercent = upside > 0 ? `+${upside}%` : `${upside}%`;
-            
-            if (upsideEl) {
-                upsideEl.textContent = upsidePercent;
-                upsideEl.style.color = upside > 0 ? 'var(--color-success)' : 'var(--color-danger)';
+        if (cached) {
+            const { price, timestamp } = JSON.parse(cached);
+            const ageMinutes = (Date.now() - timestamp) / 60000;
+            if (ageMinutes < 5) {
+                return price; // Cache válido
             }
         }
-    }
-    
-    // Ejecuta actualización de precio cada 30 segundos
-    async function init() {
-        // Primera actualización inmediata
-        await window.PriceUpdater.updateThesisPrices('newprinces');
-        updateUpside();
         
-        // Recalcular upside cuando cambie el precio
-        const observer = new MutationObserver(updateUpside);
-        const currentPriceEl = document.getElementById('current-price');
-        if (currentPriceEl) {
-            observer.observe(currentPriceEl, { characterData: true, subtree: true });
+        // Cache expirado, traer de API
+        const price = await getPriceFromFinnhub();
+        if (price) {
+            localStorage.setItem(`price_${TICKER_NEWPRINCES}`, JSON.stringify({
+                price: price,
+                timestamp: Date.now()
+            }));
         }
+        return price;
+    }
+
+    async function updateCurrentPrice() {
+        const priceEl = document.getElementById('current-price');
+        if (!priceEl) return;
         
-        // Auto-actualizar cada 30 segundos
-        window.PriceUpdater.startAutoUpdate('newprinces', 0.5); // 0.5 minutos = 30 segundos
+        const price = await getPriceWithCache();
+        if (price) {
+            priceEl.textContent = `€${price.toFixed(2)}`;
+            updateUpside(price);
+        }
     }
+
+    function updateUpside(currentPrice) {
+        const upsideEl = document.getElementById('upsidePercent');
+        if (!upsideEl) return;
+        
+        if (!currentPrice || currentPrice <= 0) return;
+        
+        const upside = ((FAIR_VALUE - currentPrice) / currentPrice * 100).toFixed(0);
+        const upsidePercent = upside > 0 ? `+${upside}%` : `${upside}%`;
+        
+        upsideEl.textContent = upsidePercent;
+        upsideEl.style.color = upside > 0 ? 'var(--color-success)' : 'var(--color-danger)';
+    }
+
+    // ==========================================
+    // FUNCIONES ORIGINALES (MANTENER)
+    // ==========================================
     
-    // Espera a que el DOM esté listo
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
+    function showSection(sectionId) {
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => section.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+        
+        const buttons = document.querySelectorAll('.nav-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        document.querySelector('.main-panel').scrollTop = 0;
     }
+
+    function drawChart(canvasId, type, data) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = 250;
+        
+        if (type === 'bar') {
+            drawBarChart(ctx, data);
+        } else if (type === 'line') {
+            drawLineChart(ctx, data);
+        }
+    }
+
+    function drawBarChart(ctx, data) {
+        const barWidth = ctx.canvas.width / (data.labels.length * 1.5);
+        const maxValue = Math.max(...data.values);
+        const padding = 40;
+        const chartHeight = ctx.canvas.height - padding * 2;
+
+        ctx.strokeStyle = '#bdc3c7';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(padding, padding);
+        ctx.lineTo(padding, ctx.canvas.height - padding);
+        ctx.lineTo(ctx.canvas.width - padding, ctx.canvas.height - padding);
+        ctx.stroke();
+
+        ctx.fillStyle = '#2d8a99';
+        data.values.forEach((value, index) => {
+            const barHeight = (value / maxValue) * chartHeight;
+            const x = padding + (index * barWidth * 1.5) + barWidth * 0.25;
+            const y = ctx.canvas.height - padding - barHeight;
+            
+            ctx.fillRect(x, y, barWidth, barHeight);
+            
+            ctx.fillStyle = '#1f5c7a';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('€' + (value / 1000).toFixed(1) + 'B', x + barWidth / 2, y - 5);
+            
+            ctx.fillStyle = '#7f8c8d';
+            ctx.font = '11px sans-serif';
+            ctx.fillText(data.labels[index], x + barWidth / 2, ctx.canvas.height - padding + 20);
+        });
+    }
+
+    function drawLineChart(ctx, data) {
+        const padding = 40;
+        const chartWidth = ctx.canvas.width - padding * 2;
+        const chartHeight = ctx.canvas.height - padding * 2;
+        const pointSpacing = chartWidth / (data.labels.length - 1);
+        const maxValue = Math.max(...data.values);
+
+        ctx.strokeStyle = '#bdc3c7';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(padding, padding);
+        ctx.lineTo(padding, ctx.canvas.height - padding);
+        ctx.lineTo(ctx.canvas.width - padding, ctx.canvas.height - padding);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#2d8a99';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        data.values.forEach((value, index) => {
+            const x = padding + (index * pointSpacing);
+            const y = ctx.canvas.height - padding - (value / maxValue) * chartHeight;
+            
+            if (index === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        });
+        ctx.stroke();
+
+        ctx.fillStyle = '#e8a400';
+        data.values.forEach((value, index) => {
+            const x = padding + (index * pointSpacing);
+            const y = ctx.canvas.height - padding - (value / maxValue) * chartHeight;
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        ctx.fillStyle = '#7f8c8d';
+        ctx.font = '11px sans-serif';
+        ctx.textAlign = 'center';
+        data.labels.forEach((label, index) => {
+            const x = padding + (index * pointSpacing);
+            ctx.fillText(label, x, ctx.canvas.height - padding + 20);
+        });
+    }
+
+    // Inicializar charts
+    window.addEventListener('load', function() {
+        // Actualizar precio inmediatamente
+        updateCurrentPrice();
+        
+        // Auto-actualizar cada 5 minutos
+        setInterval(updateCurrentPrice, 5 * 60 * 1000);
+        
+        // Dibujar charts
+        drawChart('feeEliminationChart', 'bar', {
+            labels: ['Carrefour Italia', 'Post-Integration'],
+            values: [70, 0]
+        });
+
+        drawChart('synergiesChart', 'bar', {
+            labels: ['Procurement', 'Logistics', 'Overhead', 'Fee Elim.', 'Private Label'],
+            values: [27.5, 12.5, 7.5, 67.5, 7.5]
+        });
+
+        drawChart('leverageChart', 'line', {
+            labels: ['2025', '2026', '2027', '2028', '2029', '2030', '2031'],
+            values: [950, 850, 650, 500, 350, 250, 150]
+        });
+    });
 </script>
 
 </body>
