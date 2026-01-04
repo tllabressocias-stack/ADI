@@ -1044,7 +1044,9 @@
                     <div class="recommendation-box">
                         <div class="rec-title">Recomendación Final</div>
                         <div class="rec-value" style="font-size: 32px;">COMPRAR</div>
-                        <p style="margin-top: 10px; font-size: 14px;">DCF Fair Value: €71.51 | Upside: +276%</p>
+                         <p style="margin-top: 10px; font-size: 14px;">
+                             DCF Fair Value: €71.51 | Upside: <span id="upsidePercent">+276%</span>
+                        </p>
                     </div>
 
                     <h3>Tesis Resumida</h3>
@@ -1113,7 +1115,7 @@
                 <div class="sidebar-title">📊 Valuación</div>
                 <div class="metric">
                     <div class="metric-label">Precio Actual</div>
-                    <div class="metric-value">€19.00</div>
+                    <div class="metric-value" id="currentPrice">€19.00</div>
                 </div>
                 <div class="metric">
                     <div class="metric-label">Fair Value (DCF)</div>
@@ -1368,6 +1370,23 @@
             ← Volver al Portfolio
         </a>
     </div>
+    <!-- Script universal de precios -->
+<script src="../shared-price-updater.js"></script>
+
+<!-- Configuración para Newprinces -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const updater = new PriceUpdater({
+        symbol: 'NWL.MI',
+        fairValue: 71.51,
+        fallbackPrice: 18.78,
+        priceElementId: 'currentPrice',      // Cambiar según tu HTML
+        upsideElementId: 'upsidePercent',    // Cambiar según tu HTML
+        currency: '€'
+    });
+    
+    updater.start();
+});
 
 </body>
 </html>
