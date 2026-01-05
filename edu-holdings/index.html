@@ -1149,5 +1149,23 @@
             ← Volver al Porfolio
         </a>
     </div>
+     <!-- Script universal de precios -->
+<script src="../shared-price-updater.js"></script>
+
+<!-- Configuración para PUUILO -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const updater = new PriceUpdater({
+        symbol: 'PUUILO.HE',
+        fairValue: 26.62,
+        fallbackPrice: 12.48,
+        priceElementId: 'currentPrice',      // Cambiar según tu HTML
+        upsideElementId: 'upsidePercent',    // Cambiar según tu HTML
+        currency: '€'
+    });
+    
+    updater.start();
+});
+<script/>
 </body>
 </html>
