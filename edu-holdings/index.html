@@ -1152,20 +1152,19 @@
      <!-- Script universal de precios -->
 <script src="../shared-price-updater.js"></script>
 
-<!-- Configuración para PUUILO -->
+<!-- Configuración para EDU HOLDINGS -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const updater = new PriceUpdater({
-        symbol: 'PUUILO.HE',
-        fairValue: 26.62,
-        fallbackPrice: 12.48,
+        symbol: 'EDU.ASX',
+        fairValue: 2.46,
+        fallbackPrice: 0.80,
         priceElementId: 'currentPrice',      // Cambiar según tu HTML
         upsideElementId: 'upsidePercent',    // Cambiar según tu HTML
-        currency: '€'
+        currency: 'A$'
     });
-    
     updater.start();
 });
-<script/>
+</script>
 </body>
 </html>
