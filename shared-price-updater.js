@@ -70,6 +70,7 @@ class PriceUpdater {
     }
 
 async updatePrice() {
+    async updatePrice() {
     // 1️⃣ PRIMERO: Obtener de Finnhub (precio más actual)
     const price = await this.getPriceFromFinnhub();
     
@@ -79,7 +80,15 @@ async updatePrice() {
         return;
     }
     
-    // 2️⃣ SEGUNDO: Si Finnhub falla, leer del localStorage (actualizado por index)
+    // 2️⃣ SEGUNDO: Si Finnhub falla, leer del manualPrices del index
+    const indexManual = this.getManualPriceFromIndex();
+    if (indexManual && indexManual > 0) {
+        console.log(`📋 Precio manual del index: ${indexManual}`);
+        this.updateDisplay(indexManual);
+        return;
+    }
+    
+    // 3️⃣ TERCERO: Si todo falla, leer del localStorage (actualizado por index)
     const storedPrice = localStorage.getItem(`price_${this.symbol}`);
     if (storedPrice) {
         try {
@@ -94,14 +103,13 @@ async updatePrice() {
         }
     }
 
-    // 3️⃣ TERCERO: Si todo falla, usar fallback
+    // 4️⃣ CUARTO: Si todo falla, usar fallback
     const currentPrice = this.fallbackPrice;
     if (currentPrice) {
         console.log(`📌 Usando fallback: ${currentPrice}`);
         this.updateDisplay(currentPrice);
     }
 }
-
     start() {
         console.log(`🚀 Iniciando actualización para ${this.symbol}...`);
         
