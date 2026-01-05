@@ -80,10 +80,10 @@ async updatePrice() {
     }
     
     // 2️⃣ SEGUNDO: Si Finnhub falla, leer del manualPrices del index
-    const indexManual = this.getManualPriceFromIndex();
-    if (indexManual && indexManual > 0) {
-        console.log(`📋 Precio manual del index: ${indexManual}`);
-        this.updateDisplay(indexManual);
+    const manualPrices = this.getManualPriceFromIndex();
+    if (manualPrices && manualPrices > 0) {
+        console.log(`📋 Precio manual del index: ${manualPrices}`);
+        this.updateDisplay(manualPrices);
         return;
     }
     
