@@ -482,7 +482,7 @@
                 </div>
             </div>
             <div class="price-badge">
-                <div class="current id="currentPrice">€0.80</div>
+                <div class="current" id="currentPrice">€0.80</div>
                 <div class="target">Target: A$2.46 DCF</div>
             </div>
         </div>
@@ -632,7 +632,7 @@
                     <div class="asymmetry-card upside">
                         <div class="asymmetry-label">Base Case - DCF Fair Value</div>
                         <div class="asymmetry-price">€2.46</div>
-                        <div class="asymmetry-return upside id="upsidePercent">+207% Upside</div>
+                        <div class="asymmetry-return upside" id="upsidePercent">+207% Upside</div>
                         <div class="asymmetry-descriptor">
                             Conservative DCF (11.8% WACC, 6.5x terminal EV/EBITDA, stable margins). Probability: 70%
                         </div>
@@ -1242,12 +1242,12 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const updater = new PriceUpdater({
-        symbol: 'EDU.ASIX',
+        symbol: 'EDU.ASX',
         fairValue: 2.46,
         fallbackPrice: 0.87,
         priceElementId: 'currentPrice',      // Cambiar según tu HTML
         upsideElementId: 'upsidePercent',    // Cambiar según tu HTML
-        currency: '$'
+        currency: 'AUD'
     });
     
     updater.start();
