@@ -683,73 +683,74 @@
             }
         }
 
-        // Obtener precio en tiempo real (localStorage → API → fallback)
+        // Obtener precio en tiempo real (API → localStorage → fallback)
         async function getRealtimePrice(ticker) {
+    try {
+        const now = Date.now();
+
+        // 1️⃣ PRIMERO: Finnhub API
+        console.log(`🔍 Buscando precio en API para: ${ticker}`);
+        try {
+            const response = await fetch(`${FINNHUB_URL}?symbol=${ticker}&token=${FINNHUB_API_KEY}`, {
+                signal: AbortSignal.timeout(3000)
+            });
+            const data = await response.json();
+
+            if (data.c && data.c > 0) {
+                priceCache[ticker] = data.c;
+                priceSource[ticker] = 'api';
+                cacheTimestamp[ticker] = now;
+                console.log(`✅ API ${ticker}: ${data.c}`);
+                return data.c;
+            }
+        } catch (apiError) {
+            console.warn(`⚠️ API error ${ticker}: ${apiError.message}`);
+        }
+
+        // 2️⃣ SEGUNDO: Precios manuales
+        if (manualPrices[ticker]) {
+            const manualPrice = manualPrices[ticker].current;
+            priceCache[ticker] = manualPrice;
+            priceSource[ticker] = 'manual';
+            cacheTimestamp[ticker] = now;
+            console.log(`📌 Manual ${ticker}: ${manualPrice}`);
+            return manualPrice;
+        }
+
+        // 3️⃣ TERCERO: localStorage (de las tesis)
+        const localData = localStorage.getItem(`price_${ticker}`);
+        if (localData) {
             try {
-                const now = Date.now();
-
-                // ⭐ PRIMERO: intentar localStorage
-                const localData = localStorage.getItem(`price_${ticker}`);
-                if (localData) {
-                    try {
-                        const data = JSON.parse(localData);
-                        if (data.current && data.current > 0) {
-                            priceCache[ticker] = data.current;
-                            priceSource[ticker] = 'local';
-                            cacheTimestamp[ticker] = now;
-                            console.log(`📱 localStorage ${ticker}: ${data.current}`);
-                            return data.current;
-                        }
-                    } catch (e) {
-                        console.warn(`⚠️ Error leyendo localStorage: ${ticker}`);
-                    }
-                }
-
-                // SEGUNDO: intentar cache existente
-                if (priceCache[ticker] && cacheTimestamp[ticker] && (now - cacheTimestamp[ticker]) < CACHE_DURATION) {
-                    return priceCache[ticker];
-                }
-
-                // TERCERO: Finnhub API
-                console.log(`🔍 Buscando precio para: ${ticker}`);
-                try {
-                    const response = await fetch(`${FINNHUB_URL}?symbol=${ticker}&token=${FINNHUB_API_KEY}`, {
-                        signal: AbortSignal.timeout(3000)
-                    });
-                    const data = await response.json();
-
-                    if (data.c && data.c > 0) {
-                        priceCache[ticker] = data.c;
-                        priceSource[ticker] = 'api';
-                        cacheTimestamp[ticker] = now;
-                        console.log(`✅ API ${ticker}: ${data.c}`);
-                        return data.c;
-                    }
-                } catch (apiError) {
-                    console.warn(`⚠️ API error ${ticker}: ${apiError.message}`);
-                }
-
-                // ÚLTIMO: Precios manuales
-                if (manualPrices[ticker]) {
-                    const manualPrice = manualPrices[ticker].current;
-                    priceCache[ticker] = manualPrice;
-                    priceSource[ticker] = 'manual';
+                const data = JSON.parse(localData);
+                if (data.current && data.current > 0) {
+                    priceCache[ticker] = data.current;
+                    priceSource[ticker] = 'local';
                     cacheTimestamp[ticker] = now;
-                    console.log(`📌 Manual ${ticker}: ${manualPrice}`);
-                    return manualPrice;
+                    console.log(`📱 localStorage ${ticker}: ${data.current}`);
+                    return data.current;
                 }
-
-                return null;
-
-            } catch (error) {
-                console.error(`❌ Error getRealtimePrice:`, error);
-                if (manualPrices[ticker]) {
-                    priceSource[ticker] = 'manual';
-                    return manualPrices[ticker].current;
-                }
-                return null;
+            } catch (e) {
+                console.warn(`⚠️ Error leyendo localStorage: ${ticker}`);
             }
         }
+
+        // 4️⃣ CUARTO: Cache existente
+        if (priceCache[ticker] && cacheTimestamp[ticker] && (now - cacheTimestamp[ticker]) < CACHE_DURATION) {
+            console.log(`⏱️ Cache ${ticker}: ${priceCache[ticker]}`);
+            return priceCache[ticker];
+        }
+
+        return null;
+
+    } catch (error) {
+        console.error(`❌ Error getRealtimePrice:`, error);
+        if (manualPrices[ticker]) {
+            priceSource[ticker] = 'manual';
+            return manualPrices[ticker].current;
+        }
+        return null;
+    }
+}
 
         // Renderizar tarjetas
         async function renderCards() {
