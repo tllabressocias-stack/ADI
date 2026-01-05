@@ -69,16 +69,32 @@ class PriceUpdater {
         console.log(`✅ ${this.symbol}: ${this.currency}${currentPrice.toFixed(2)} | Upside: ${upside.toFixed(1)}%`);
     }
 
-    async updatePrice() {
-        const price = await this.getPriceFromFinnhub();
-        const currentPrice = price || this.fallbackPrice;
-        
-        if (currentPrice) {
-            this.updateDisplay(currentPrice);
-        } else {
-            console.warn(`⚠️ No price available for ${this.symbol}`);
+async updatePrice() {
+    // 1️⃣ PRIMERO: Intentar leer del localStorage (actualizado por el index)
+    const storedPrice = localStorage.getItem(`price_${this.symbol}`);
+    if (storedPrice) {
+        try {
+            const data = JSON.parse(storedPrice);
+            if (data.current && data.current > 0) {
+                console.log(`📱 Precio del index (localStorage): ${data.current}`);
+                this.updateDisplay(data.current);
+                return; // ← Usa el precio del index y sale
+            }
+        } catch (e) {
+            console.warn('⚠️ Error leyendo localStorage');
         }
     }
+
+    // 2️⃣ SEGUNDO: Si no hay en localStorage, obtener de Finnhub
+    const price = await this.getPriceFromFinnhub();
+    const currentPrice = price || this.fallbackPrice;
+    
+    if (currentPrice) {
+        this.updateDisplay(currentPrice);
+    } else {
+        console.warn(`⚠️ No price available for ${this.symbol}`);
+    }
+}
 
     start() {
         console.log(`🚀 Iniciando actualización para ${this.symbol}...`);
