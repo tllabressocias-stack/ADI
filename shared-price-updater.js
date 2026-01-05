@@ -70,7 +70,6 @@ class PriceUpdater {
     }
 
 async updatePrice() {
-    async updatePrice() {
     // 1️⃣ PRIMERO: Obtener de Finnhub (precio más actual)
     const price = await this.getPriceFromFinnhub();
     
@@ -109,6 +108,17 @@ async updatePrice() {
         console.log(`📌 Usando fallback: ${currentPrice}`);
         this.updateDisplay(currentPrice);
     }
+}
+    getManualPriceFromIndex() {
+    const manualPrices = {
+        'PUUILO.HE': 12.48,
+        'TOA.WA': 9.75,
+        'NWL.MI': 19.78,
+        'TIC': 9.89,
+        'EDU.ASX': 0.82
+    };
+    
+    return manualPrices[this.symbol] || null;
 }
     start() {
         console.log(`🚀 Iniciando actualización para ${this.symbol}...`);
