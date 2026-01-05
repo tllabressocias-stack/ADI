@@ -1226,6 +1226,7 @@
             document.querySelector('.nav-tab').classList.add('active');
         });
          <!-- BOTÓN VOLVER AL INDEX - AGREGAR AQUÍ -->
+             
     <div style="text-align: center; padding: 40px 20px; background: rgba(0,0,0,0.02); margin-top: 50px;">
         <a href="../" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;" 
            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(102, 126, 234, 0.4)';" 
@@ -1234,22 +1235,23 @@
         </a>
     </div>
     <!-- Script universal de precios -->
+               
 <script src="../shared-price-updater.js"></script>
 
 <!-- Configuración para EDU HOLDINGS -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const updater = new PriceUpdater({
-        symbol: 'EDU.ASX',
+        symbol: 'EDU.ASIX',
         fairValue: 2.46,
-        fallbackPrice: 0.80,
+        fallbackPrice: 0.87,
         priceElementId: 'currentPrice',      // Cambiar según tu HTML
         upsideElementId: 'upsidePercent',    // Cambiar según tu HTML
-        currency: 'AUD'
+        currency: '$'
     });
     
     updater.start();
 });
-    </script>
+</script>
 </body>
 </html>
