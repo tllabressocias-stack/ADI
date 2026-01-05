@@ -555,7 +555,7 @@
             AUD: 'A$', CAD: 'C$', CHF: 'Fr', NOK: 'kr', DKK: 'kr', CZK: 'Kč'
         };
 
-        // DATOS DE EMPRESAS - SIMPLIFICADO (ticker ya es el Finnhub ticker)
+        // DATOS DE EMPRESAS
         const companiesData = {
             long: [
                 {
@@ -591,14 +591,13 @@
                 {
                     name: 'EDU Holdings',
                     ticker: 'EDU.ASX',
-                    icon: '🇮🇹',
-                    thesis: 'Crecimiento, recompras, mejora de margenes...',
-                    summary: 'Plataforma australiana de educacion',
+                    icon: '🇦🇺',
+                    thesis: 'Crecimiento, recompras, mejora de márgenes...',
+                    summary: 'Plataforma australiana de educación',
                     currency: 'AUD',
                     thesisFile: 'edu-holdings/',
                     positionType: 'long',
                 },
-                
             ],
             spinoff: [],
             ma: [
@@ -607,7 +606,7 @@
                     ticker: 'TIC',
                     icon: '🇺🇸',
                     thesis: 'Turnaround Tech',
-                    summary: 'Soluciones de tecnología empresarial. Consolidacion M&A - Sinergias',
+                    summary: 'Soluciones de tecnología empresarial. Consolidación M&A - Sinergias',
                     currency: 'USD',
                     thesisFile: 'tic-solutions/',
                     positionType: 'ma',
@@ -629,7 +628,7 @@
         const CACHE_DURATION = 60000;
 
         // Mostrar Toast Notification
-            function showToast(message, type = 'info', duration = 3000) {
+        function showToast(message, type = 'info', duration = 3000) {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
@@ -654,72 +653,103 @@
         }
 
         // Extrae Fair Value del HTML de la tesis
-        async function getRealtimePrice(ticker) {
-    try {
-        const now = Date.now();
-
-        // ⭐ PRIMERO: intentar localStorage
-        const localData = localStorage.getItem(`price_${ticker}`);
-        if (localData) {
+        async function extractTargetPriceFromThesis(thesisFile) {
             try {
-                const data = JSON.parse(localData);
-                if (data.current && data.current > 0) {
-                    priceCache[ticker] = data.current;
-                    priceSource[ticker] = 'local';
-                    cacheTimestamp[ticker] = now;
-                    console.log(`📱 localStorage ${ticker}: ${data.current}`);
-                    return data.current;
+                const response = await fetch(thesisFile);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const html = await response.text();
+                const match = html.match(/id=["']fairValue["'][^>]*>([^<]+)</i);
+                
+                if (match && match[1]) {
+                    const content = match[1].trim();
+                    const priceMatch = content.match(/([\d.]+)/);
+                    
+                    if (priceMatch) {
+                        const price = parseFloat(priceMatch[1]);
+                        if (price > 0) {
+                            console.log(`✅ Fair Value extraído: ${price}`);
+                            return price;
+                        }
+                    }
                 }
-            } catch (e) {
-                console.warn(`⚠️ Error leyendo localStorage: ${ticker}`);
+
+                console.warn(`⚠️ No se encontró id="fairValue"`);
+                return null;
+
+            } catch (error) {
+                console.warn(`❌ Error extrayendo Fair Value:`, error.message);
+                return null;
             }
         }
 
-        // SEGUNDO: intentar cache existente
-        if (priceCache[ticker] && cacheTimestamp[ticker] && (now - cacheTimestamp[ticker]) < CACHE_DURATION) {
-            return priceCache[ticker];
-        }
+        // Obtener precio en tiempo real (localStorage → API → fallback)
+        async function getRealtimePrice(ticker) {
+            try {
+                const now = Date.now();
 
-        // TERCERO: Finnhub API
-        console.log(`🔍 Buscando precio para: ${ticker}`);
-        try {
-            const response = await fetch(`${FINNHUB_URL}?symbol=${ticker}&token=${FINNHUB_API_KEY}`, {
-                signal: AbortSignal.timeout(3000)
-            });
-            const data = await response.json();
+                // ⭐ PRIMERO: intentar localStorage
+                const localData = localStorage.getItem(`price_${ticker}`);
+                if (localData) {
+                    try {
+                        const data = JSON.parse(localData);
+                        if (data.current && data.current > 0) {
+                            priceCache[ticker] = data.current;
+                            priceSource[ticker] = 'local';
+                            cacheTimestamp[ticker] = now;
+                            console.log(`📱 localStorage ${ticker}: ${data.current}`);
+                            return data.current;
+                        }
+                    } catch (e) {
+                        console.warn(`⚠️ Error leyendo localStorage: ${ticker}`);
+                    }
+                }
 
-            if (data.c && data.c > 0) {
-                priceCache[ticker] = data.c;
-                priceSource[ticker] = 'api';
-                cacheTimestamp[ticker] = now;
-                console.log(`✅ API ${ticker}: ${data.c}`);
-                return data.c;
+                // SEGUNDO: intentar cache existente
+                if (priceCache[ticker] && cacheTimestamp[ticker] && (now - cacheTimestamp[ticker]) < CACHE_DURATION) {
+                    return priceCache[ticker];
+                }
+
+                // TERCERO: Finnhub API
+                console.log(`🔍 Buscando precio para: ${ticker}`);
+                try {
+                    const response = await fetch(`${FINNHUB_URL}?symbol=${ticker}&token=${FINNHUB_API_KEY}`, {
+                        signal: AbortSignal.timeout(3000)
+                    });
+                    const data = await response.json();
+
+                    if (data.c && data.c > 0) {
+                        priceCache[ticker] = data.c;
+                        priceSource[ticker] = 'api';
+                        cacheTimestamp[ticker] = now;
+                        console.log(`✅ API ${ticker}: ${data.c}`);
+                        return data.c;
+                    }
+                } catch (apiError) {
+                    console.warn(`⚠️ API error ${ticker}: ${apiError.message}`);
+                }
+
+                // ÚLTIMO: Precios manuales
+                if (manualPrices[ticker]) {
+                    const manualPrice = manualPrices[ticker].current;
+                    priceCache[ticker] = manualPrice;
+                    priceSource[ticker] = 'manual';
+                    cacheTimestamp[ticker] = now;
+                    console.log(`📌 Manual ${ticker}: ${manualPrice}`);
+                    return manualPrice;
+                }
+
+                return null;
+
+            } catch (error) {
+                console.error(`❌ Error getRealtimePrice:`, error);
+                if (manualPrices[ticker]) {
+                    priceSource[ticker] = 'manual';
+                    return manualPrices[ticker].current;
+                }
+                return null;
             }
-        } catch (apiError) {
-            console.warn(`⚠️ API error ${ticker}: ${apiError.message}`);
         }
-
-        // ÚLTIMO: Precios manuales
-        if (manualPrices[ticker]) {
-            const manualPrice = manualPrices[ticker].current;
-            priceCache[ticker] = manualPrice;
-            priceSource[ticker] = 'manual';
-            cacheTimestamp[ticker] = now;
-            console.log(`📌 Manual ${ticker}: ${manualPrice}`);
-            return manualPrice;
-        }
-
-        return null;
-
-    } catch (error) {
-        console.error(`❌ Error getRealtimePrice:`, error);
-        if (manualPrices[ticker]) {
-            priceSource[ticker] = 'manual';
-            return manualPrices[ticker].current;
-        }
-        return null;
-    }
-}
 
         // Renderizar tarjetas
         async function renderCards() {
@@ -746,9 +776,7 @@
 
             const pricePromises = [];
             companyList.forEach(({ company }) => {
-                pricePromises.push(
-                    getRealtimePrice(company.ticker)
-                );
+                pricePromises.push(getRealtimePrice(company.ticker));
             });
 
             await Promise.all(pricePromises);
@@ -790,10 +818,10 @@
                     }
 
                     // Icono de fuente del precio
-                    const priceSourceIcon = source === 'api' ? '🌐' : '📌';
+                    const priceSourceIcon = source === 'api' ? '🌐' : (source === 'local' ? '📱' : '📌');
                     const priceSourceTooltip = source === 'api' 
                         ? 'Precio en tiempo real desde API Finnhub' 
-                        : 'Precio manual (fijo)';
+                        : (source === 'local' ? 'Precio desde localStorage (actualizado por tesis)' : 'Precio manual (fijo)');
 
                     const card = document.createElement('div');
                     card.className = 'analysis-card';
@@ -843,7 +871,7 @@
             updateLastUpdate();
         }
 
-        // Actualizar timestamp de última actualización
+        // Actualizar timestamp
         function updateLastUpdate() {
             const now = new Date();
             const timeString = now.toLocaleTimeString('es-ES', { 
@@ -884,27 +912,25 @@
         }
 
         // Inicializar
-       // Inicializar
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 Investment Thesis Hub inicializado');
-    renderCards();
-    
-    // ⭐ LISTENER: Escuchar cambios en localStorage (de otra pestaña/tesis)
-    window.addEventListener('storage', (event) => {
-        if (event.key && event.key.startsWith('price_')) {
-            console.log(`📱 localStorage actualizado: ${event.key} → ${event.newValue}`);
-            console.log('🔄 Rerender cards desde listener...');
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Investment Thesis Hub inicializado');
             renderCards();
-        }
-    });
-    
-    // Actualizar cada 5 minutos
-    setInterval(() => {
-        console.log('🔄 Actualizando precios periódicamente...');
-        renderCards();
-    }, 300000);
-});
-
+            
+            // ⭐ LISTENER: Escuchar cambios en localStorage
+            window.addEventListener('storage', (event) => {
+                if (event.key && event.key.startsWith('price_')) {
+                    console.log(`📱 localStorage actualizado: ${event.key} → ${event.newValue}`);
+                    console.log('🔄 Rerender cards desde listener...');
+                    renderCards();
+                }
+            });
+            
+            // Actualizar cada 5 minutos
+            setInterval(() => {
+                console.log('🔄 Actualizando precios periódicamente...');
+                renderCards();
+            }, 300000);
+        });
     </script>
 </body>
 </html>
