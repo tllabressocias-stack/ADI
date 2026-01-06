@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Callaway Golf (CALY) - Análisis de Inversión | RemainCo Pure Play</title>
+    <meta name="description" content="Análisis exhaustivo de la transformación de Topgolf Callaway Brands a Callaway Golf Company tras la venta de Topgolf. Valoración DCF, estructura de capital y tesis de inversión.">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            padding: 60px 0;
+            text-align: center;
+            border-bottom: 4px solid var(--success-color);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .ticker-info {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 15px 30px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .ticker-info span {
+            display: inline-block;
+            margin: 0 15px;
+            font-size: 0.95rem;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            background: var(--card-bg);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .nav-tabs ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-tabs a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-tabs a:hover,
+        .nav-tabs a.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Sections */
+        section {
+            padding: 60px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        section h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            border-left: 4px solid var(--success-color);
+            padding-left: 20px;
+        }
+
+        section h3 {
+            font-size: 1.5rem;
+            margin: 30px 0 15px;
+            color: var(--text-primary);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid var(--border-color);
+        }
+
+        .stat-card .label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success-color);
+        }
+
+        .stat-card .change {
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .positive {
+            color: var(--success-color);
+        }
+
+        .negative {
+            color: var(--danger-color);
+        }
+
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: var(--secondary-color);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success-color);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--warning-color);
+        }
+
+        .alert-info {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        /* Key Highlights */
+        .highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .highlight-item {
+            background: linear-gradient(135deg, var(--card-bg) 0%, rgba(37, 99, 235, 0.1) 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .highlight-item h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 3px solid var(--dark-bg);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 16px;
+            width: 2px;
+            height: calc(100% + 14px);
+            background: var(--border-color);
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+
+        .timeline-date {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        /* Button */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--card-bg);
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 60px;
+            border-top: 2px solid var(--border-color);
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            section {
+                padding: 40px 0;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Scroll progress bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--success-color);
+            z-index: 9999;
+            transition: width 0.1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1>🏌️ CALLAWAY GOLF COMPANY (CALY)</h1>
+            <p class="subtitle">Análisis de Inversión: La Transformación a "Pure Play"</p>
+            <div class="ticker-info">
+                <span><strong>Ticker:</strong> NYSE: CALY (Anterior: MODG)</span>
+                <span><strong>Precio Actual:</strong> $11.88</span>
+                <span><strong>Target Price:</strong> $22.88</span>
+                <span class="positive"><strong>Upside:</strong> +92.6% ⬆</span>
+            </div>
+            <div style="margin-top: 20px;">
+                <span style="background: var(--success-color); padding: 8px 20px; border-radius: 20px; font-weight: 600;">COMPRA FUERTE</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav-tabs">
+        <div class="container">
+            <ul>
+                <li><a href="#resumen" class="active">Resumen Ejecutivo</a></li>
+                <li><a href="#transaccion">La Transacción</a></li>
+                <li><a href="#valoracion">Valoración DCF</a></li>
+                <li><a href="#estructura">Estructura Capital</a></li>
+                <li><a href="#catalysts">Catalizadores</a></li>
+                <li><a href="#riesgos">Riesgos</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        
+        <!-- Resumen Ejecutivo -->
+        <section id="resumen" class="fade-in">
+            <h2>📊 Resumen Ejecutivo</h2>
+            
+            <div class="alert alert-success">
+                <strong>🎯 Tesis de Inversión:</strong> La venta mayoritaria de Topgolf a Leonard Green & Partners marca el final de la era de "conglomerado complejo" y el inicio de una tesis basada en la <strong>transformación del balance</strong> y la <strong>expansión de múltiplos</strong>. El mercado está valorando incorrectamente la "RemainCo", ignorando el impacto masivo de la eliminación de deuda sobre el FCF y el EPS.
+            </div>
+
+            <div class="highlights">
+                <div class="highlight-item">
+                    <h4>🏦 Transformación Estructural</h4>
+                    <p>De un apalancamiento neto de ~4.0x a <strong>Caja Neta Positiva (Net Cash)</strong> a finales de 2026.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>💰 Explosión de Rentabilidad</h4>
+                    <p>Eliminación de ~$100M+ en gastos por intereses anuales que se trasladan directamente al beneficio neto.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>📈 Arbitraje de Valoración</h4>
+                    <p>Callaway cotiza con descuento significativo frente a Acushnet (GOLF), a pesar de tener un perfil de riesgo financiero superior.</p>
+                </div>
+            </div>
+
+            <h3>Métricas Clave de la Inversión</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="label">Precio Objetivo</div>
+                    <div class="value">$22.88</div>
+                    <div class="change positive">+92.6% Upside</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Deuda Neta FY26</div>
+                    <div class="value">-$41M</div>
+                    <div class="change positive">Caja Neta</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Ahorro Intereses</div>
+                    <div class="value">~$92M</div>
+                    <div class="change positive">Anual directo al P&L</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">WACC</div>
+                    <div class="value">9.59%</div>
+                    <div class="change">Ajustado post-deal</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- La Transacción -->
+        <section id="transaccion" class="fade-in">
+            <h2>🤝 Análisis de la Transacción</h2>
+            
+            <div class="card">
+                <h3>Estructura del Deal (5 de enero de 2026)</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Concepto</th>
+                                <th>Detalle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Comprador</strong></td>
+                                <td>Leonard Green & Partners (Private Equity)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Activo Vendido</strong></td>
+                                <td>60% de Topgolf (incluye Toptracer)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Valoración Topgolf</strong></td>
+                                <td>~$1.1 Billones (Enterprise Value)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Proceeds Netos</strong></td>
+                                <td>~$800 Millones en efectivo</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Participación Retenida</strong></td>
+                                <td>40% (Activo pasivo con opcionalidad futura)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Uso Inmediato</strong></td>
+                                <td>Repago de $1.000M Term Loan B</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fecha Efectiva</strong></td>
+                                <td>1 de enero de 2026</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>📌 Implicación Estratégica:</strong> La compañía regresa a su identidad original como <strong>Callaway Golf Company (Ticker: CALY)</strong>, un líder global en equipamiento y ropa de golf, eliminando la volatilidad y el alto Capex asociados al negocio de entretenimiento.
+            </div>
+
+            <h3>Timeline de Catalizadores</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">✅ 5 de enero de 2026</div>
+                    <div>Cierre de la transacción. Repago inmediato de $1.0B de deuda.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">📅 15 de enero de 2026</div>
+                    <div>Cambio de nombre corporativo a "Callaway Golf Company".</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">📅 16 de enero de 2026</div>
+                    <div>Cambio de ticker de MODG a <strong>CALY</strong> en NYSE.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">📅 Mayo de 2026</div>
+                    <div>Vencimiento y repago de $258M en Notas Convertibles (2.75%).</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">📅 Q3-Q4 2026</div>
+                    <div>Ejecución del programa de recompra de acciones ($200M autorizado).</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Valoración DCF -->
+        <section id="valoracion" class="fade-in">
+            <h2>💎 Modelo de Valoración DCF</h2>
+
+            <div class="card">
+                <h3>Supuestos del Modelo (Base Case Conservador)</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Valor</th>
+                                <th>Notas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Ventas 2025</strong></td>
+                                <td>$2,253M</td>
+                                <td>RemainCo (sin Topgolf)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Crecimiento Ventas</strong></td>
+                                <td>1.5% - 2.0%</td>
+                                <td>Sector maduro, conservador</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Margen EBITDA</strong></td>
+                                <td>16.4% → 17.1%</td>
+                                <td>Expansión por mix premium</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CapEx / Ventas</strong></td>
+                                <td>4.0%</td>
+                                <td>Asset-light post-Topgolf</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tax Rate</strong></td>
+                                <td>21%</td>
+                                <td>Tasa federal efectiva</td>
+                            </tr>
+                            <tr>
+                                <td><strong>WACC</strong></td>
+                                <td>9.59%</td>
+                                <td>Beta 0.98, Rf 4.4%, MRP 5.2%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Terminal Growth</strong></td>
+                                <td>2.0%</td>
+                                <td>Conservador vs industria</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Terminal EV/EBITDA</strong></td>
+                                <td>12.0x</td>
+                                <td>Descuento vs Acushnet (15x)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <h3>Resultado de la Valoración</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="label">PV FCF (2026-2031)</div>
+                    <div class="value">$1,089M</div>
+                    <div class="change">28% del EV</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">PV Terminal Value</div>
+                    <div class="value">$2,782M</div>
+                    <div class="change">72% del EV</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Enterprise Value</div>
+                    <div class="value">$3,871M</div>
+                    <div class="change">Valor Operativo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Equity Value</div>
+                    <div class="value">$3,912M</div>
+                    <div class="change">Tras ajuste caja neta</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Valor Por Acción</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Concepto</th>
+                                <th>Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Equity Value Total</strong></td>
+                                <td>$3,912 Millones</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Acciones Diluidas (FY26)</strong></td>
+                                <td>171.0 Millones</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Valor Intrínseco por Acción</strong></td>
+                                <td class="positive" style="font-size: 1.3rem; font-weight: 700;">$22.88</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Precio Actual</strong></td>
+                                <td>$11.88</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Potencial de Revalorización</strong></td>
+                                <td class="positive" style="font-size: 1.2rem; font-weight: 700;">+92.6% 🚀</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Estructura de Capital -->
+        <section id="estructura" class="fade-in">
+            <h2>🏛️ Estructura de Capital Pro-Forma</h2>
+
+            <div class="card">
+                <h3>Evolución de la Deuda (Bridge Pre → Post Deal)</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Partida</th>
+                                <th>FY 2025 (Pre-Deal)</th>
+                                <th>FY 2026 (Pro-Forma)</th>
+                                <th>Cambio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Deuda Financiera Bruta</strong></td>
+                                <td>$1,496M</td>
+                                <td>$216M</td>
+                                <td class="positive">-$1,280M (-86%)</td>
+                            </tr>
+                            <tr>
+                                <td>Term Loan B</td>
+                                <td>$1,000M</td>
+                                <td>$0M</td>
+                                <td class="positive">Repago total</td>
+                            </tr>
+                            <tr>
+                                <td>Notas Convertibles 2.75%</td>
+                                <td>$258M</td>
+                                <td>$0M (May'26)</td>
+                                <td class="positive">Repago planificado</td>
+                            </tr>
+                            <tr>
+                                <td>Term Loan Restante + ABL</td>
+                                <td>$238M</td>
+                                <td>$216M</td>
+                                <td class="positive">-$22M</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pasivos por Arrendamiento</strong></td>
+                                <td>N/A</td>
+                                <td>$140M</td>
+                                <td>Leases RemainCo (IFRS 16)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Caja y Equivalentes</strong></td>
+                                <td>N/A</td>
+                                <td>($397M)</td>
+                                <td class="positive">Generación + Proceeds</td>
+                            </tr>
+                            <tr style="background: rgba(16, 185, 129, 0.1);">
+                                <td><strong>DEUDA NETA TOTAL</strong></td>
+                                <td><strong>~$631M</strong></td>
+                                <td><strong>($41M)</strong></td>
+                                <td class="positive"><strong>CAJA NETA ✅</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <h3>Impacto en el P&L: El "Game Changer"</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="label">Gasto Intereses FY25</div>
+                    <div class="value negative">$105M</div>
+                    <div class="change negative">Asfixiante</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Gasto Intereses FY26</div>
+                    <div class="value positive">$13M</div>
+                    <div class="change positive">87% reducción</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Ahorro Anual</div>
+                    <div class="value positive">~$92M</div>
+                    <div class="change positive">Directo al Bottom Line</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Valor del Ahorro (15x)</div>
+                    <div class="value">$1,380M</div>
+                    <div class="change">≈ $8.07/acción</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Programa de Recompra de Acciones</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Concepto</th>
+                                <th>Cantidad</th>
+                                <th>Notas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Autorización Total</strong></td>
+                                <td>$200 Millones</td>
+                                <td>Aprobado por el Board</td>
+                            </tr>
+                            <tr>
+                                <td><strong>% de Market Cap</strong></td>
+                                <td>~9%</td>
+                                <td>A precio actual ($11.88)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Acciones Base Inicio 2026</strong></td>
+                                <td>183.7M</td>
+                                <td>Dato Q4 2025</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Recompra Estimada</strong></td>
+                                <td>(15.4M)</td>
+                                <td>A precio medio $13.00</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dilución Stock Options</strong></td>
+                                <td>+2.5M</td>
+                                <td>SBC anual típico (~1.5%)</td>
+                            </tr>
+                            <tr style="background: rgba(16, 185, 129, 0.1);">
+                                <td><strong>Acciones Diluidas FY26</strong></td>
+                                <td><strong>171.0M</strong></td>
+                                <td class="positive"><strong>-7% vs base</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="alert alert-success" style="margin-top: 20px;">
+                    <strong>💡 Acreción de EPS:</strong> La combinación de ahorro de intereses ($92M) + reducción de acciones (-7%) genera una acreción de EPS superior al <strong>+300%</strong> en 2026-27 vs 2025 consolidado.
+                </div>
+            </div>
+        </section>
+
+        <!-- Catalizadores -->
+        <section id="catalysts" class="fade-in">
+            <h2>🚀 Catalizadores de Revalorización</h2>
+
+            <div class="highlights">
+                <div class="highlight-item">
+                    <h4>1️⃣ Cierre Exitoso (Completado ✅)</h4>
+                    <p>La transacción se cerró el 1 de enero de 2026, validando la estructura y confirmando el repago inmediato de $1B. Esto elimina el riesgo de ejecución y activa todos los demás catalizadores.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>2️⃣ Cambio de Ticker a CALY</h4>
+                    <p>El cambio de nombre y ticker (16 ene 2026) refresca la narrativa ante inversores, distanciándose de la "era Topgolf" y atrayendo capital a compañías "pure-play".</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>3️⃣ Repago Convertibles (Mayo 2026)</h4>
+                    <p>La eliminación de $258M en deuda convertible evita dilución de ~8-10M acciones y reduce el gasto por intereses a casi cero a partir del S2 2026.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>4️⃣ Ejecución Buybacks (Q3-Q4 2026)</h4>
+                    <p>Si la gerencia ejecuta los $200M rápidamente (antes de que suba el precio), maximiza la retirada de acciones y dispara el EPS por pura mecánica aritmética.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>5️⃣ Earnings Q1-Q2 2026</h4>
+                    <p>Los primeros reportes trimestrales post-deal mostrarán el ahorro de intereses en acción. El mercado re-calificará la acción cuando vea el FCF real.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>6️⃣ Re-Rating de Múltiplos</h4>
+                    <p>Con balance saneado, Callaway puede converger hacia múltiplos de Acushnet (14-15x P/E vs 9x implícito actual). Solo la expansión de múltiplos justifica +50% de upside.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Riesgos -->
+        <section id="riesgos" class="fade-in">
+            <h2>⚠️ Análisis de Riesgos</h2>
+
+            <div class="card">
+                <h3>Riesgos Principales al Downside</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Riesgo</th>
+                                <th>Probabilidad</th>
+                                <th>Impacto</th>
+                                <th>Mitigación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Recesión Macroeconómica</strong></td>
+                                <td>Media</td>
+                                <td>Alto</td>
+                                <td>Golf es cíclico pero el jugador típico tiene alto poder adquisitivo. Históricamente resiliente.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dis-Synergies Operativas</strong></td>
+                                <td>Media</td>
+                                <td>Medio</td>
+                                <td>Costos de separación de Topgolf pueden presionar márgenes en S1 2026 (12 meses). Temporal.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Valoración Participación 40%</strong></td>
+                                <td>Baja</td>
+                                <td>Bajo</td>
+                                <td>Es un activo pasivo sin liquidez, pero ofrece opcionalidad de upside si Leonard Green hace crecer Topgolf.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Competencia (Acushnet, TaylorMade)</strong></td>
+                                <td>Alta</td>
+                                <td>Medio</td>
+                                <td>Mercado maduro con alta lealtad de marca. Callaway tiene posición establecida y gasta en I+D.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>No Ejecución de Buybacks</strong></td>
+                                <td>Baja</td>
+                                <td>Medio</td>
+                                <td>Si la gerencia no ejecuta los $200M, pierde acreción de EPS (~+17%). Pero el ahorro de intereses sigue intacto.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>🛡️ Protección al Downside:</strong> El balance de fortaleza (Net Cash) y la valoración de suelo protegen el downside. El escenario bajista (~$8-9/acción) solo ocurriría en una recesión severa combinada con pérdida de cuota de mercado significativa, lo cual es poco probable dado el posicionamiento de marca de Callaway.
+            </div>
+        </section>
+
+        <!-- Conclusión -->
+        <section id="conclusion" class="fade-in">
+            <h2>📌 Conclusión de Inversión</h2>
+
+            <div class="card" style="background: linear-gradient(135deg, var(--card-bg) 0%, rgba(16, 185, 129, 0.1) 100%); border: 2px solid var(--success-color);">
+                <h3 style="color: var(--success-color);">Recomendación: COMPRA FUERTE 🎯</h3>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-top: 20px;">
+                    Callaway Golf (CALY) presenta una <strong>oportunidad asimétrica</strong>. El mercado sigue valorando la empresa con el "descuento de conglomerado" y el miedo a la deuda del pasado, sin internalizar la magnitud de la transformación financiera.
+                </p>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    Nuestros números confirman que, bajo una estructura de capital saneada y siendo conservadores en crecimiento (2%), el valor intrínseco del negocio es de <strong style="color: var(--success-color); font-size: 1.3rem;">$22.88 por acción</strong>, implicando un upside de <strong style="color: var(--success-color);">+92.6%</strong>.
+                </p>
+                <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid var(--border-color);">
+                    <p style="font-size: 1rem; color: var(--text-secondary);">
+                        <strong>Convicción:</strong> Alta | <strong>Horizonte:</strong> 18-24 meses | <strong>Riesgo/Recompensa:</strong> 3:1
+                    </p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="#resumen" class="btn btn-success">⬆ Volver al Inicio</a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p><strong>Disclaimer:</strong> Este análisis se proporciona únicamente con propósitos informativos y educativos. No constituye asesoramiento financiero ni recomendación personalizada de inversión. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión.</p>
+            <p style="margin-top: 20px; font-size: 0.85rem;">
+                📅 Fecha de Análisis: 5 de enero de 2026 | 📊 Fuentes: SEC Filings (10-K, 8-K), Presentaciones Corporativas, Modelo DCF Propietario
+            </p>
+            <p style="margin-top: 15px;">
+                © 2026 - Análisis de Inversión Callaway Golf (CALY)
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll Progress Bar
+        window.addEventListener('scroll', function() {
+            var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            var scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
+        });
+
+        // Smooth Scroll para navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+                
+                // Update active nav
+                document.querySelectorAll('.nav-tabs a').forEach(link => {
+                    link.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+
+        // Intersection Observer para animaciones
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(element);
+        });
+
+        // Actualizar navegación activa al hacer scroll
+        window.addEventListener('scroll', function() {
+            let current = '';
+            const sections = document.querySelectorAll('section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('.nav-tabs a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').slice(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
