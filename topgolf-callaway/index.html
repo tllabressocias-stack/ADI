@@ -1028,5 +1028,20 @@
             ← Volver al Porfolio
         </a>
     </div>
+    
+    <script src="../../shared-price-updater.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const updater = new PriceUpdater({
+        symbol: 'MODG',              // Ticker NYSE
+        fairValue: 22.88,             // Target Price
+        fallbackPrice: 12.87,         // Precio actual como fallback
+        priceElementId: 'currentPrice', // ID del precio
+        upsideElementId: 'upsidePercent', // ID del upside
+        currency: '$'
+    });
+    updater.start();
+});
+</script>
 </body>
 </html>
