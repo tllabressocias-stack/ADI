@@ -547,7 +547,8 @@
             'TOA.WA': { current: 9.75 },
             'NWL.MI': { current: 19.78 },
             'TIC': { current: 9.89 },
-            'EDU.ASX': { current: 0.95 }
+            'EDU.ASX': { current: 0.95 },
+            'MODG': { current: 12.87 }
         };
 
         const currencySymbols = {
@@ -615,7 +616,18 @@
             tender: [],
             short: [],
             uplisting: [],
-            demerger: [],
+            demerger: [
+                  {
+                    name: 'Topgolf Callaway Brands',
+                    ticker: 'MODG',
+                    icon: '🇺🇸',
+                    thesis: 'Dermerger - Topgolf',
+                    summary: 'Venta división Topgolf, reduccion agresiva deuda',
+                    currency: 'USD',
+                    thesisFile: 'topgolf-callaway/',
+                    positionType: 'demerger',
+                },
+            ],
             turnaround: [],
             reverse: [],
         };
