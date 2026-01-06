@@ -115,7 +115,7 @@ async updatePrice() {
         'TOA.WA': 9.75,
         'NWL.MI': 19.78,
         'TIC': 9.89,
-        'EDU.ASX': 0.82
+        'EDU.ASX': 0.95
     };
     
     return manualPrices[this.symbol] || null;
