@@ -14,10 +14,21 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
+    
+    /* CONFIGURACIÓN DEL FONDO NUEVO */
+    /* Capa oscura (Overlay) + Imagen de fondo */
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.88) 100%), url('background-header.png');
+    
+    /* Asegura que la imagen cubra toda la pantalla y quede fija al hacer scroll */
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    
+    /* Configuración de texto y espaciado */
+    color: #f8fafc;
+    min-height: 100vh;
+    padding: 40px 20px;
+         }
 
         .container {
             max-width: 1200px;
