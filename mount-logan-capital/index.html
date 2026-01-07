@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLCI - Mount Logan Capital Inc. | Tesis de Inversión</title>
+    <style>
+        :root {
+            --color-primary: #1f2937;
+            --color-secondary: #3b82f6;
+            --color-accent: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #ef4444;
+            --color-bg: #f9fafb;
+            --color-surface: #ffffff;
+            --color-text: #1f2937;
+            --color-text-light: #6b7280;
+            --color-border: #e5e7eb;
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #111827 100%);
+            color: white;
+            padding: var(--spacing-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .ticker {
+            display: inline-block;
+            background: var(--color-secondary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        nav {
+            display: flex;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 0;
+            transition: color 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav button:hover,
+        nav button.active {
+            color: var(--color-secondary);
+            border-bottom-color: var(--color-secondary);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+        }
+
+        /* Section Layout */
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #111827 100%);
+            color: white;
+            padding: var(--spacing-xl);
+            border-radius: 8px;
+            margin-bottom: var(--spacing-xl);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: var(--spacing-md);
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #d1d5db;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .metric-card {
+            background: rgba(255,255,255,0.1);
+            padding: var(--spacing-md);
+            border-radius: 6px;
+            border-left: 3px solid var(--color-secondary);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #d1d5db;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .metric-change {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .metric-change.positive {
+            color: var(--color-accent);
+        }
+
+        .metric-change.negative {
+            color: var(--color-danger);
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .content-section h2 {
+            font-size: 24px;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--color-secondary);
+            padding-bottom: var(--spacing-md);
+        }
+
+        .content-section h3 {
+            font-size: 18px;
+            color: var(--color-primary);
+            margin-top: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--spacing-md) 0;
+            font-size: 14px;
+        }
+
+        th {
+            background: var(--color-bg);
+            color: var(--color-primary);
+            font-weight: 600;
+            text-align: left;
+            padding: var(--spacing-md);
+            border: 1px solid var(--color-border);
+        }
+
+        td {
+            padding: var(--spacing-md);
+            border: 1px solid var(--color-border);
+        }
+
+        tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        tr:hover {
+            background: #f3f4f6;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: var(--color-text);
+        }
+
+        li strong {
+            color: var(--color-primary);
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+        }
+
+        .card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: var(--spacing-lg);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            border-color: var(--color-secondary);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .card h4 {
+            color: var(--color-secondary);
+            margin-bottom: var(--spacing-md);
+            font-size: 16px;
+        }
+
+        .card p {
+            color: var(--color-text-light);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-top: var(--spacing-md);
+        }
+
+        /* Highlights */
+        .highlight {
+            background: #fffbeb;
+            border-left: 4px solid var(--color-warning);
+            padding: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+            border-radius: 4px;
+        }
+
+        .highlight strong {
+            color: var(--color-primary);
+        }
+
+        .success-box {
+            background: #ecfdf5;
+            border-left: 4px solid var(--color-accent);
+            padding: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+            border-radius: 4px;
+        }
+
+        .danger-box {
+            background: #fef2f2;
+            border-left: 4px solid var(--color-danger);
+            padding: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+            border-radius: 4px;
+        }
+
+        /* Buttons */
+        button {
+            background: var(--color-secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Price Targets */
+        .price-targets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+
+        .target-card {
+            background: linear-gradient(135deg, var(--color-secondary), #1e40af);
+            color: white;
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .target-card.bear {
+            background: linear-gradient(135deg, var(--color-danger), #991b1b);
+        }
+
+        .target-card.bull {
+            background: linear-gradient(135deg, var(--color-accent), #047857);
+        }
+
+        .target-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .target-price {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .target-probability {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        .target-upside {
+            font-size: 12px;
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+
+        /* Risk Matrix */
+        .risk-item {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border-radius: 6px;
+            border-left: 4px solid;
+        }
+
+        .risk-item.high {
+            border-left-color: var(--color-danger);
+            background: #fef2f2;
+        }
+
+        .risk-item.medium {
+            border-left-color: var(--color-warning);
+            background: #fffbeb;
+        }
+
+        .risk-item.low {
+            border-left-color: var(--color-accent);
+            background: #ecfdf5;
+        }
+
+        .risk-item h4 {
+            margin-bottom: 8px;
+            color: var(--color-primary);
+        }
+
+        .risk-probability {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+            margin-bottom: 8px;
+        }
+
+        /* Catalysts Timeline */
+        .timeline {
+            position: relative;
+            padding-left: var(--spacing-lg);
+        }
+
+        .timeline-item {
+            margin-bottom: var(--spacing-lg);
+            padding-left: var(--spacing-lg);
+            position: relative;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            background: var(--color-secondary);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--color-secondary);
+        }
+
+        .timeline-item:not(:last-child):after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 20px;
+            width: 2px;
+            height: calc(100% + var(--spacing-lg));
+            background: var(--color-border);
+        }
+
+        .timeline-item h4 {
+            color: var(--color-primary);
+            margin-bottom: 4px;
+        }
+
+        .timeline-date {
+            font-size: 12px;
+            color: var(--color-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--color-primary);
+            color: white;
+            padding: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+            text-align: center;
+            font-size: 12px;
+        }
+
+        footer a {
+            color: var(--color-secondary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            .hero-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            nav {
+                gap: var(--spacing-sm);
+                font-size: 12px;
+            }
+
+            nav button {
+                padding: 6px 0;
+            }
+
+            .container {
+                padding: var(--spacing-md);
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: var(--spacing-sm);
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            header, nav, button {
+                display: none;
+            }
+
+            .content-section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div>
+                <div class="logo">
+                    MLCI <span class="ticker">NASDAQ</span>
+                </div>
+            </div>
+            <nav>
+                <button class="nav-btn active" data-section="inicio">Inicio</button>
+                <button class="nav-btn" data-section="empresa">Empresa</button>
+                <button class="nav-btn" data-section="arbitraje">Arbitraje</button>
+                <button class="nav-btn" data-section="valoracion">Valoración</button>
+                <button class="nav-btn" data-section="catalizadores">Catalizadores</button>
+                <button class="nav-btn" data-section="riesgos">Riesgos</button>
+                <button class="nav-btn" data-section="recomendacion">Conclusión</button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- SECCIÓN 1: INICIO -->
+        <section id="inicio" class="section active">
+            <div class="hero">
+                <h1>Mount Logan Capital Inc.</h1>
+                <p><strong>Anomalía de Valoración + Strategic Value Play</strong></p>
+                <p style="margin-top: var(--spacing-lg); font-size: 16px;">Análisis de inversión completo con oportunidad de arbitraje inmediata mediante tender offer y catalizadores visibles para 2026-2027.</p>
+
+                <div class="hero-metrics">
+                    <div class="metric-card">
+                        <div class="metric-label">Precio Actual</div>
+                        <div class="metric-value">$8.28</div>
+                        <div class="metric-change negative">Descuento -59%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Target 2027E</div>
+                        <div class="metric-value">$25.00</div>
+                        <div class="metric-change positive">+202% Upside</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Tender Price</div>
+                        <div class="metric-value">$9.43</div>
+                        <div class="metric-change positive">10-12% en 5 sem</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Book Value</div>
+                        <div class="metric-value">$10.26</div>
+                        <div class="metric-change positive">+24% vs MKT</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Executive Summary</h2>
+                
+                <div class="highlight">
+                    <strong>Mount Logan Capital Inc.</strong> es un gestor de activos alternativos integrado con soluciones de seguros, cotizando en NASDAQ a un descuento de <strong>59% respecto a comparables</strong> de la industria.
+                </div>
+
+                <h3>🎯 5 Razones Clave para Invertir</h3>
+                
+                <div class="cards-grid">
+                    <div class="card">
+                        <h4>1. Arbitraje Inmediato</h4>
+                        <p>Tender offer a $9.43 vs. mercado $8.26</p>
+                        <div class="card-value">+10-12% en 5 semanas</div>
+                    </div>
+                    <div class="card">
+                        <h4>2. Catalyst H2 2026</h4>
+                        <p>Inflexión de SRE earnings visible</p>
+                        <div class="card-value">+84% a +186%</div>
+                    </div>
+                    <div class="card">
+                        <h4>3. Descuento Injustificado</h4>
+                        <p>9.5x EV/FRE vs. peers 23.3x</p>
+                        <div class="card-value">-59% Descuento</div>
+                    </div>
+                    <div class="card">
+                        <h4>4. Valor Escondido</h4>
+                        <p>Ability Insurance infravaluada</p>
+                        <div class="card-value">$170-200M Hidden</div>
+                    </div>
+                    <div class="card">
+                        <h4>5. Gestión Competente</h4>
+                        <p>16 M&A exitosos desde 2018</p>
+                        <div class="card-value">85%+ Success Rate</div>
+                    </div>
+                </div>
+
+                <h3>Resumen Financiero Q3 2025</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>AUM Total</strong></td>
+                            <td>$2.1B</td>
+                            <td>+75% en 5yr</td>
+                        </tr>
+                        <tr>
+                            <td><strong>FRE TTM</strong></td>
+                            <td>$9.2M</td>
+                            <td>Estable</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SRE TTM</strong></td>
+                            <td>$5.2M</td>
+                            <td>Deprimido</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total Equity</strong></td>
+                            <td>$131.2M</td>
+                            <td>+26% YoY</td>
+                        </tr>
+                        <tr>
+                            <td><strong>EV/FRE</strong></td>
+                            <td>9.5x</td>
+                            <td>-59% vs Peers</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Debt/Equity</strong></td>
+                            <td>5%</td>
+                            <td>Ultra-clean</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Precio Objetivo 2027E</h3>
+                <div class="price-targets">
+                    <div class="target-card bear">
+                        <div class="target-label">Bear Case</div>
+                        <div class="target-price">$14</div>
+                        <div class="target-upside">+69%</div>
+                        <div class="target-probability">10% Probability</div>
+                    </div>
+                    <div class="target-card">
+                        <div class="target-label">Base Case ⭐</div>
+                        <div class="target-price">$25</div>
+                        <div class="target-upside">+202%</div>
+                        <div class="target-probability">65% Probability</div>
+                    </div>
+                    <div class="target-card bull">
+                        <div class="target-label">Bull Case</div>
+                        <div class="target-price">$32</div>
+                        <div class="target-upside">+286%</div>
+                        <div class="target-probability">25% Probability</div>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <strong>Risk-Adjusted Fair Value: $25.65 per share</strong>
+                    <p style="margin-top: 8px;">Expected value: (Base $25 × 65%) + (Bull $32 × 25%) + (Bear $14 × 10%) = $25.65</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: EMPRESA -->
+        <section id="empresa" class="section">
+            <div class="content-section">
+                <h2>Descripción de la Empresa</h2>
+                
+                <h3>Perfil Corporativo</h3>
+                <p>Mount Logan Capital opera como plataforma integrada de dos segmentos sinérgicos:</p>
+
+                <h3>Segmento 1: Asset Management</h3>
+                <ul>
+                    <li><strong>AUM:</strong> $2.1B (private credit, CLOs, BDCs)</li>
+                    <li><strong>FRE TTM:</strong> $9.2M (Fee-Related Earnings)</li>
+                    <li><strong>Growth:</strong> +75% AUM growth en 5 años (12% CAGR)</li>
+                    <li><strong>Clientes:</strong> Institucionales y retail</li>
+                    <li><strong>Ingresos:</strong> Management fees + Incentive fees + Equity earnings</li>
+                </ul>
+
+                <h3>Segmento 2: Insurance Solutions (Ability Insurance Company)</h3>
+                <ul>
+                    <li><strong>Activos Invertibles:</strong> $1.1B (MYGA, LTC reinsurance)</li>
+                    <li><strong>SRE TTM:</strong> $5.2M (Spread-Related Earnings)</li>
+                    <li><strong>Capital Position:</strong> $313M equity (1.40x assets-to-liabilities)</li>
+                    <li><strong>Crecimiento:</strong> +$43M/trimestre en activos</li>
+                    <li><strong>Negocio:</strong> Reinsuradora de anualidades con capital permanente</li>
+                </ul>
+
+                <h3>Evento Corporativo Clave: TURN Merger</h3>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><strong>Fecha Cierre</strong></td>
+                            <td>Septiembre 12, 2025</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Estructura</strong></td>
+                            <td>Reverse merger (TURN invierte en Mount Logan)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Resultado</strong></td>
+                            <td>Newco listada en NASDAQ como MLCI</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dilución</strong></td>
+                            <td>6.1M → 12.8M shares (+110%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sinergia</strong></td>
+                            <td>Mayor escala, NASDAQ listing, TURN portfolio exposure</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Contexto de Mercado</h3>
+                
+                <strong>Private Credit Market Tailwinds:</strong>
+                <ul>
+                    <li>Mercado global: solo 2% del mercado deuda corporativa ($13T+ oportunidad)</li>
+                    <li>Bancos reduciendo lending (regulatory scrutiny)</li>
+                    <li>MLCI posicionada como originador con plataforma 20+ años</li>
+                    <li>Outlook: 8-12% CAGR próximos 5 años</li>
+                </ul>
+
+                <strong style="margin-top: var(--spacing-md); display: block;">Insurance Market Tailwinds:</strong>
+                <ul>
+                    <li>Población 65+ crecerá: $481M (2025) → $545M (2035) = +13% CAGR</li>
+                    <li>Mercado de anualidades (MYGA): $417B → $545B</li>
+                    <li>Yields normalizados: 7.5-8.5% range (vs. 4-5% en 2021-2023)</li>
+                    <li>Reinsuradores con capital permanente en posición única</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: ARBITRAJE -->
+        <section id="arbitraje" class="section">
+            <div class="content-section">
+                <h2>Tender Offer Analysis ($15M)</h2>
+                
+                <h3>Términos Operacionales</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parámetro</th>
+                            <th>Detalle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Monto Total</strong></td>
+                            <td>$15,000,000 en efectivo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Precio de Oferta</strong></td>
+                            <td>$9.43 por acción</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Acciones Objetivo</strong></td>
+                            <td>~1,590,600 acciones (~12%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Período</strong></td>
+                            <td>29 dic 2025 - 2 feb 2026 (5 semanas)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Condición Mínima</strong></td>
+                            <td><strong style="color: var(--color-danger);">NINGUNA</strong> (critical signal)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Insiders Participantes</strong></td>
+                            <td><strong style="color: var(--color-accent);">NO</strong> (zero insiders)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Financiamiento</strong></td>
+                            <td>Desde cash existente ($39M)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    <strong>Critical Signal:</strong> Sin condición de mínimo de participación. MLCI ejecutará tender AUNQUE SOLO PARTICIPE 30% DEL FLOAT. Esto demuestra máxima confianza de management.
+                </div>
+
+                <h3>Dinámica de Prorrateo</h3>
+                <p>Mayoría de tender offers se OVER-SUSCRIBEN. Cuando participación > objetivo:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Participación</th>
+                            <th>Proration Factor</th>
+                            <th>Si tiendo 100 acciones</th>
+                            <th>Retorno Neto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>125%</td>
+                            <td>80%</td>
+                            <td>Recibo 80 @ $9.43</td>
+                            <td><span style="color: var(--color-accent); font-weight: 700;">+10%</span></td>
+                        </tr>
+                        <tr>
+                            <td>150%</td>
+                            <td>67%</td>
+                            <td>Recibo 67 @ $9.43</td>
+                            <td><span style="color: var(--color-accent); font-weight: 700;">+8%</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>175% (EXPECTED)</strong></td>
+                            <td>57%</td>
+                            <td>Recibo 57 @ $9.43</td>
+                            <td><span style="color: var(--color-accent); font-weight: 700;">+7%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Return Esperado</h3>
+                <div class="highlight">
+                    <strong>7-12% en 5 semanas = 73-250% annualized equivalente</strong>
+                    <p style="margin-top: 8px;">Comparado con:</p>
+                    <ul style="margin-left: 20px; margin-top: 8px;">
+                        <li>Treasury Bills (5-week): 0.5%</li>
+                        <li>Money Market: 0.48%</li>
+                        <li>MLCI Dividend: 0.15%</li>
+                        <li><strong style="color: var(--color-accent);">MLCI Tender: 10% en 5 semanas ← 20x mejor</strong></li>
+                    </ul>
+                </div>
+
+                <h3>Por Qué Management Lanzó la Tender</h3>
+                <ol>
+                    <li><strong>Retornar capital</strong> a shareholders que buscan liquidez</li>
+                    <li><strong>Permitir non-tenders participar</strong> en upside futuro</li>
+                    <li><strong>Señal de management confidence</strong> ("Creemos que esto se recupera a $15+")</li>
+                </ol>
+
+                <h3>RSU Acceleration Risk: DESCARTADO</h3>
+                <div class="success-box">
+                    <strong>Probabilidad de replicación: &lt; 5%</strong>
+                    <p style="margin-top: 8px;">La aceleración de Q3 2025 ($8.3M) fue contractually required por TURN deal change-of-control. NO hay segundo change-of-control planeado.</p>
+                    <p style="margin-top: 8px;">Evidencia:</p>
+                    <ul style="margin-left: 20px; margin-top: 8px;">
+                        <li>No insiders participan en tender (máxima confidence)</li>
+                        <li>Board acaba de declarar primer dividendo ($0.03/quarter)</li>
+                        <li>Capital allocation narrativa: "Retornando capital, no re-diluimos"</li>
+                        <li>SEC disclosure ya completa (8-K filing)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: VALORACIÓN -->
+        <section id="valoracion" class="section">
+            <div class="content-section">
+                <h2>Análisis de Gaps de Valoración</h2>
+                
+                <h3>El Gap Central</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Concepto</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Cierre (26 dic)</strong></td>
+                            <td>$8.26</td>
+                            <td style="color: var(--color-danger);">-12.4% vs. Tender</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tender Price</strong></td>
+                            <td>$9.43</td>
+                            <td style="color: var(--color-secondary);">OFERTA</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Book Value</strong></td>
+                            <td>$10.26</td>
+                            <td style="color: var(--color-accent);">+8.8%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Descomposición del Descuento: 4 Causas Explicables</h3>
+
+                <div class="cards-grid">
+                    <div class="card">
+                        <h4>1. TURN Integration (60%)</h4>
+                        <p><strong>Temporal</strong> - Market aplica 10-15% discount típico</p>
+                        <p style="margin-top: 8px; font-size: 12px; color: var(--color-text-light);">Resolución: Q4 2025 - Q2 2026 (una vez visible ejecución)</p>
+                    </div>
+                    <div class="card">
+                        <h4>2. SRE Depression (25%)</h4>
+                        <p><strong>Recoverable</strong> - De $5.2M a $10-15M target</p>
+                        <p style="margin-top: 8px; font-size: 12px; color: var(--color-text-light);">Recovery timeline: H2 2026 (+84% upside)</p>
+                    </div>
+                    <div class="card">
+                        <h4>3. Private Credit Noise (10%)</h4>
+                        <p><strong>Perceived</strong> - Market narrativa vs. realidad</p>
+                        <p style="margin-top: 8px; font-size: 12px; color: var(--color-text-light);">Private credit solo 2% de debt market (8-12% CAGR)</p>
+                    </div>
+                    <div class="card">
+                        <h4>4. Micro-Cap Illiquidity (5%)</h4>
+                        <p><strong>Structural pero resoluble</strong> - Market Cap $98M</p>
+                        <p style="margin-top: 8px; font-size: 12px; color: var(--color-text-light);">Resolution: NASDAQ + scale + analyst coverage</p>
+                    </div>
+                </div>
+
+                <h3>Valuation Anomaly: Insurance Segment</h3>
+                <div class="danger-box">
+                    <strong>El mayor malentendido del mercado:</strong>
+                    <table style="margin-top: var(--spacing-md);">
+                        <tbody>
+                            <tr>
+                                <td><strong>Market Valuation de Ability</strong></td>
+                                <td style="text-align: right;">$15-20M</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Real Insurance Equity</strong></td>
+                                <td style="text-align: right;">$310M</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Conservative (0.7x book)</strong></td>
+                                <td style="text-align: right;">$217M</td>
+                            </tr>
+                            <tr style="border-top: 2px solid var(--color-danger);">
+                                <td><strong style="color: var(--color-danger);">HIDDEN VALUE</strong></td>
+                                <td style="text-align: right; color: var(--color-danger); font-weight: 700;">$170-200M</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Modelo de Valoración (3 Enfoques)</h3>
+
+                <strong style="display: block; margin-top: var(--spacing-lg); margin-bottom: var(--spacing-md);">APPROACH 1: EV/FRE Multiple</strong>
+                <ul>
+                    <li>Current EV/FRE: 9.5x (vs. peers 23.3x) = -59% descuento</li>
+                    <li>Fair Multiple para MLCI: 16-18x (comparables apropiadas $1-5B AUM)</li>
+                    <li>2027E FRE: $15M (baseline $9.2M + BCIC $2.5M + Runway $1.5M + Organic $2.5M)</li>
+                    <li><strong>Fair Value: $15M × 17x = $20.83/share</strong></li>
+                </ul>
+
+                <strong style="display: block; margin-top: var(--spacing-lg); margin-bottom: var(--spacing-md);">APPROACH 2: Discounted Cash Flow</strong>
+                <ul>
+                    <li>Normalized 2027E Earnings: $23M (AM $12-14M + Insurance $9-11M)</li>
+                    <li>Perpetuity @ 10% WACC: $23M / 0.10 = <strong>$19.17/share</strong></li>
+                    <li>Terminal Growth (3% g): $23M / 0.07 = <strong>$27.33/share</strong></li>
+                    <li><strong>DCF Range: $19-27/share</strong></li>
+                </ul>
+
+                <strong style="display: block; margin-top: var(--spacing-lg); margin-bottom: var(--spacing-md);">APPROACH 3: Price-to-Book (Insurance Value Add)</strong>
+                <ul>
+                    <li>Book Value Post-Tender: $9.60/share</li>
+                    <li>AM Segment (16x FRE): $250M</li>
+                    <li>Insurance Premium (0.7x $219M - $100M consolidated): $119M</li>
+                    <li>Less debt/costs: -$74M</li>
+                    <li><strong>Total: $295M / 12M shares = $24.58/share (2.6x P/B)</strong></li>
+                </ul>
+
+                <h3>Consolidated Valuation Summary</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Methodology</th>
+                            <th>Fair Value</th>
+                            <th>Reasoning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>EV/FRE (17x)</td>
+                            <td><strong>$20.83</strong></td>
+                            <td>Conservative vs. peers</td>
+                        </tr>
+                        <tr>
+                            <td>DCF Perpetuity</td>
+                            <td><strong>$19.17</strong></td>
+                            <td>Downside case</td>
+                        </tr>
+                        <tr>
+                            <td>DCF Terminal</td>
+                            <td><strong>$27.33</strong></td>
+                            <td>Upside case</td>
+                        </tr>
+                        <tr>
+                            <td>P/B (2.6x)</td>
+                            <td><strong>$24.58</strong></td>
+                            <td>Insurance value add</td>
+                        </tr>
+                        <tr style="background: #f3f4f6; font-weight: 700;">
+                            <td>WEIGHTED AVERAGE</td>
+                            <td style="color: var(--color-secondary);">$23.00</td>
+                            <td>Mid-point estimate</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: CATALIZADORES -->
+        <section id="catalizadores" class="section">
+            <div class="content-section">
+                <h2>Catalizadores de Earnings (2026-2027)</h2>
+                
+                <h3>Catalyst #1: Insurance SRE Inflection (H2 2026)</h3>
+                <p><strong style="color: var(--color-accent);">Probability: 70%</strong></p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Driver</th>
+                            <th>Impacto</th>
+                            <th>Timeline</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Capital deployment</td>
+                            <td>+$50-75M</td>
+                            <td>Q1-Q2 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Yield normalization</td>
+                            <td>+50-100 bps</td>
+                            <td>H1-H2 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Cost of funds optimization</td>
+                            <td>-10-20 bps</td>
+                            <td>Ongoing</td>
+                        </tr>
+                        <tr>
+                            <td>New reinsurance partners</td>
+                            <td>+200-300 bps</td>
+                            <td>Q1-Q2 2026</td>
+                        </tr>
+                        <tr>
+                            <td>MLCI mgmt % increase</td>
+                            <td>+$20-30M</td>
+                            <td>2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight">
+                    <strong>SRE Recovery Math:</strong>
+                    <p style="margin-top: 8px;">Current: 48 bps on $1.1B = $5.3M SRE<br>
+                    Normalized: 75 bps on $1.3B = $9.75M SRE<br>
+                    Plus 25% ROE on $60M: +$1.5M<br>
+                    <strong style="color: var(--color-primary); font-size: 16px;">TOTAL UPSIDE: +$5-7M (+84-126%)</strong></p>
+                </div>
+
+                <h3>Catalyst #2: Asset Management Organic Growth</h3>
+                <p><strong style="color: var(--color-accent);">Current FRE: $9.2M → 2027E Target: $14-16M</strong></p>
+                
+                <ul>
+                    <li><strong>BCIC Scale-Up:</strong> Merger Portman Ridge + Logan Ridge → BCIC contribution +$2-3M</li>
+                    <li><strong>Runway Growth:</strong> MLCI 5% stake, SWK acquisition (Oct 2025) → equity earnings +$2-3M</li>
+                    <li><strong>Organic AUM Growth:</strong> Market tailwind 8-12% CAGR → +$100-200M AUM = +$2-3M FRE</li>
+                </ul>
+
+                <h3>Catalyst #3: M&A Execution (Q1 2026+)</h3>
+                <p><strong style="color: var(--color-accent);">Probability: 75%</strong></p>
+                
+                <div class="success-box">
+                    <strong>Management Guidance:</strong> "Tenemos robust pipeline con 3-4 oportunidades estratégicas. Esperamos anunciar some deals by first quarter of 2026."
+                </div>
+
+                <ul>
+                    <li>3-4 deals identificados (Origination platforms, Asset managers, Insurance partners)</li>
+                    <li>Deal economics: $150-300M AUM cada uno → $2.25M FRE per deal</li>
+                    <li>3-deal impact: $450-600M AUM = +$6.75-12M FRE full run-rate</li>
+                    <li>2027E contribution: +$4-8M incremental</li>
+                    <li>Track record: 16 acquisiciones cerradas desde 2018 (>85% success rate)</li>
+                </ul>
+
+                <h3>Catalyst #4: Operating Leverage & Cost Synergies</h3>
+                <ul>
+                    <li>RSU acceleration charges: GONE (Q3 2025 one-time)</li>
+                    <li>Transaction costs: WINDING DOWN (post-TURN cleanup)</li>
+                    <li>Duplicate overhead: BEING ELIMINATED</li>
+                    <li><strong>Estimated savings: $3.5-6M annualized</strong></li>
+                </ul>
+
+                <h3>Consolidated Catalyst Timeline</h3>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">Q4 2025</div>
+                        <h4>Integration Completion Visible</h4>
+                        <p>Post-TURN cleanup ending, operational improvements visible</p>
+                        <p><strong>Earnings Impact:</strong> +$0.5M | <strong>Probability:</strong> 75%</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">Q1 2026</div>
+                        <h4>M&A Announcements Expected</h4>
+                        <p>3-4 deal pipeline materializing, management guidance update</p>
+                        <p><strong>Earnings Impact:</strong> Guidance update | <strong>Probability:</strong> 75%</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">Q2 2026</div>
+                        <h4>Cost Synergies Fully Realized</h4>
+                        <p>Operating expense normalization complete</p>
+                        <p><strong>Earnings Impact:</strong> +$3.5-6M | <strong>Probability:</strong> 85%</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">Q3-Q4 2026</div>
+                        <h4>SRE Inflection Starts</h4>
+                        <p>Capital deployment benefits beginning to show, spread expansion visible</p>
+                        <p><strong>Earnings Impact:</strong> +$3-5M | <strong>Probability:</strong> 65%</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">2027E</div>
+                        <h4>Normalized Earnings Power</h4>
+                        <p>All catalysts fully reflected, insurance and M&A synergies integrated</p>
+                        <p><strong>Earnings Impact:</strong> +$22-25M run-rate | <strong>Probability:</strong> 60%</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 6: RIESGOS -->
+        <section id="riesgos" class="section">
+            <div class="content-section">
+                <h2>Análisis Integral de Riesgos</h2>
+
+                <h3>Alto Riesgo</h3>
+
+                <div class="risk-item high">
+                    <h4>Risk #1: TURN Integration Delays</h4>
+                    <div class="risk-probability">Probability: 25%</div>
+                    <p><strong>Downside Potencial:</strong> -30% to $5.80</p>
+                    <p><strong>Mitigation:</strong> 16 M&A track record, early momentum positive, TURN portfolio reduction on track (6→3 posiciones)</p>
+                    <p><strong>Probability of Success:</strong> 75%</p>
+                </div>
+
+                <div class="risk-item high">
+                    <h4>Risk #2: Insurance SRE No Recovery</h4>
+                    <div class="risk-probability">Probability: 20%</div>
+                    <p><strong>Downside Potencial:</strong> -25% to $6.20</p>
+                    <p><strong>Scenario:</strong> Rates caen agresivamente, cost of funds sube, Ability liabilities worse than expected</p>
+                    <p><strong>Mitigation:</strong> De-risking towards MYGA, strong capital (1.4x assets-to-liabilities)</p>
+                    <p><strong>Early Warning:</strong> Consecutive SRE declines in Q3-Q4 2026</p>
+                </div>
+
+                <div class="risk-item high">
+                    <h4>Risk #3: Private Credit Market Deterioration</h4>
+                    <div class="risk-probability">Probability: 15%</div>
+                    <p><strong>Downside Potencial:</strong> -20% to $6.60</p>
+                    <p><strong>Scenario:</strong> Corporate defaults spike, CLO impairments</p>
+                    <p><strong>Mitigation:</strong> IG concentrated, 2% of corporate debt market (huge room to grow), management can reduce exposure</p>
+                </div>
+
+                <h3 style="margin-top: var(--spacing-lg);">Riesgo Medio</h3>
+
+                <div class="risk-item medium">
+                    <h4>Risk #4: M&A Pipeline Evaporates</h4>
+                    <div class="risk-probability">Probability: 10%</div>
+                    <p><strong>Downside Potencial:</strong> -15% to $7.00</p>
+                    <p><strong>Mitigation:</strong> 3-4 deals in pipeline, NASDAQ listing improves M&A attractiveness, BC Partners backing</p>
+                </div>
+
+                <div class="risk-item medium">
+                    <h4>Risk #5: Macro Recession</h4>
+                    <div class="risk-probability">Probability: 20%</div>
+                    <p><strong>Downside Potencial:</strong> -20% to $6.60</p>
+                    <p><strong>Mitigation:</strong> Insurance relatively immune (fixed annuities), 25% book value floor ($10.26)</p>
+                </div>
+
+                <div class="risk-item medium">
+                    <h4>Risk #6: Regulatory Changes (Insurance Capital)</h4>
+                    <div class="risk-probability">Probability: 10%</div>
+                    <p><strong>Downside Potencial:</strong> -15%</p>
+                    <p><strong>Mitigation:</strong> Ability already well-capitalized, no major changes signaled by regulators</p>
+                </div>
+
+                <h3 style="margin-top: var(--spacing-lg);">Riesgo Bajo</h3>
+
+                <div class="risk-item low">
+                    <h4>Risk #7: High Proration (&gt;80%)</h4>
+                    <div class="risk-probability">Probability: 30%</div>
+                    <p><strong>Impact:</strong> -3 to -5% return compression on tender</p>
+                    <p><strong>Assessment:</strong> MINOR - Even at 50% proration, +7% return still attractive vs. alternatives</p>
+                </div>
+
+                <div class="risk-item low">
+                    <h4>Risk #8: Stock Dilution from Grants</h4>
+                    <div class="risk-probability">Probability: &lt;5%</div>
+                    <p><strong>Assessment:</strong> VERY LOW - Board in restricted mode post-$8.3M charge, no second change-of-control planned</p>
+                </div>
+
+                <div class="risk-item low">
+                    <h4>Risk #9: Insider Selling</h4>
+                    <div class="risk-probability">Probability: 20%</div>
+                    <p><strong>Assessment:</strong> SHORT-TERM PRESSURE ONLY - No insiders in tender offer (confidence signal)</p>
+                </div>
+
+                <h3 style="margin-top: var(--spacing-lg);">Risk-Adjusted Valuation</h3>
+                <div class="success-box">
+                    <strong>Expected Value Calculation:</strong>
+                    <p style="margin-top: 8px;">(Base $25 × 65%) + (Bull $32 × 25%) + (Bear $14 × 10%)</p>
+                    <p>= $16.25 + $8.00 + $1.40</p>
+                    <p style="margin-top: 8px; font-size: 18px;"><strong>=  $25.65 RISK-ADJUSTED FAIR VALUE</strong></p>
+                    <p style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 12px;"><strong>Downside Protection:</strong> Book value floor $9.60 vs. current $8.28 = Only -13.7% maximum loss scenario</p>
+                    <p><strong style="color: #10b981;">Risk/Reward Asymmetry: 15:1 favorable to long</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 7: CONCLUSIÓN -->
+        <section id="recomendacion" class="section">
+            <div class="content-section">
+                <h2>Recomendación Final & Hoja de Ruta</h2>
+
+                <h3>Investment Thesis Summary</h3>
+                <div class="success-box">
+                    <strong>Mount Logan Capital representa una ANOMALÍA DE VALORACIÓN RARA con catalizadores visibles y definidos.</strong>
+                    <ul style="margin-left: 20px; margin-top: 12px;">
+                        <li>✓ Valuation Anomaly: 9.5x EV/FRE vs. peers 23.3x (-59%)</li>
+                        <li>✓ Temporary Headwinds: TURN integration, SRE depression, illiquidity</li>
+                        <li>✓ Clear Catalysts: SRE inflection (H2 2026), M&A (Q1 2026), EPS accretion</li>
+                        <li>✓ Management Quality: 16 M&A deals, disciplined capital allocation</li>
+                        <li>✓ Downside Protected: Book value floor $10.26</li>
+                        <li>✓ Hidden Value: Ability Insurance $170-200M unrecognized</li>
+                    </ul>
+                </div>
+
+                <h3>Recomendación: COMPRA / LONG ⭐</h3>
+
+                <h3 style="margin-top: var(--spacing-lg);">Para Inversores de Corto Plazo (5 semanas)</h3>
+                
+                <div class="card">
+                    <h4>Strategy: Tender Offer Arbitrage</h4>
+                    <table style="margin-top: 12px;">
+                        <tbody>
+                            <tr>
+                                <td><strong>Entry Price</strong></td>
+                                <td>$8.28 (actual)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Expected Exit</strong></td>
+                                <td>$9.43 @ 75% prorrateo</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Net Return</strong></td>
+                                <td style="color: var(--color-accent); font-weight: 700;">8.8% in 35 days</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Annualized</strong></td>
+                                <td style="color: var(--color-accent); font-weight: 700;">92.3%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Risk</strong></td>
+                                <td>Downside to book value floor $10.26</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 style="margin-top: var(--spacing-lg);">Para Inversores de Largo Plazo (12-24 meses)</h3>
+
+                <div class="price-targets">
+                    <div class="target-card bear">
+                        <div class="target-label">Feb 2026</div>
+                        <div class="target-price">$9.00</div>
+                        <div class="target-upside">Tender Close</div>
+                        <div class="target-probability">85% Probability</div>
+                    </div>
+                    <div class="target-card">
+                        <div class="target-label">Jun 2026</div>
+                        <div class="target-price">$12-14</div>
+                        <div class="target-upside">Early Catalysts</div>
+                        <div class="target-probability">50% Probability</div>
+                    </div>
+                    <div class="target-card">
+                        <div class="target-label">Dec 2026</div>
+                        <div class="target-price">$16-18</div>
+                        <div class="target-upside">Mid-Catalysts</div>
+                        <div class="target-probability">40% Probability</div>
+                    </div>
+                    <div class="target-card bear">
+                        <div class="target-label">2027E Bear</div>
+                        <div class="target-price">$14</div>
+                        <div class="target-upside">+69%</div>
+                        <div class="target-probability">10%</div>
+                    </div>
+                    <div class="target-card">
+                        <div class="target-label">2027E BASE ⭐</div>
+                        <div class="target-price">$25</div>
+                        <div class="target-upside">+202%</div>
+                        <div class="target-probability">65%</div>
+                    </div>
+                    <div class="target-card bull">
+                        <div class="target-label">2027E Bull</div>
+                        <div class="target-price">$32</div>
+                        <div class="target-upside">+286%</div>
+                        <div class="target-probability">25%</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: var(--spacing-lg);">Posicionamiento Recomendado</h3>
+                
+                <ul>
+                    <li><strong>Conservative Portfolio:</strong> 2-3% position size (asymmetric upside, low correlation)</li>
+                    <li><strong>Growth Portfolio:</strong> 4-5% position size (high conviction, 12-24 month horizon)</li>
+                    <li><strong>Specialist/Hedge Fund:</strong> 5-10% position size (special situations mandate, sufficient liquidity)</li>
+                </ul>
+
+                <h3 style="margin-top: var(--spacing-lg);">Portfolio Management Roadmap</h3>
+
+                <strong>Position Entry:</strong>
+                <ul>
+                    <li>Phase 1: Initial entry at $8.26-8.50 (current levels)</li>
+                    <li>Phase 2: Add on dips below $8.00 (if macro weakness)</li>
+                    <li>Phase 3: Complete accumulation by end-2025</li>
+                </ul>
+
+                <strong style="display: block; margin-top: var(--spacing-lg);">Position Management (Post-Tender):</strong>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Price Level</th>
+                            <th>Acción</th>
+                            <th>Razón</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>$8.28-9.00</td>
+                            <td><strong style="color: var(--color-accent);">Hold / Add</strong></td>
+                            <td>Accumulation phase, pre-catalysts</td>
+                        </tr>
+                        <tr>
+                            <td>$9.00-9.50</td>
+                            <td><strong style="color: var(--color-secondary);">Light trim 20%</strong></td>
+                            <td>Realize tender arbitrage</td>
+                        </tr>
+                        <tr>
+                            <td>$10.00-13</td>
+                            <td><strong style="color: var(--color-text);">Hold core</strong></td>
+                            <td>M&A pre-announce</td>
+                        </tr>
+                        <tr>
+                            <td>$14-16</td>
+                            <td><strong style="color: var(--color-warning);">Trim 30%</strong></td>
+                            <td>Early catalyst de-risking</td>
+                        </tr>
+                        <tr>
+                            <td>$18-22</td>
+                            <td><strong style="color: var(--color-danger);">Partial exit</strong></td>
+                            <td>SRE inflection visible</td>
+                        </tr>
+                        <tr>
+                            <td>$25+</td>
+                            <td><strong style="color: var(--color-danger);">Full exit</strong></td>
+                            <td>Base case achieved</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: var(--spacing-lg);">Milestones & Monitoreo</h3>
+
+                <strong>Q4 2025 (Próximas 4 semanas):</strong>
+                <ul>
+                    <li>Tender offer cierra (Feb 2, 2026)</li>
+                    <li>Q4 2025 earnings announcement (mid-enero)</li>
+                    <li>Action: Light trim si negative surprise</li>
+                </ul>
+
+                <strong style="display: block; margin-top: var(--spacing-lg);">Q1 2026 (Enero-Marzo):</strong>
+                <ul>
+                    <li>M&A announcements esperadas</li>
+                    <li>Management guidance update</li>
+                    <li>Action: Hold/Add si no deal anunciado</li>
+                </ul>
+
+                <strong style="display: block; margin-top: var(--spacing-lg);">Q2 2026 (Abril-Junio):</strong>
+                <ul>
+                    <li>Cost synergies becoming visible</li>
+                    <li>First M&A closing</li>
+                    <li>SRE deployment beginning</li>
+                    <li>Action: Trim 15-20% si $12-14 range hit</li>
+                </ul>
+
+                <strong style="display: block; margin-top: var(--spacing-lg);">H2 2026 (Julio-Diciembre):</strong>
+                <ul>
+                    <li>SRE inflection becomes apparent</li>
+                    <li>Multiple M&A deals integrated</li>
+                    <li>Insurance capital deployment ongoing</li>
+                    <li>Action: Major trim (30-40%) si $16-18 range hit</li>
+                </ul>
+
+                <strong style="display: block; margin-top: var(--spacing-lg);">2027 (Full Year):</strong>
+                <ul>
+                    <li>Normalized earnings power achieved</li>
+                    <li>Insurance flywheel fully operational</li>
+                    <li>M&A fully integrated</li>
+                    <li>Action: Full exit target $25-28 range</li>
+                </ul>
+
+                <h3 style="margin-top: var(--spacing-lg);">Key Metrics a Monitorear</h3>
+
+                <strong>Financial Metrics:</strong>
+                <ul>
+                    <li>FRE: Target +5-10% YoY growth</li>
+                    <li>SRE: Target recovery to 60+ bps by H2 2026</li>
+                    <li>AUM: Target +5-10% growth</li>
+                    <li>Adjusted earnings: Target +20-30% in 2026</li>
+                    <li>Dividend: Maintain $0.03/quarter minimum</li>
+                </ul>
+
+                <strong style="display: block; margin-top: var(--spacing-lg);">Operational Metrics:</strong>
+                <ul>
+                    <li>TURN integration progress</li>
+                    <li>M&A pipeline progression (deal announcements)</li>
+                    <li>Insurance spread improvement trajectory</li>
+                    <li>Cost synergies realization</li>
+                    <li>Analyst coverage expansion (target: 3-5 analysts)</li>
+                </ul>
+
+                <h3 style="margin-top: var(--spacing-lg);">Red Flags & Exit Triggers</h3>
+
+                <div class="danger-box">
+                    <strong>Exit immediately if:</strong>
+                    <ul style="margin-left: 20px; margin-top: 12px;">
+                        <li>FRE declines >10% YoY consecutively</li>
+                        <li>SRE continues decline in H2 2026 (vs. expected recovery)</li>
+                        <li>No M&A announcements by end-Q1 2026</li>
+                        <li>Management team turnover (especially Goldthorpe)</li>
+                        <li>Major regulatory capital requirement increases</li>
+                        <li>Private credit market shows actual impairment (not noise)</li>
+                        <li>Stock declines below $6.00 (reassess thesis)</li>
+                    </ul>
+                </div>
+
+                <div class="success-box" style="margin-top: var(--spacing-lg);">
+                    <strong>Hold despite volatility if:</strong>
+                    <ul style="margin-left: 20px; margin-top: 12px;">
+                        <li>Tender closes successfully</li>
+                        <li>FRE stays stable or grows modestly</li>
+                        <li>M&A pipeline remains active</li>
+                        <li>SRE inflection visible by Q4 2026</li>
+                        <li>Short-term weakness = accumulation opportunity</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-section" style="background: linear-gradient(135deg, #f0f9ff, #ecfdf5); border: 2px solid var(--color-secondary);">
+                <h2 style="color: var(--color-secondary);">Conclusión Final</h2>
+                
+                <p style="font-size: 16px; margin-bottom: var(--spacing-lg);">Mount Logan Capital es una <strong>OPORTUNIDAD DE VALORACIÓN UNUSUAL</strong> que combina:</p>
+
+                <ul style="font-size: 16px;">
+                    <li style="margin-bottom: 12px;"><strong>✓ Immediate Arbitrage</strong> (tender 10-12% in 5 weeks)</li>
+                    <li style="margin-bottom: 12px;"><strong>✓ Strategic Catalysts</strong> (SRE inflection, M&A, organic growth visible)</li>
+                    <li style="margin-bottom: 12px;"><strong>✓ Downside Protection</strong> (book value floor $10.26)</li>
+                    <li style="margin-bottom: 12px;"><strong>✓ Management Credibility</strong> (track record, disciplined capital allocation)</li>
+                    <li><strong>✓ Hidden Value</strong> (Ability Insurance unrecognized by market)</li>
+                </ul>
+
+                <div style="margin-top: var(--spacing-xl); padding-top: var(--spacing-xl); border-top: 2px solid rgba(0,0,0,0.1);">
+                    <h3 style="color: var(--color-secondary);">El market ha castigado la acción EXCESIVAMENTE</h3>
+                    <p>Los headwinds (TURN integration, SRE depression, illiquidity) son <strong>TEMPORALES</strong> y se espera se reviertan en 12-18 meses, con visibilidad máxima en <strong>H2 2026</strong>.</p>
+                    <p style="margin-top: 12px;">A valuaciones de <strong>9.5x EV/FRE</strong>, el <strong style="color: var(--color-accent);">RISK/REWARD es ASIMÉTRICO</strong> en favor del long.</p>
+                </div>
+
+                <div style="margin-top: var(--spacing-xl); padding: var(--spacing-lg); background: rgba(255,255,255,0.6); border-radius: 8px; text-align: center;">
+                    <h3 style="color: var(--color-primary); font-size: 28px; margin-bottom: 8px;">$25.00</h3>
+                    <p style="font-size: 14px; color: var(--color-text-light); margin-bottom: 12px;">Target Price 2027E (Base Case)</p>
+                    <p style="font-size: 16px; color: var(--color-accent); font-weight: 700;">+202% Upside desde $8.28</p>
+                    <p style="font-size: 12px; color: var(--color-text-light); margin-top: 12px;">Horizonte: 12-24 meses | Recomendación: <strong style="color: var(--color-primary);">COMPRA / LONG</strong></p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Mount Logan Capital Inc. Investment Thesis</p>
+        <p style="margin-top: 12px; color: #9ca3af;">Documento preparado: Enero 6, 2026 | Clasificación: Research / Due Diligence</p>
+        <p style="margin-top: 12px; color: #9ca3af; font-size: 11px;">Disclaimer: Este análisis es para propósitos informativos únicamente. No constituye asesoría financiera profesional. Consultar con asesor financiero antes de invertir.</p>
+    </footer>
+
+    <script>
+        // Navigation functionality
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Remove active class from all buttons
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                e.target.classList.add('active');
+                
+                // Hide all sections
+                document.querySelectorAll('.section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Show selected section
+                const sectionId = e.target.getAttribute('data-section');
+                document.getElementById(sectionId).classList.add('active');
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
