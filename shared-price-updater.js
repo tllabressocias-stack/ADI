@@ -111,8 +111,8 @@ async updatePrice() {
 }
     getManualPriceFromIndex() {
     const manualPrices = {
-        'PUUILO.HE': 12.48,
-        'TOA.WA': 9.75,
+        'PUUILO.HE': 12.58,
+        'TOA.WA': 9.91,
         'NWL.MI': 19.78,
         'TIC': 9.89,
         'EDU.ASX': 0.95,
