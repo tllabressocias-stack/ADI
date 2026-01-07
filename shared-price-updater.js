@@ -116,7 +116,8 @@ async updatePrice() {
         'NWL.MI': 19.78,
         'TIC': 9.89,
         'EDU.ASX': 0.95,
-        'MODG': 12.87
+        'MODG': 12.87,
+        'MLCI': 8.30
     };
     
     return manualPrices[this.symbol] || null;
