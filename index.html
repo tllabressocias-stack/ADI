@@ -548,7 +548,8 @@
             'NWL.MI': { current: 19.78 },
             'TIC': { current: 9.89 },
             'EDU.ASX': { current: 0.95 },
-            'MODG': { current: 12.87 }
+            'MODG': { current: 12.87 },
+            'MLCI': { current: 8.30 }
         };
 
         const currencySymbols = {
@@ -613,7 +614,18 @@
                     positionType: 'ma',
                 },
             ],
-            tender: [],
+            tender: [
+                 {
+                    name: 'Mount Logan Capital',
+                    ticker: 'MLCI',
+                    icon: '🇺🇸',
+                    thesis: 'Tender - Reducción float 12% - 0,80x P/BV',
+                    summary: 'Normalización tras Reverse Merger - TURN',
+                    currency: 'USD',
+                    thesisFile: 'mount-logan-capital/',
+                    positionType: 'tender',
+                },
+            ],
             short: [],
             uplisting: [],
             demerger: [
