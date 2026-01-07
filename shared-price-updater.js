@@ -113,7 +113,7 @@ async updatePrice() {
     const manualPrices = {
         'PUUILO.HE': 12.58,
         'TOA.WA': 9.91,
-        'NWL.MI': 19.78,
+        'NWL.MI': 19.32,
         'TIC': 9.89,
         'EDU.ASX': 0.95,
         'MODG': 12.87,
