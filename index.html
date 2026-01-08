@@ -190,10 +190,13 @@
         }
 
         .card-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                margin-bottom: 8px;
+                width: 100%;
         }
 
         .card-icon {
@@ -668,7 +671,7 @@
                  {
                     name: 'Mount Logan Capital',
                     ticker: 'MLCI',
-                    icon: '🇺🇸',
+                    icon: 'mount-logan-capital',
                     thesis: 'Tender - Reducción float 12% - 0,80x P/BV',
                     summary: 'Normalización tras Reverse Merger - TURN',
                     currency: 'USD',
@@ -919,10 +922,10 @@
 
                     card.innerHTML = `
                         <div class="card-header">
-                            <div class="card-title">
-                                <span class="card-icon">${company.icon}</span>
-                                <h3>${company.name}</h3>
-                            </div>
+                           <div class="card-title">
+                                <img src="logos/${company.logo}.png" alt="${company.name}" class="card-logo-title" style="width: 60px; height: 60px; border-radius: 6px;">
+                                 <h3>${company.name}</h3>
+                        </div>
                             <div class="ticker">${company.ticker}</div>
                         </div>
                         <div class="card-body">
