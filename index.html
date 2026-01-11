@@ -607,7 +607,8 @@
             'EDU.ASX': { current: 0.95 },
             'MODG': { current: 12.87 },
             'MLCI': { current: 8.30 },
-            'STAA': { current: 22.15 }
+            'STAA': { current: 22.15 },
+            'TNOM.HE': { current: 2.98 }
         };
 
         const currencySymbols = {
@@ -659,7 +660,18 @@
                     positionType: 'long',
                 },
             ],
-            spinoff: [],
+            spinoff: [
+                {
+                    name: 'Talenom Oyj',
+                    ticker: 'TNOM.HE',
+                    logo: 'talenom',
+                    thesis: 'Escisión Easor - SaaS',
+                    summary: 'Empresa de soluciones contables y Software - SaaS',
+                    currency: 'EUR',
+                    thesisFile: 'talenom/',
+                    positionType: 'spinoff',
+                },
+            ],
             ma: [
                 {
                     name: 'TIC Solutions',
