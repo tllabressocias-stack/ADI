@@ -118,7 +118,8 @@ async updatePrice() {
         'EDU.ASX': 0.95,
         'MODG': 12.87,
         'MLCI': 8.30,
-        'STAA': 22.15
+        'STAA': 22.15,
+        'TNOM.HE': 22.15
     };
     
     return manualPrices[this.symbol] || null;
