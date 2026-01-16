@@ -116,7 +116,7 @@ async updatePrice() {
         'NWL.MI': 19.32,
         'TIC': 9.89,
         'EDU.ASX': 0.95,
-        'MODG': 12.87,
+        'CALY': 12.87,
         'MLCI': 8.30,
         'STAA': 22.15,
         'TNOM.HE': 2.98,
