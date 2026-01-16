@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Watches of Switzerland Group (WOSG) - Análisis de Inversión. Fair Value: 574p. Working Capital Liberation Strategy.">
+    <title>WOSG - Watches of Switzerland Group | SpreadHunters</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00d7ff;
+            --secondary-color: #1a2332;
+            --accent-color: #4A8B9B;
+            --success-color: #90ee90;
+            --danger-color: #ff6b6b;
+            --warning-color: #ffa500;
+            --info-color: #00d7ff;
+            --dark-bg: #1a2332;
+            --darker-bg: #0f1419;
+            --card-bg: #1a2538;
+            --light-bg: #E8E8E8;
+            --text-primary: #d0d8e0;
+            --text-secondary: #b0c4de;
+            --text-tertiary: #808080;
+            --border-color: #2d3d4d;
+            --border-light: #3d5570;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* NAVBAR */
+        nav.navbar {
+            background: rgba(26, 35, 50, 0.95);
+            border-bottom: 2px solid var(--primary-color);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            padding: 15px 0;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        /* HEADER */
+        .header-professional {
+            background: linear-gradient(135deg, #1a2538 0%, #253555 100%);
+            border-bottom: 2px solid var(--primary-color);
+            padding: 40px 0;
+            margin-top: 20px;
+        }
+
+        .header-title-section {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .company-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo-company {
+            width: 80px;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+        /* INVESTMENT METRICS */
+        .investment-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .metric-card {
+            background: rgba(0, 215, 255, 0.08);
+            border: 2px solid var(--border-light);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            background: rgba(0, 215, 255, 0.15);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .metric-value.green {
+            color: var(--success-color);
+        }
+
+        .metric-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* NAV TABS */
+        .nav-tabs {
+            background: rgba(26, 35, 50, 0.8);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 60px;
+            z-index: 998;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-tabs .container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-tabs ul {
+            display: flex;
+            list-style: none;
+            gap: 0;
+            overflow-x: auto;
+            padding: 0;
+            justify-content: center;
+        }
+
+        .nav-tabs a {
+            display: block;
+            padding: 15px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .nav-tabs a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-tabs a.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* SECTIONS */
+        section {
+            display: none;
+            margin-bottom: 60px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* HEADINGS */
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            margin: 40px 0 20px 0;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-align: left;
+            margin: 30px 0 15px 0;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: left;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        /* ALERTS */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: rgba(144, 238, 144, 0.1);
+            border-left-color: var(--success-color);
+            color: #b8e6b8;
+            text-align: center;
+        }
+
+        .alert-warning {
+            background: rgba(255, 165, 0, 0.1);
+            border-left-color: var(--warning-color);
+            color: #ffd9a3;
+        }
+
+        .alert-info {
+            background: rgba(0, 215, 255, 0.1);
+            border-left-color: var(--info-color);
+            color: #a3e4f0;
+            text-align: center;
+        }
+
+        /* HIGHLIGHTS */
+        .highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .highlight-item {
+            background: rgba(74, 139, 155, 0.15);
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .highlight-item:hover {
+            background: rgba(74, 139, 155, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .highlight-item h4 {
+            margin-top: 0;
+        }
+
+        /* CARDS */
+        .card {
+            background: rgba(26, 37, 56, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--border-light);
+            box-shadow: 0 8px 24px rgba(0, 215, 255, 0.1);
+        }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(0, 215, 255, 0.08);
+            border: 1px solid var(--border-light);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card .label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 8px 0;
+        }
+
+        .stat-card .change {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .stat-card .change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-card .change.negative {
+            color: var(--danger-color);
+        }
+
+        /* TABLES */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(26, 37, 56, 0.4);
+        }
+
+        thead {
+            background: rgba(0, 215, 255, 0.1);
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        td {
+            padding: 12px 15px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td.positive {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        td.negative {
+            color: var(--danger-color);
+            font-weight: 600;
+        }
+
+        /* CHARTS */
+        .chart-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .chart-container {
+            background: rgba(26, 37, 56, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            height: 400px;
+        }
+
+        .chart-container h4 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .chart-container canvas {
+            max-height: 300px;
+        }
+
+        /* TIMELINE */
+        .timeline {
+            position: relative;
+            margin: 30px 0;
+            padding: 0 20px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-light);
+        }
+
+        .timeline-item {
+            margin-left: 40px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(26, 37, 56, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 2px solid var(--dark-bg);
+        }
+
+        .timeline-date {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .timeline-item p {
+            margin-bottom: 0;
+        }
+
+        /* LISTS */
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        /* FOOTER */
+        footer {
+            background: rgba(26, 35, 50, 0.95);
+            border-top: 2px solid var(--primary-color);
+            padding: 30px 0;
+            text-align: center;
+            color: var(--text-secondary);
+            margin-top: 60px;
+        }
+
+        footer p {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.6rem;
+            }
+
+            .investment-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .company-title-row {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .chart-row {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs ul {
+                justify-content: flex-start;
+            }
+
+            .timeline::before {
+                left: 10px;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+
+            h3 {
+                font-size: 1.3rem;
+            }
+        }
+
+        strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">📊 SpreadHunters</div>
+            <div style="flex: 1;"></div>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="header-professional">
+        <div class="container">
+            <div class="header-title-section">
+                <div class="company-title-row">
+                    <div>
+                        <h1 class="page-title">WOSG - Watches of Switzerland Group</h1>
+                        <p class="page-subtitle">Minorista de lujo | Relojes suizos, joyería premium | UK + EE.UU.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="investment-metrics">
+                <div class="metric-card">
+                    <div class="metric-label">Precio Actual</div>
+                    <div class="metric-value">478p</div>
+                    <div class="metric-subtitle">LSE: WOSG</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Fair Value DCF</div>
+                    <div class="metric-value green">574p</div>
+                    <div class="metric-subtitle">Base Case</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Upside Potencial</div>
+                    <div class="metric-value green">+21%</div>
+                    <div class="metric-subtitle">a Fair Value</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Recomendación</div>
+                    <div class="metric-value green">ACCUMULATE</div>
+                    <div class="metric-subtitle">18-24 meses</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAV TABS -->
+    <nav class="nav-tabs">
+        <div class="container">
+            <ul id="navTabs">
+                <li><a href="#resumen" class="active">Resumen</a></li>
+                <li><a href="#tesis">Tesis</a></li>
+                <li><a href="#valoracion">Valoración</a></li>
+                <li><a href="#catalysts">Catalizadores</a></li>
+                <li><a href="#riesgos">Riesgos</a></li>
+                <li><a href="#conclusion">Conclusión</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <div class="container">
+
+            <!-- RESUMEN -->
+            <section id="resumen" class="active">
+                <h2>📋 Resumen Ejecutivo</h2>
+
+                <div class="alert alert-success">
+                    <strong>🎯 Tesis Principal:</strong> WOSG es una oportunidad de revalorización impulsada por la liberación de working capital post-COVID (~£120-130m entre 2025-2028), que genera un fair value de <strong>574p (+21% upside)</strong>. El mercado subestima significativamente este catalizador de caja.
+                </div>
+
+                <div class="highlights">
+                    <div class="highlight-item">
+                        <h4>💰 Liberación de WC Extraordinaria</h4>
+                        <p>H1 FY26 generó <strong>£29.4m en liberación de cash</strong> (46% del FCF total). Este fenómeno post-COVID continuará hasta 2028-2029, creando un runway de FCF expansion infraapreciado.</p>
+                    </div>
+                    <div class="highlight-item">
+                        <h4>🚀 US Mercado como Growth Engine</h4>
+                        <p>EE.UU. muestra <strong>+15% revenue, +16% EBIT growth</strong> en H1 FY26. Representa 48% de ingresos pero 59% de EBIT. Roberto Coin escala exitosamente.</p>
+                    </div>
+                    <div class="highlight-item">
+                        <h4>📦 Gestión Estratégica de Inventario</h4>
+                        <p>La acumulación pre-aranceles fue <strong>hedging sofisticado</strong>. FCF conversion mejoró a 53% a pesar del inventory buildup, probando disciplina superior.</p>
+                    </div>
+                </div>
+
+                <h3>Métricas Clave H1 FY26</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="label">Ingresos (cc)</div>
+                        <div class="value">+10.0%</div>
+                        <div class="change positive">vs prior year</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">EBITDA Ajustado</div>
+                        <div class="value">£90.8m</div>
+                        <div class="change">Margen: 10.8%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Free Cash Flow</div>
+                        <div class="value">+71%</div>
+                        <div class="change positive">£48.4m</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Net Debt/EBITDA</div>
+                        <div class="value">0.6x</div>
+                        <div class="change positive">Muy saludable</div>
+                    </div>
+                </div>
+
+                <h3>Rango de Valuation</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Escenario</th>
+                                <th>Supuesto WC</th>
+                                <th>Fair Value</th>
+                                <th>vs 478p</th>
+                                <th>Probabilidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Bear</strong></td>
+                                <td>Normalización rápida</td>
+                                <td class="positive"><strong>555p</strong></td>
+                                <td class="positive">+16%</td>
+                                <td>25%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Base (Tu Modelo)</strong></td>
+                                <td>Curva gradual</td>
+                                <td class="positive"><strong>574p</strong></td>
+                                <td class="positive"><strong>+21%</strong></td>
+                                <td><strong>50%</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bull</strong></td>
+                                <td>Liberación sostenida</td>
+                                <td class="positive"><strong>625p</strong></td>
+                                <td class="positive">+31%</td>
+                                <td>20%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TESIS -->
+            <section id="tesis">
+                <h2>🎯 Tesis de Inversión</h2>
+
+                <div class="alert alert-info">
+                    <strong>💡 Oportunidad Crítica:</strong> WOSG está experimentando la liberación de ~£120-130 millones en working capital acumulado durante COVID-19. Este ciclo de normalización genera un catalizador de valor infraapreciado.
+                </div>
+
+                <h3>1. Fenómeno de Liberación de Working Capital (2025-2028)</h3>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Año</th>
+                                <th>Cambio WC (£m)</th>
+                                <th>Significado</th>
+                                <th>Observación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2020</td>
+                                <td>-£16.0m</td>
+                                <td>CASH IN</td>
+                                <td>Inicio post-COVID</td>
+                            </tr>
+                            <tr>
+                                <td>2021</td>
+                                <td>+£12.7m</td>
+                                <td>CASH OUT</td>
+                                <td>Excepción estacional</td>
+                            </tr>
+                            <tr>
+                                <td>2022-2024</td>
+                                <td>-£22 a -30m/año</td>
+                                <td>CASH IN CONSISTENTE</td>
+                                <td>Post-COVID liberación</td>
+                            </tr>
+                            <tr>
+                                <td><strong>H1 FY26</strong></td>
+                                <td><strong>-£29.4m</strong></td>
+                                <td><strong>EXTRAORDINARIO</strong></td>
+                                <td>46% del FCF total</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>2. Gestión Estratégica de Inventario (El Hidden Winner)</h3>
+
+                <div class="card">
+                    <p>Tu observación sobre la gestión de WC es <strong>el punto crítico que el mercado sigue ignorando</strong>:</p>
+                    <ul>
+                        <li><strong>Pre-acumulación estratégica (FY25):</strong> WOSG y sus brand partners anticiparon aranceles del 39% y movieron inventario a EE.UU.</li>
+                        <li><strong>Resultado post-aranceles reducidos:</strong> Cuando bajaron a 15% en diciembre 2025, WOSG ya tenía inventario comprado a bajo costo</li>
+                        <li><strong>Proof of discipline:</strong> FCF conversion mejoró a 53% a pesar del inventory buildup (+£21.6m en H1)</li>
+                        <li><strong>Implications:</strong> No hay riesgo de liquidación distress. Pre-owned Rolex es "caja", no inventory de riesgo</li>
+                    </ul>
+                </div>
+
+                <h3>3. Impacto en Free Cash Flow: El Catalizador Real</h3>
+
+                <p>El cambio de WC fue responsable de <strong>+£29.4m en FCF en H1</strong>, representando <strong>46% del FCF total</strong>. Sin esta liberación, el FCF habría sido solo £34m vs £63.8m actual.</p>
+
+                <div class="chart-row">
+                    <div class="chart-container">
+                        <h4>Curva de WC/Sales (2025-2031)</h4>
+                        <canvas id="wcChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4>Efecto WC en FCF (£m)</h4>
+                        <canvas id="wcEffectChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VALORACION -->
+            <section id="valoracion">
+                <h2>💎 Valoración DCF</h2>
+
+                <div class="alert alert-success">
+                    <strong>Fair Value: 574 pence (base case)</strong> | Rango realista: 555p (bear) - 625p (bull)
+                </div>
+
+                <h3>Supuestos Financieros (2025-2031)</h3>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Año</th>
+                                <th>2025E</th>
+                                <th>2026E</th>
+                                <th>2027E</th>
+                                <th>2028E</th>
+                                <th>2029E</th>
+                                <th>2030E</th>
+                                <th>2031E</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Revenue (£m)</strong></td>
+                                <td>1,652</td>
+                                <td>1,781</td>
+                                <td>1,920</td>
+                                <td>2,058</td>
+                                <td>2,206</td>
+                                <td>2,356</td>
+                                <td>2,509</td>
+                            </tr>
+                            <tr>
+                                <td><strong>EBITDA Margin %</strong></td>
+                                <td>11.6%</td>
+                                <td>10.8%</td>
+                                <td>11.2%</td>
+                                <td>11.4%</td>
+                                <td>11.8%</td>
+                                <td>11.8%</td>
+                                <td>11.8%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Costo de Capital (WACC)</h3>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="label">Risk-free Rate</div>
+                        <div class="value">4.5%</div>
+                        <div class="change">UK Gilts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Beta</div>
+                        <div class="value">1.15</div>
+                        <div class="change">Retail Luxury</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Cost of Equity</div>
+                        <div class="value">11.11%</div>
+                        <div class="change">Ke = Rf + β × MRP</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">WACC</div>
+                        <div class="value">9.18%</div>
+                        <div class="change">Promedio ponderado</div>
+                    </div>
+                </div>
+
+                <h3>Resultado de Valuation</h3>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Componente</th>
+                                <th>Valor (£m)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PV de FCF (2026-2030)</td>
+                                <td>301.6</td>
+                            </tr>
+                            <tr>
+                                <td>PV de Terminal Value</td>
+                                <td>1,521.2</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Enterprise Value</strong></td>
+                                <td><strong>1,822.8</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Less: Net Debt</td>
+                                <td>(486.0)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Equity Value</strong></td>
+                                <td><strong>1,336.8</strong></td>
+                            </tr>
+                            <tr>
+                                <td>÷ Shares Outstanding (m)</td>
+                                <td>233</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fair Value per Share</strong></td>
+                                <td class="positive"><strong>574 pence</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="chart-row">
+                    <div class="chart-container">
+                        <h4>FCF Proyectado 2026-2031</h4>
+                        <canvas id="fcfChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4>Contribución WC al FCF</h4>
+                        <canvas id="wcContribChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CATALYSTS -->
+            <section id="catalysts">
+                <h2>🚀 Catalizadores</h2>
+
+                <h3>Near-term Catalysts (Q4 FY26 / Febrero 2026)</h3>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">📅 Febrero 2026</div>
+                        <p><strong>H2 FY26 Results</strong> - Working capital change validation (target: -£25 a -30m). Si WC sigue liberando, valida DCF assumptions.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">📅 Q4 2025-26</div>
+                        <p><strong>Holiday Performance</strong> - Sales trends en peak season de lujo relojero. Indicador de consumer demand resilience post-tariff.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">📅 Enero 2026</div>
+                        <p><strong>Roberto Coin Miami</strong> - Apertura del flagship en Miami Design District. 3º boutique mono-brand validando modelo.</p>
+                    </div>
+                </div>
+
+                <h3>Medium-term Catalysts (FY27 / Junio 2027)</h3>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">📅 Junio 2027</div>
+                        <p><strong>FY27 Full Year Results</strong> - Confirmación de WC inflection. Re-rating trigger si múltiple expande 0.5-1.0x.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">📅 H1-H2 FY27</div>
+                        <p><strong>Roberto Coin Scaling</strong> - Full-year wholesale performance. Validar que modelo es replicable.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">📅 Ongoing</div>
+                        <p><strong>Showroom ROI Trends</strong> - CapEx payback validation. Si > hurdle, CapEx discipline probado.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">📅 H2 FY27</div>
+                        <p><strong>UK Stabilization</strong> - Portfolio optimization complete. UK revenue growth puede retornar a +2-3% range.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIESGOS -->
+            <section id="riesgos">
+                <h2>⚠️ Análisis de Riesgos</h2>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Risk ID</th>
+                                <th>Descripción</th>
+                                <th>Probabilidad</th>
+                                <th>Severidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>MACRO-1</strong></td>
+                                <td>US Economic Slowdown</td>
+                                <td>Medio (35%)</td>
+                                <td>Material</td>
+                            </tr>
+                            <tr>
+                                <td><strong>MACRO-2</strong></td>
+                                <td>Tariff Escalation (39%+)</td>
+                                <td>Bajo (15%)</td>
+                                <td>Severo</td>
+                            </tr>
+                            <tr>
+                                <td><strong>OPS-1</strong></td>
+                                <td>Roberto Coin Integration Failure</td>
+                                <td>Bajo (10%)</td>
+                                <td>Material</td>
+                            </tr>
+                            <tr>
+                                <td><strong>OPS-2</strong></td>
+                                <td>WC Normalization Accelerates</td>
+                                <td>Medio (25%)</td>
+                                <td>Moderado (-3%)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>VAL-1</strong></td>
+                                <td>Margin Compression Persiste</td>
+                                <td>Medio-Alto (30%)</td>
+                                <td>Material</td>
+                            </tr>
+                            <tr>
+                                <td><strong>VAL-2</strong></td>
+                                <td>Multiple Compression (8.0x)</td>
+                                <td>Bajo (20%)</td>
+                                <td>Moderado (-13%)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Riesgos Detallados</h3>
+
+                <div class="card">
+                    <h4>💹 US Economic Slowdown</h4>
+                    <p><strong>Mecanismo:</strong> Demanda de relojes de lujo depende de confianza high-net-worth consumers.</p>
+                    <p><strong>Mitigación:</strong> Watches son "positional goods" con demand resilience. H1 FY26 demand robusto a pesar de incertidumbre tarifaria.</p>
+                </div>
+
+                <div class="card">
+                    <h4>📦 WC Normalization Accelerates</h4>
+                    <p><strong>Mecanismo:</strong> WC vuelve positivo en 2027 vs 2029 en modelo (bear case).</p>
+                    <p><strong>Impacto:</strong> TP cae de 574p a 555p (-3% vs base, manejable).</p>
+                </div>
+
+                <div class="card">
+                    <h4>💰 Margin Compression Persiste</h4>
+                    <p><strong>Mecanismo:</strong> Aranceles/oro/mix no mejora; EBITDA margin en 9% vs 11%+ modelo.</p>
+                    <p><strong>Impacto:</strong> TP cae £50-100p, pero tariff relief + oro estabilización ayuda.</p>
+                </div>
+            </section>
+
+            <!-- CONCLUSION -->
+            <section id="conclusion">
+                <h2>✅ Conclusión & Recomendación</h2>
+
+                <div class="alert alert-success">
+                    <strong>🎯 RECOMENDACIÓN: HOLD / ACCUMULATE</strong> | <strong>Target: 574p</strong> | <strong>Horizonte: 18-24 meses</strong> | <strong>Stop Loss: 440p</strong>
+                </div>
+
+                <h3>Tesis Resumen</h3>
+
+                <p><strong>WOSG es una oportunidad de revalorización impulsada por working capital que el mercado ha subestimado significativamente.</strong></p>
+
+                <p>El negocio está experimentando la liberación de ~£120-130m en working capital entre 2025-2028, resultado de normalización post-COVID de inventarios. Este ciclo de liberación crea un runway de Free Cash Flow expansion que genera un fair value de <strong>574 pence (vs 478p actual = +21% upside)</strong>.</p>
+
+                <h3>¿Por Qué el Mercado Está Equivocado?</h3>
+
+                <ul>
+                    <li><strong>WC Liberación es REAL y MATERIAL:</strong> +£29.4m en H1 = 46% del FCF</li>
+                    <li><strong>US Geografía es Growth Engine:</strong> 15% revenue, 16% EBIT growth</li>
+                    <li><strong>Strategic M&A está Funcionando:</strong> Roberto Coin + Hodinkee sinergias visibles</li>
+                    <li><strong>Showroom Modernization = ROIC Atractivo:</strong> &lt;3 años payback discipline probado</li>
+                    <li><strong>Gestion de Inventario es Sofisticada:</strong> Pre-tariff hedging, no incompetencia</li>
+                </ul>
+
+                <h3>Para Diferentes Tipos de Inversor</h3>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="label">Current Holders</div>
+                        <div class="value green">HOLD</div>
+                        <div class="change">Target: 574p</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">New Entry</div>
+                        <div class="value green">ACCUMULATE</div>
+                        <div class="change">450-480p zone</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Support</div>
+                        <div class="value">450p</div>
+                        <div class="change">Bear case area</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Key Milestone</div>
+                        <div class="value">Feb 2026</div>
+                        <div class="change">H2 Results</div>
+                    </div>
+                </div>
+
+                <h3>Bottom Line</h3>
+
+                <p>A <strong>380p (tu entrada)</strong> tenías una <strong>excelente base de coste</strong>. A <strong>478p (actual)</strong> el upside a 574p sigue siendo <strong>materialmente atractivo</strong> (21%) con <strong>downside protection</strong> (solo -3% a bear case).</p>
+
+                <p><strong>Julio 2026 (FY26 Full Year Results)</strong> es el catalizador perfecto para re-rating. Un movimiento a <strong>550-580p en los próximos 6 meses</strong> es totalmente factible.</p>
+
+                <p><strong>El mercado sigue siendo demasiado cauteloso.</strong></p>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p><strong>SpreadHunters Investment Research</strong> | Análisis Fundamental de Pequeña Capitalización Europea</p>
+            <p>📊 Enero 2026 | Fair Value: 574p | Recomendación: ACCUMULATE</p>
+            <p style="font-size: 0.85rem;">⚠️ DESCARGO: Este análisis es educativo. No constituye recomendación de inversión. Consultar asesores profesionales.</p>
+        </div>
+    </footer>
+
+    <script>
+        Chart.defaults.color = '#b0c4de';
+        Chart.defaults.borderColor = '#2d3d4d';
+        Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+
+        // TAB NAVIGATION
+        const navTabs = document.querySelectorAll('#navTabs a');
+        const sections = document.querySelectorAll('section');
+
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                navTabs.forEach(t => t.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                tab.classList.add('active');
+                const targetId = tab.getAttribute('href').substring(1);
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        // CHARTS
+        const wcCtx = document.getElementById('wcChart');
+        if (wcCtx) {
+            new Chart(wcCtx, {
+                type: 'line',
+                data: {
+                    labels: ['2025', '2026', '2027', '2028', '2029', '2030', '2031'],
+                    datasets: [{
+                        label: 'WC/Sales %',
+                        data: [-2.7, -1.8, -1.4, -0.7, 0.5, 0.5, 0.5],
+                        borderColor: '#00d7ff',
+                        backgroundColor: 'rgba(0, 215, 255, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#00d7ff',
+                        pointBorderColor: '#1a2332',
+                        pointBorderWidth: 2,
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { ticks: { color: '#b0c4de' }, grid: { color: '#2d3d4d' } },
+                        x: { ticks: { color: '#b0c4de' }, grid: { color: '#2d3d4d' } }
+                    }
+                }
+            });
+        }
+
+        const wcEffectCtx = document.getElementById('wcEffectChart');
+        if (wcEffectCtx) {
+            new Chart(wcEffectCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['2025', '2026', '2027', '2028', '2029', '2030', '2031'],
+                    datasets: [{
+                        label: 'WC Effect (£m)',
+                        data: [44.6, 32.1, 26.9, 14.4, -11.0, -11.8, -12.5],
+                        backgroundColor: (context) => context.parsed.y >= 0 ? '#90ee90' : '#ff6b6b'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { ticks: { color: '#b0c4de' }, grid: { color: '#2d3d4d' } },
+                        x: { ticks: { color: '#b0c4de' }, grid: { color: '#2d3d4d' } }
+                    }
+                }
+            });
+        }
+
+        const fcfCtx = document.getElementById('fcfChart');
+        if (fcfCtx) {
+            new Chart(fcfCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['2026E', '2027E', '2028E', '2029E', '2030E', '2031E'],
+                    datasets: [{
+                        label: 'FCF (£m)',
+                        data: [66.4, 73.0, 70.0, 58.3, 65.2, 72.2],
+                        backgroundColor: '#00d7ff',
+                        borderColor: '#00d7ff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { ticks: { color: '#b0c4de' }, grid: { color: '#2d3d4d' } },
+                        x: { ticks: { color: '#b0c4de' }, grid: { color: '#2d3d4d' } }
+                    }
+                }
+            });
+        }
+
+        const wcContribCtx = document.getElementById('wcContribChart');
+        if (wcContribCtx) {
+            new Chart(wcContribCtx, {
+                type: 'line',
+                data: {
+                    labels: ['2026E', '2027E', '2028E', '2029E', '2030E', '2031E'],
+                    datasets: [{
+                        label: 'WC Contribution (£m)',
+                        data: [32.1, 26.9, 14.4, -11.0, -11.8, -12.5],
+                        borderColor: '#ffa500',
+                        backgroundColor: 'rgba(255, 165, 0, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#ffa500',
+                        pointBorderColor: '#1a2332',
+                        pointBorderWidth: 2,
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { ticks: { color: '#b0c4de' }, grid: { color: '#2d3d4d' } },
+                        x: { ticks: { color: '#b0c4de' }, grid: { color: '#2d3d4d' } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
