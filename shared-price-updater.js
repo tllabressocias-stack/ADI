@@ -119,7 +119,8 @@ async updatePrice() {
         'MODG': 12.87,
         'MLCI': 8.30,
         'STAA': 22.15,
-        'TNOM.HE': 2.98
+        'TNOM.HE': 2.98,
+        'WOSG.L': 4.98
     };
     
     return manualPrices[this.symbol] || null;
