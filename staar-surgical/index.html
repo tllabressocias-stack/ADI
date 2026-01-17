@@ -7,33 +7,33 @@
     <meta name="description" content="Análisis exhaustivo de STAAR Surgical (STAA): Deal break con Alcon, activismo de Broadwood Capital, recuperación de márgenes y oportunidad de valor catalizados.">
     
     <style>
-        :root {
-            /* PRIMARIOS */
-            --primary-color: #00d7ff;        /* Cyan brillante - Títulos */
-            --secondary-color: #1a2332;      /* Azul oscuro - Cards */
-            --accent-color: #4A8B9B;         /* Azul teal - Detalles */
-            
-            /* FUNCIONALES */
-            --success-color: #90ee90;        /* Verde - Positivo */
-            --danger-color: #ff6b6b;         /* Rojo - Negativo */
-            --warning-color: #ffa500;        /* Naranja - Alertas */
-            --info-color: #00d7ff;           /* Cyan - Info */
+       :root {
+    /* COLORES PRIMARIOS - Alineados con SpreadHunters */
+    --primary-color: #00d7ff;           /* Cyan brillante */
+    --secondary-color: #1a2332;         /* Azul oscuro base */
+    --accent-color: #4A8B9B;            /* Azul teal claro */
+    
+    /* COLORES FUNCIONALES */
+    --success-color: #90ee90;           /* Verde */
+    --danger-color: #ff6b6b;            /* Rojo */
+    --warning-color: #ffa500;           /* Naranja */
+    --info-color: #00d7ff;              /* Cyan */
 
-            /* BACKGROUNDS */
-            --dark-bg: #1a2332;              /* Principal */
-            --darker-bg: #0f1419;            /* Muy oscuro */
-            --card-bg: #1a2538;              /* Ligeramente oscuro */
-            --light-bg: #E8E8E8;             /* Gris claro */
+    /* FONDOS - AZUL como en filters-section */
+    --dark-bg: #1a2332;                 /* Azul principal (como la captura) */
+    --darker-bg: #0f1419;               /* Azul muy oscuro para contraste */
+    --card-bg: #1a2538;                 /* Azul ligeramente más oscuro para cards */
+    --light-bg: #E8E8E8;                /* Se mantiene */
 
-            /* TEXTO */
-            --text-primary: #d0d8e0;         /* Gris claro */
-            --text-secondary: #b0c4de;       /* Gris medio */
-            --text-tertiary: #808080;        /* Gris oscuro */
-            
-            /* BORDES */
-            --border-color: #2d3d4d;         /* Azulado */
-            --border-light: #3d5570;         /* Azul claro */
-        }
+    /* TEXTO */
+    --text-primary: #d0d8e0;            /* Gris claro */
+    --text-secondary: #b0c4de;          /* Gris medio */
+    --text-tertiary: #808080;           /* Gris oscuro */
+    
+    /* BORDES */
+    --border-color: #2d3d4d;            /* Borde azulado */
+    --border-light: #3d5570;            /* Borde azul claro */
+}
 
         * {
             margin: 0;
@@ -43,15 +43,14 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, rgba(26, 35, 50, 0.95) 0%, rgba(30, 50, 80, 0.95) 100%);
-            background-color: #1a2332;
-            background-attachment: fixed;
-            color: var(--text-primary);
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-        }
+    background: linear-gradient(135deg, rgba(26, 35, 50, 0.95) 0%, rgba(30, 50, 80, 0.95) 100%);
+    background-color: #1a2332;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
 
         .container {
             max-width: 1200px;
@@ -93,12 +92,13 @@
 
         /* HEADER PROFESSIONAL */
         .header-professional {
-            background: linear-gradient(135deg, #1a2538 0%, #253555 100%);
-            border-bottom: 2px solid var(--primary-color);
-            padding: 40px 0;
-            margin-top: 20px;
-            position: relative;
-            z-index: 2;
+            margin: 0;                    
+    padding: 50px 20px;
+    background: transparent;      
+    border-bottom: 1px solid rgba(74, 127, 127, 0.1);  
+    backdrop-filter: blur(3px);   
+    position: relative;
+    z-index: 2;
         }
 
         .header-professional .container {
