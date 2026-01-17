@@ -645,19 +645,19 @@
             <div class="ticker-info">
                 <span><strong>Ticker:</strong> NASDAQ: STAA</span>
                 <span><strong>Deal Rechazado:</strong> Alcon $30.75</span>
-                <span><strong>Target 2027:</strong> $27.30 - $30.50</span>
+                <span><strong>Target 2027:</strong> $30.50</span>
             </div>
 
             <div class="investment-metrics">
                 <div class="metric-card">
                     <div class="metric-label">Precio Objetivo</div>
-                    <div class="metric-value">$27.30 - $30.50</div>
+                    <div class="metric-value" id="fairValue">$30.50</div>
                     <div class="metric-subtitle">Target 2027 (Base Case)</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-label">Rango Entrada</div>
-                    <div class="metric-value">$16 - $18</div>
-                    <div class="metric-subtitle">Margen de seguridad +52%</div>
+                    <div class="metric-label">Precio actual</div>
+                    <div class="metric-value" id="currentPrice">$20.90</div>
+                    <div class="metric-subtitle" id="upsidePercent">+52%</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">Caja Neta 2027</div>
@@ -1241,5 +1241,28 @@
             });
         });
     </script>
+       <!-- BOTÓN VOLVER AL INDEX - AGREGAR AQUÍ -->
+    <div style="text-align: center; padding: 40px 20px; background: rgba(0,0,0,0.02); margin-top: 50px;">
+        <a href="../" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;" 
+           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(102, 126, 234, 0.4)';" 
+           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+            ← Volver al Porfolio
+        </a>
+    </div>
+    
+    <script src="../shared-price-updater.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const updater = new PriceUpdater({
+        symbol: 'STAA',              // Ticker NYSE
+        fairValue: 30.75,             // Target Price
+        fallbackPrice: 20.90,         // Precio actual como fallback
+        priceElementId: 'currentPrice', // ID del precio
+        upsideElementId: 'upsidePercent', // ID del upside
+        currency: '$'
+    });
+    updater.start();
+});
+ </script>       
 </body>
 </html>
