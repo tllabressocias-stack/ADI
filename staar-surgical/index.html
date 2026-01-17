@@ -171,17 +171,17 @@
         /* INVESTMENT METRICS (Header) */
         .investment-metrics {
              display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(4, 1fr);  /* ← FIJO: 4 columnas iguales */
             gap: 15px;
             margin: 20px 0;
             width: 100%;
         }
 
         .metric-card {
-            background: rgba(0, 215, 255, 0.08);
+         background: rgba(0, 215, 255, 0.08);
     border: 2px solid var(--border-light);
     border-radius: 12px;
-    padding: 15px;
+    padding: 12px;              /* ← Compacto */
     text-align: center;
     transition: all 0.3s ease;
         }
