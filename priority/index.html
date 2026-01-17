@@ -850,17 +850,17 @@
             <div class="investment-metrics">
                 <div class="metric-card">
                     <div class="metric-label">Precio Actual</div>
-                    <div class="metric-value">$5.00</div>
+                    <div class="metric-value" id="currentPrice">$5.00</div>
                     <div class="metric-subtitle">17 enero 2026</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">Precio Objetivo</div>
-                    <div class="metric-value">$8.25</div>
+                    <div class="metric-value" id="fairValue">$8.25</div>
                     <div class="metric-subtitle">Base Case 2026</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">Valor Esperado</div>
-                    <div class="metric-value">+27%</div>
+                    <div class="metric-value" id="upsidePercent">+27%</div>
                     <div class="metric-subtitle">Ponderado por escenarios</div>
                 </div>
                 <div class="metric-card">
@@ -1729,7 +1729,7 @@
     document.addEventListener('DOMContentLoaded', function() {
     const updater = new PriceUpdater({
         symbol: 'PRTH',              // Ticker NYSE
-        fairValue: 12.50,             // Target Price
+        fairValue: 8.50,             // Target Price
         fallbackPrice: 5.84,         // Precio actual como fallback
         priceElementId: 'currentPrice', // ID del precio
         upsideElementId: 'upsidePercent', // ID del upside
