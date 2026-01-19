@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRUE (TrueCar Inc) - Análisis de Inversión | SpreadHunters</title>
+    <meta name="description" content="Análisis de Merger Arbitrage: TrueCar Inc - OPA Fair Holdings $2.55/acción">
+    <style>
+        :root {
+            --primary-color: #00d7ff;
+            --secondary-color: #1a2332;
+            --accent-color: #4A8B9B;
+            --success-color: #90ee90;
+            --danger-color: #ff6b6b;
+            --warning-color: #ffa500;
+            --info-color: #00d7ff;
+            --dark-bg: #1a2332;
+            --card-bg: #1a2538;
+            --text-primary: #d0d8e0;
+            --text-secondary: #b0c4de;
+            --text-tertiary: #808080;
+            --border-color: #2d3d4d;
+            --border-light: #3d5570;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* PROGRESS BAR */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            width: 0%;
+            z-index: 1000;
+        }
+
+        /* NAVBAR FIXED */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(26, 35, 50, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 2rem;
+            z-index: 999;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* HEADER */
+        .header-professional {
+            background: linear-gradient(135deg, rgba(26, 35, 50, 0.9), rgba(74, 139, 155, 0.15));
+            border-bottom: 2px solid var(--border-light);
+            padding: 4rem 2rem 3rem;
+            margin-top: 50px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-title-section {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .ticker-info {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+        }
+
+        .ticker-info span {
+            color: var(--text-secondary);
+        }
+
+        .ticker-info strong {
+            color: var(--primary-color);
+        }
+
+        /* INVESTMENT METRICS */
+        .investment-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .metric-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            background-color: rgba(74, 139, 155, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* NAVIGATION TABS */
+        .nav-tabs {
+            position: sticky;
+            top: 50px;
+            background-color: rgba(26, 35, 50, 0.98);
+            border-bottom: 2px solid var(--border-color);
+            z-index: 99;
+        }
+
+        .nav-tabs ul {
+            list-style: none;
+            display: flex;
+            gap: 0;
+            overflow-x: auto;
+            flex-wrap: wrap;
+        }
+
+        .nav-tabs a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-tabs a:hover,
+        .nav-tabs a.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* MAIN CONTENT */
+        main {
+            padding: 3rem 0;
+            min-height: 60vh;
+        }
+
+        section {
+            margin-bottom: 3rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 1rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        /* ALERTS */
+        .alert {
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid;
+            border-radius: 4px;
+            background-color: rgba(0, 215, 255, 0.05);
+        }
+
+        .alert-success {
+            border-left-color: var(--success-color);
+            background-color: rgba(144, 238, 144, 0.08);
+        }
+
+        .alert-warning {
+            border-left-color: var(--warning-color);
+            background-color: rgba(255, 165, 0, 0.08);
+        }
+
+        .alert-danger {
+            border-left-color: var(--danger-color);
+            background-color: rgba(255, 107, 107, 0.08);
+        }
+
+        .alert strong {
+            color: var(--primary-color);
+        }
+
+        /* HIGHLIGHTS GRID */
+        .highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .highlight-item {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .highlight-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 20px rgba(0, 215, 255, 0.1);
+        }
+
+        .highlight-item h4 {
+            margin-bottom: 0.8rem;
+        }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .change {
+            font-size: 0.8rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            background-color: rgba(0, 215, 255, 0.1);
+        }
+
+        .change.positive {
+            color: var(--success-color);
+        }
+
+        .change.negative {
+            color: var(--danger-color);
+        }
+
+        /* TABLES */
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--card-bg);
+        }
+
+        thead {
+            background-color: rgba(0, 215, 255, 0.1);
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tbody tr:hover {
+            background-color: rgba(0, 215, 255, 0.05);
+        }
+
+        /* TIMELINE */
+        .timeline {
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item {
+            border-left: 2px solid var(--primary-color);
+            padding-left: 2rem;
+            padding-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+        }
+
+        .timeline-date {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* CARDS */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        /* FOOTER */
+        footer {
+            background-color: rgba(26, 35, 50, 0.8);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 0.85rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* BACK BUTTON */
+        .back-button {
+            display: inline-block;
+            margin-bottom: 2rem;
+            padding: 0.7rem 1.5rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(0, 215, 255, 0.15);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.6rem;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            .investment-metrics {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+
+            .metric-card {
+                padding: 1rem;
+            }
+
+            .metric-value {
+                font-size: 1.4rem;
+            }
+
+            .nav-tabs a {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            main {
+                padding: 1.5rem 0;
+            }
+
+            .highlights {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 1.3rem;
+            }
+
+            .metric-value {
+                font-size: 1.1rem;
+            }
+
+            .nav-tabs a {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.75rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 0.6rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- PROGRESS BAR -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="logo">🔷 SpreadHunters</div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header-professional">
+        <div class="container">
+            <div class="header-title-section">
+                <h1 class="page-title">TRUE (TrueCar Inc)</h1>
+                <p class="page-subtitle">Análisis de Merger Arbitrage: OPA Fair Holdings $2.55/acción</p>
+            </div>
+
+            <div class="ticker-info">
+                <span><strong>Ticker:</strong> NASDAQ: TRUE</span>
+                <span><strong>Deal Price:</strong> $2.55/acción</span>
+                <span><strong>Actual Price:</strong> $2.15/acción</span>
+                <span><strong>Deal Value:</strong> $227M</span>
+            </div>
+
+            <div class="investment-metrics">
+                <div class="metric-card">
+                    <div class="metric-label">Spread</div>
+                    <div class="metric-value">15.7%</div>
+                    <div class="metric-subtitle">$0.40 upside</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Deal Probability</div>
+                    <div class="metric-value">82%</div>
+                    <div class="metric-subtitle">Base case</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">IRR Anualizado</div>
+                    <div class="metric-value">95-200%</div>
+                    <div class="metric-subtitle">Si cierre enero</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Timeline</div>
+                    <div class="metric-value">4-8 sem</div>
+                    <div class="metric-subtitle">Finales ene/feb</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVIGATION TABS -->
+    <nav class="nav-tabs">
+        <div class="container">
+            <ul>
+                <li><a href="#resumen" class="active">📊 Resumen</a></li>
+                <li><a href="#deal">🚫 Deal Structure</a></li>
+                <li><a href="#riesgos">⚠️ Riesgos</a></li>
+                <li><a href="#form4">🔍 Insiders</a></li>
+                <li><a href="#scenarios">📈 Scenarios</a></li>
+                <li><a href="#catalysts">🎯 Catalysts</a></li>
+                <li><a href="#conclusion">✅ Conclusión</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="container">
+        <!-- SECTION 1: RESUMEN -->
+        <section id="resumen">
+            <h2>📊 Resumen Ejecutivo</h2>
+
+            <div class="alert alert-success">
+                <strong>🎯 Tesis Principal:</strong> TrueCar recibió oferta de Fair Holdings (founder-led) a $2.55/acción con 99.88% aprobación accionista. El spread de 15.7% persiste por incertidumbre sobre $60M de financiamiento syndicate (26% del deal). Management retiene $5.5M en riesgo → alta confianza en cierre. Deal probability: 82%.
+            </div>
+
+            <div class="highlights">
+                <div class="highlight-item">
+                    <h4>🏦 Aprobación Accionista</h4>
+                    <p>99.88% votaron a favor (69.7M vs 84.7K). Principal barrera removida. Shareholder risk: ZERO.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>💰 Financiamiento 72% Asegurado</h4>
+                    <p>Alpha Auto $164M commitment firmado. Syndicate $60M aún en negociación → CUELLO DE BOTELLA.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>🔍 Management Alignment</h4>
+                    <p>CEO retiene 1.75M acciones ($5.5M). Cero ventas voluntarias desde octubre → confianza >80% en cierre.</p>
+                </div>
+            </div>
+
+            <h3>Escenarios Probabilísticos</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="label">Deal Cierra</div>
+                    <div class="value">82%</div>
+                    <div class="change positive">+$0.40 upside</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Deal Falla</div>
+                    <div class="value">13%</div>
+                    <div class="change negative">-$0.60 downside</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Deal Extiende</div>
+                    <div class="value">5%</div>
+                    <div class="change positive">+$0.25 (timing)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Expected Value</div>
+                    <div class="value">+$0.265</div>
+                    <div class="change positive">Risk-adjusted</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: DEAL STRUCTURE -->
+        <section id="deal">
+            <h2>🚫 Deal Structure & Financing</h2>
+
+            <div class="alert alert-warning">
+                <strong>⚠️ Crítico:</strong> De los $227M requeridos, $164M (72%) están comprometidos por Alpha Auto (firma formal). Los $60M (26%) de "Syndicate Equity" aún NO están confirmados públicamente. Sin este financiamiento, deal colapsa y stock cae 30%.
+            </div>
+
+            <h3>Estructura de Financiamiento</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fuente</th>
+                            <th>Monto</th>
+                            <th>% Total</th>
+                            <th>Status</th>
+                            <th>Risk</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Alpha Auto 2, LLC</strong></td>
+                            <td>$164M</td>
+                            <td>72.2%</td>
+                            <td>✅ Comprometido formalmente</td>
+                            <td>🟢 Bajo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Syndicate Equity</strong></td>
+                            <td>$60M</td>
+                            <td>26.4%</td>
+                            <td>⚠️ En negociación</td>
+                            <td>🔴 ALTO</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TrueCar Cash</strong></td>
+                            <td>$3M</td>
+                            <td>1.3%</td>
+                            <td>✅ Disponible</td>
+                            <td>🟢 Bajo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TOTAL</strong></td>
+                            <td><strong>$227M</strong></td>
+                            <td><strong>100%</strong></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>Reverse Termination Fee (RTF)</h3>
+                <p>Si Fair Holdings no asegura el financiamiento syndicate, debe pagar RTF de ~$15M a TrueCar. Problema: $15M es débil disuasivo para un buyer que no puede conseguir $60M. Si syndicate falla, Fair Holdings simplemente abandona, pagando RTF. TrueCar vuelve al mercado a ~$1.50-$2.00 (downside 30-43%).</p>
+            </div>
+
+            <h3>Hitos Completados</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">✅ 14 Octubre 2025 - Merger Agreement Signed</div>
+                    <p><strong>Evento:</strong> Fair Holdings y TrueCar firman acuerdo de compra. Precio: $2.55/acción.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">✅ 13 Noviembre 2025 - Go-Shop Period Ends</div>
+                    <p><strong>Evento:</strong> 30 días para ofertas superiores. NINGUNA recibida. Deal terms confirmados.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">✅ 22 Diciembre 2025 - Shareholder Votación</div>
+                    <p><strong>Evento:</strong> 99.88% aprueban (69.7M a favor). Main barrier removida.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">⏳ Enero 2026 - Cierre Esperado (PENDIENTE)</div>
+                    <p><strong>Evento:</strong> Deal cierra sujeto a condiciones. Actual: 19 enero, plazo "vago".</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: RIESGOS -->
+        <section id="riesgos">
+            <h2>⚠️ Análisis de Riesgos</h2>
+
+            <div class="highlights">
+                <div class="highlight-item">
+                    <h4>🔴 RIESGO CRÍTICO: Syndicate Financing</h4>
+                    <p><strong>Prob: 13-15%</strong> | Impacto: -$0.60/acción (-27.9%) | Timeline: Finales enero. Si Fair Holdings no asegura $60M de inversores, deal colapsa y RTF de $15M pagada a TrueCar.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>🟡 RIESGO SECUNDARIO: Timeline Contracción</h4>
+                    <p><strong>Prob: 20-25%</strong> | Impacto: No deal break, pero cierre extiende a feb/mar. IRR colapsa de 200% a 50-70% anualizado. Stock ajusta a $2.30-$2.40.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>🟡 RIESGO TERCIARIO: Litigación Accionista</h4>
+                    <p><strong>Prob: 20-30%</strong> | Impacto: Delays 3-6 meses típicamente, pero NO rompe deal. 2.78M votos en contra de compensación ejecutiva → under-meritorious.</p>
+                </div>
+            </div>
+
+            <h3>Risk Matrix - Detalles</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Riesgo</th>
+                            <th>Probabilidad</th>
+                            <th>Impacto</th>
+                            <th>Trigger</th>
+                            <th>Mitigación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Syndicate Falla</strong></td>
+                            <td>13-15%</td>
+                            <td>-30% ($1.50)</td>
+                            <td>Anuncio FH "unable to secure"</td>
+                            <td>RTF $15M (débil); Reputación Painter</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Timeline Slip</strong></td>
+                            <td>20-25%</td>
+                            <td>+IRR reducido</td>
+                            <td>Extension announcement</td>
+                            <td>Normal en M&A complejo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Litigación</strong></td>
+                            <td>20-30%</td>
+                            <td>Delays 3-6 meses</td>
+                            <td>Demanda accionista</td>
+                            <td>Approval robusta (99.88%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Regulatorio</strong></td>
+                            <td>&lt;5%</td>
+                            <td>Deal block</td>
+                            <td>HSR concerns</td>
+                            <td>No antitrust issues aparentes</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION 4: FORM 4 INSIDERS -->
+        <section id="form4">
+            <h2>🔍 Form 4 Insider Analysis (BULLISH SIGNAL)</h2>
+
+            <div class="alert alert-success">
+                <strong>✅ Hallazgo Clave:</strong> CEO Jantoon Reigersman retiene 1.75M acciones (~$5.5M en riesgo). CFO Oliver Foley retiene 340K acciones. EVP Jeff Swart retiene 476K acciones. CERO ventas voluntarias desde octubre. → Management confidence >80% en cierre.
+            </div>
+
+            <h3>C-Suite Insider Holdings</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ejecutivo</th>
+                            <th>Cargo</th>
+                            <th>Acciones</th>
+                            <th>% Float</th>
+                            <th>Valor @ $2.15</th>
+                            <th>Valor @ $2.55</th>
+                            <th>Upside</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Jantoon Reigersman</strong></td>
+                            <td>CEO</td>
+                            <td>1,748,286</td>
+                            <td>2.10%</td>
+                            <td>$3.76M</td>
+                            <td>$4.46M</td>
+                            <td><span class="change positive">+$700K (+19%)</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Jeff Swart</strong></td>
+                            <td>EVP/GC</td>
+                            <td>476,089</td>
+                            <td>0.57%</td>
+                            <td>$1.02M</td>
+                            <td>$1.21M</td>
+                            <td><span class="change positive">+$190K (+19%)</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Oliver Foley</strong></td>
+                            <td>CFO</td>
+                            <td>340,562</td>
+                            <td>0.41%</td>
+                            <td>$0.73M</td>
+                            <td>$0.87M</td>
+                            <td><span class="change positive">+$140K (+19%)</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>TOTAL C-Suite</strong></td>
+                            <td></td>
+                            <td>2,564,937</td>
+                            <td>3.08%</td>
+                            <td>$5.51M</td>
+                            <td>$6.54M</td>
+                            <td><span class="change positive">+$1.03M</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Recent Form 4 Transactions</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Insider</th>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Acciones</th>
+                            <th>Precio</th>
+                            <th>Señal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Reigersman</strong></td>
+                            <td>15 dic 2025</td>
+                            <td>RSU Withholding (tax)</td>
+                            <td>29,493</td>
+                            <td>$2.14</td>
+                            <td>🟢 Retuvo el 100% (no vendió)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Foley</strong></td>
+                            <td>15 ene 2026</td>
+                            <td>RSU Withholding (tax)</td>
+                            <td>3,292</td>
+                            <td>$2.11</td>
+                            <td>🟢 Retuvo posición</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Swart</strong></td>
+                            <td>15 sep 2025</td>
+                            <td>RSU Withholding (tax)</td>
+                            <td>9,661</td>
+                            <td>$2.43</td>
+                            <td>🟢 Cero ventas voluntarias</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>Interpretación</h3>
+                <p><strong>CERO ventas voluntarias por C-suite desde octubre</strong> = Management tiene $5.5M en riesgo y confía que el deal cierra. Si dudaban (>30% deal break risk), hubieran arreglado pre-venta en 10b5-1 plans. Ausencia de selling = BULLISH SIGNAL que management ve financing "on track". Esta es señal no priced-in por mercado.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 5: SCENARIOS -->
+        <section id="scenarios">
+            <h2>📈 Escenarios de Cierre</h2>
+
+            <h3>SCENARIO #1: Deal Cierra (Base Case - 82% prob)</h3>
+            <div class="card">
+                <p><strong>Timeline:</strong> 4-8 semanas (finales enero / mid-febrero)</p>
+                <p><strong>Stock Price Final:</strong> $2.55</p>
+                <p><strong>Retorno:</strong> +$0.40 (+18.6%)</p>
+                <p><strong>IRR Anualizado:</strong> 200%+ si cierre 31 ene | 50-70% si cierre 28 feb</p>
+                <p><strong>Trigger:</strong> Anuncio syndicate financing + timeline específico</p>
+                <p><strong>Post-Closing:</strong> Stock delisting, TrueCar private subsidiary, Scott Painter CEO</p>
+            </div>
+
+            <h3>SCENARIO #2: Deal Falla - Syndicate No Asegurado (13% prob)</h3>
+            <div class="card">
+                <p><strong>Timeline:</strong> 2-3 semanas (finales enero)</p>
+                <p><strong>Stock Price Final:</strong> $1.50-$1.75 (base $1.55)</p>
+                <p><strong>Retorno:</strong> -$0.60 (-27.9%) BASE | -$0.75 (-34.9%) WORST CASE</p>
+                <p><strong>Trigger:</strong> Fair Holdings anuncia "unable to secure syndicate financing"</p>
+                <p><strong>Reverse Termination Fee:</strong> FH paga $15M a TrueCar (débil disuasivo)</p>
+                <p><strong>Post-Break:</strong> Board busca "strategic alternatives", stock vuelve mercado frio, presiona a $1.40-$1.50</p>
+            </div>
+
+            <h3>SCENARIO #3: Deal Extiende - Timeline Slip (5% prob)</h3>
+            <div class="card">
+                <p><strong>Timeline:</strong> 12-16 semanas (hasta mid-febrero o marzo)</p>
+                <p><strong>Stock Price Final:</strong> $2.40-$2.50 (spread reajusta 5-10%)</p>
+                <p><strong>Retorno:</strong> +$0.25-$0.35 (+11.6% a +16.3%)</p>
+                <p><strong>IRR Anualizado:</strong> 30-50% (velocidad reducida)</p>
+                <p><strong>Deal Risk:</strong> BAJO (NO es deal break, es timing issue)</p>
+                <p><strong>Catalizador:</strong> "Final syndicate commitments being finalized" announcement</p>
+            </div>
+
+            <h3>Probability-Weighted Expected Value</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Scenario</th>
+                            <th>Probability</th>
+                            <th>Gain/Loss</th>
+                            <th>Contribution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Deal Cierra</td>
+                            <td>82%</td>
+                            <td>+$0.40</td>
+                            <td>+$0.328</td>
+                        </tr>
+                        <tr>
+                            <td>Deal Falla</td>
+                            <td>13%</td>
+                            <td>-$0.60</td>
+                            <td>-$0.078</td>
+                        </tr>
+                        <tr>
+                            <td>Deal Extiende</td>
+                            <td>5%</td>
+                            <td>+$0.30</td>
+                            <td>+$0.015</td>
+                        </tr>
+                        <tr>
+                            <td><strong>EXPECTED VALUE</strong></td>
+                            <td>100%</td>
+                            <td></td>
+                            <td><strong>+$0.265</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>ℹ️ Conclusión Valuación:</strong> Spread de 15.7% es "justo" dado probabilidades. Mercado asigna correctamente ~15-20% deal break risk. Para "beat" el spread, requiere >85% confianza en cierre.
+            </div>
+        </section>
+
+        <!-- SECTION 6: CATALYSTS -->
+        <section id="catalysts">
+            <h2>🎯 Catalysts - Próximos 7 Días (CRITICAL WEEK)</h2>
+
+            <h3>Green Flags (BUY Signals) - Semana 20-24 Enero</h3>
+            <div class="highlights">
+                <div class="highlight-item">
+                    <h4>🟢 Fair Holdings Anuncia Syndicate</h4>
+                    <p>Press release con nombres de syndicate investors. Impacto: Stock +5-8% a $2.25-$2.31. Acción: HOLD si dentro; ENTER si fuera.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>🟢 Closing Date Confirmada</h4>
+                    <p>8-K filing anunciando cierre específico (ej. "Feb 10"). Impacto: Stock +3-4% a $2.22-$2.26. Acción: Hold, timeline clarity.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>🟢 Regulatorios Finalizados</h4>
+                    <p>Anuncio "all regulatory approvals received". Impacto: Stock +2-3% a $2.20-$2.25. Acción: Hold hasta cierre.</p>
+                </div>
+            </div>
+
+            <h3>Red Flags (SELL Signals)</h3>
+            <div class="highlights">
+                <div class="highlight-item">
+                    <h4>🔴 Silencio Post-Votación (Hoy + 7 días)</h4>
+                    <p>NO anuncio de syndicate por 24 ene, NO comunicado FH. Impacto: Stock -5-10% a $1.95-$2.05. Acción: REDUCE 50% posición.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>🔴 Deal Break Announcement</h4>
+                    <p>Fair Holdings anuncia "unable to complete financing". Impacto: Stock -30% a $1.50-$1.55 INMEDIATO. Acción: EXIT inmediato.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>🔴 Executive Resignation</h4>
+                    <p>Reigersman, Foley, o Swart anuncia salida. Impacto: Stock -10-15% a $1.80-$1.95. Acción: Reduce 75% posición.</p>
+                </div>
+            </div>
+
+            <h3>Weekly Monitoring Checklist</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">LUNES 20 Enero</div>
+                    <p>[ ] Check 8-K filings overnight | [ ] Monitor press releases syndicate | [ ] Note opening stock vs $2.15</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">MARTES 21 Enero</div>
+                    <p>[ ] Nasdaq/Bloomberg noticias intra-day | [ ] Check SEC EDGAR updates | [ ] Evaluar si anuncio inminente</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">MIÉRCOLES 22 Enero</div>
+                    <p>[ ] Revisión mid-week: ¿FH comunicando? | [ ] Si silencio, aumentar prob delay | [ ] Rebalance si news negativa</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">VIERNES 24 Enero</div>
+                    <p>[ ] DECISIÓN SEMANAL FINAL | [ ] Stock price movement análisis | [ ] HOLD/REDUCE/EXIT decisión</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: CONCLUSION -->
+        <section id="conclusion">
+            <h2>✅ Conclusión & Recomendación</h2>
+
+            <div class="alert alert-success">
+                <strong>📌 RESUMEN FINAL:</strong> TrueCar está en etapa post-votación con deal probability 82%. El spread de 15.7% es "justo" dado riesgos. Principal preocupación: $60M syndicate financing aún sin confirmación pública. Management skin-in-the-game ($5.5M) sugiere confianza >80% en cierre. Próxima semana (20-24 ene) es CRÍTICA para claridad de syndicate.
+            </div>
+
+            <h3>Recomendación por Perfil</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Perfil</th>
+                            <th>Acción</th>
+                            <th>Rationale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Arbitrageurs Existentes</strong></td>
+                            <td>✅ HOLD</td>
+                            <td>Deal 82% probable, syndicate risk priced in spread. Wait para syndicate news.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hedge Funds (Nuevo Capital)</strong></td>
+                            <td>⏳ ESPERA 1 SEM</td>
+                            <td>IRR mediocre si timeline slip. Mejor esperar claridad syndicate antes de entrar.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Retail/Conservadores</strong></td>
+                            <td>❌ AVOID</td>
+                            <td>Timing risk excesivo, spread no compensa. Mejor oportunidades en otros deals.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Próximas Acciones</h3>
+            <ul>
+                <li><strong>Semana 1 (20-24 ene):</strong> Monitor para syndicate announcement o timeline extension. Si bullish news: stock sube +5-8%. Si silencio: prepare exit.</li>
+                <li><strong>Semana 2 (27-31 ene):</strong> Evaluar si cierre "on time" o extension. Si extension: rebalance IRR expectations a 50-70% anualizado.</li>
+                <li><strong>Post-31 ene:</strong> Si no cierre enero y no hay comunicado, presupone demora → deal risk aumenta.</li>
+            </ul>
+
+            <div class="card">
+                <h3>🎯 Conviction Level: MEDIA-ALTA</h3>
+                <p>Deal estructura es sólida (72% financiamiento asegurado, management aligned, votación unánime). Principal riesgo es concentrado en $60M syndicate funding no asegurado. Spread de 15.7% refleja correctamente este riesgo. Para nuevos inversores: esperar clarity syndicate antes de entrar. Para existentes: HOLD con stop-loss en $1.90.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <p><strong>📋 Disclaimer Importante:</strong> Este análisis es exclusivamente para propósitos informativos y educativos. No constituye recomendación de inversión. Merger arbitrage envuelve riesgos significantes incluyendo pérdida total de capital. Los inversores deben conducir su propio due diligence y consultar con advisors profesionales. Información actualizada al 19 de enero de 2026.</p>
+            <p>© 2026 SpreadHunters. Todos los derechos reservados. | Contacto: research@spreadhunters.com</p>
+        </div>
+    </footer>
+
+    <!-- BACK BUTTON -->
+    <div class="container" style="margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="javascript:history.back()" class="back-button">← Volver al Dashboard</a>
+    </div>
+
+    <script>
+        // PROGRESS BAR
+        window.addEventListener('scroll', () => {
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrolled = window.scrollY / scrollHeight * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // SMOOTH SCROLL & ACTIVE NAV
+        document.querySelectorAll('.nav-tabs a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-tabs a').forEach(a => a.classList.remove('active'));
+                this.classList.add('active');
+                const target = this.getAttribute('href');
+                document.querySelector(target).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // HIGHLIGHT ACTIVE SECTION ON SCROLL
+        window.addEventListener('scroll', () => {
+            let current = '';
+            document.querySelectorAll('section').forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            document.querySelectorAll('.nav-tabs a').forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href') === '#' + current) {
+                    a.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
