@@ -1,857 +1,916 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EDU Holdings (ASX:EDU) - Análisis de Inversión SpreadHunters</title>
-    <meta name="description" content="EDU Holdings (ASX:EDU) - Tesis de inversión y análisis de arbitraje regulatorio en educación internacional.">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDU Holdings Limited (ASX: EDU) - Análisis de Inversión | SpreadHunters</title>
+    <meta name="description" content="Análisis exhaustivo de EDU Holdings: Arbitraje regulatorio en educación australiana. Oportunidad de compra con 2.5x upside en valuación DCF.">
+    
     <style>
+        /* ========================================
+           SISTEMA DE VARIABLES - COLORES GLOBALES
+           ======================================== */
         :root {
-            --primary-color: #00d7ff;
-            --secondary-color: #1a2332;
-            --accent-color: #4A8B9B;
-
-            --success-color: #90ee90;
-            --danger-color: #ff6b6b;
-            --warning-color: #ffa500;
-            --info-color: #00d7ff;
-
-            --dark-bg: #0f1724;
-            --card-bg: #1a2538;
-
-            --text-primary: #d0d8e0;
-            --text-secondary: #b0c4de;
-            --text-tertiary: #808080;
-
-            --border-color: #2d3d4d;
-            --border-light: #3d5570;
-
-            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.45);
-
-            --radius-lg: 14px;
-            --radius-md: 10px;
-            --radius-sm: 6px;
-
-            --transition-fast: 0.2s ease-out;
-            --transition-med: 0.3s ease-out;
+            /* COLORES PRIMARIOS - Identidad SpreadHunters */
+            --primary-color: #00d7ff;           /* Cyan brillante */
+            --secondary-color: #1a2332;         /* Azul oscuro base */
+            --accent-color: #4A8B9B;            /* Azul teal claro */
+            
+            /* COLORES FUNCIONALES */
+            --success-color: #90ee90;           /* Verde */
+            --danger-color: #ff6b6b;            /* Rojo */
+            --warning-color: #ffa500;           /* Naranja */
+            --info-color: #00d7ff;              /* Cyan */
+        
+            /* FONDOS - AZUL como en filters-section */
+            --dark-bg: #1a2332;                 /* Azul principal */
+            --darker-bg: #0f1419;               /* Azul muy oscuro */
+            --card-bg: #1a2538;                 /* Azul para cards */
+            --light-bg: #E8E8E8;                /* Fondo claro */
+        
+            /* TEXTO */
+            --text-primary: #d0d8e0;            /* Gris claro */
+            --text-secondary: #b0c4de;          /* Gris medio */
+            --text-tertiary: #808080;           /* Gris oscuro */
+            
+            /* BORDES */
+            --border-color: #2d3d4d;            /* Borde azulado */
+            --border-light: #3d5570;            /* Borde azul claro */
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
-        html, body {
-            height: 100%;
+        html {
             scroll-behavior: smooth;
         }
 
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-            background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, rgba(26, 35, 50, 0.95) 0%, rgba(30, 50, 80, 0.95) 100%);
+            background-color: #1a2332;
             color: var(--text-primary);
             line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
         }
 
-        /* Progress bar superior */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ========================================
+           BARRA DE PROGRESO
+           ======================================== */
         .progress-bar {
+            background: var(--success-color);
+            height: 2px;
+            width: 0%;
             position: fixed;
             top: 0;
             left: 0;
-            height: 3px;
-            width: 0;
-            background: linear-gradient(90deg, #00d7ff, #4ade80);
-            z-index: 999;
-            box-shadow: 0 0 12px rgba(0, 215, 255, 0.9);
-            transition: width 0.1s linear;
+            z-index: 1000;
+            transition: width 0.3s ease;
         }
 
-        /* Logo navbar minimal */
+        /* ========================================
+           LOGO NAVBAR
+           ======================================== */
         .logo-navbar {
             position: fixed;
-            top: 10px;
-            left: 16px;
+            top: 20px;
+            left: 20px;
             z-index: 900;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            background: none;
+            padding: 0;
+            border: none;
+            backdrop-filter: none;
+            pointer-events: none;
         }
 
         .logo-navbar-img {
-            height: 32px;
-            width: auto;
-            filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.6));
+            width: 160px;
+            height: auto;
+            filter: none;
+            display: block;
         }
 
-        .logo-navbar span {
-            font-size: 0.8rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            background: rgba(15, 23, 42, 0.9);
-            padding: 4px 8px;
-            border-radius: 999px;
-            border: 1px solid rgba(148, 163, 184, 0.25);
+        @media (max-width: 1024px) {
+            .logo-navbar { top: 15px; left: 15px; }
+            .logo-navbar-img { width: 105px; }
         }
 
-        /* Container principal */
-        .container {
-            max-width: 1100px;
-            margin: 60px auto 60px auto;
-            padding: 0 16px 40px 16px;
+        @media (max-width: 768px) {
+            .logo-navbar { top: 15px; left: 15px; }
+            .logo-navbar-img { width: 95px; }
         }
 
-        header.header-professional {
-            margin-top: 30px;
-            margin-bottom: 26px;
-            padding: 22px 20px 22px 20px;
-            background: radial-gradient(circle at top left, #1e293b 0, #020617 60%);
-            border-radius: 18px;
-            border: 1px solid rgba(148, 163, 184, 0.35);
-            box-shadow: var(--shadow-soft);
-            backdrop-filter: blur(22px);
+        @media (max-width: 480px) {
+            .logo-navbar { top: 12px; left: 12px; }
+            .logo-navbar-img { width: 85px; }
+        }
+
+        /* ========================================
+           HEADER PROFESIONAL
+           ======================================== */
+        .header-professional {
+            margin: 0;
+            padding: 50px 20px;
+            background: transparent;
+            border-bottom: 1px solid rgba(74, 127, 127, 0.1);
+            backdrop-filter: blur(3px);
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-professional .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .header-title-section {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            align-items: center;
+            gap: 10px;
         }
 
         .company-title-row {
             display: flex;
             align-items: center;
-            gap: 16px;
+            justify-content: center;
+            gap: 25px;
             flex-wrap: wrap;
         }
 
         .logo-company {
-            width: 120px;
-            height: 42px;
+            max-height: 70px;
+            max-width: 150px;
+            width: auto;
+            height: auto;
             object-fit: contain;
-            border-radius: 8px;
-            background: radial-gradient(circle at top, #1f2937 0, #020617 70%);
-            padding: 6px 10px;
-            border: 1px solid rgba(148, 163, 184, 0.35);
+            filter: brightness(4) contrast(1.5) invert(1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            display: block;
+            margin: 0 auto;
         }
 
         .page-title {
-            font-size: 1.9rem;
-            font-weight: 650;
-            letter-spacing: 0.03em;
-            color: #e5f4ff;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+            letter-spacing: 1px;
+            line-height: 1.3;
         }
 
         .page-subtitle {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
+            font-size: 1rem;
+            color: #e0e0e0;
+            margin: 10px 0 0;
+            font-weight: 400;
+            max-width: 600px;
         }
 
+        /* ========================================
+           INFO DEL TICKER
+           ======================================== */
         .ticker-info {
             display: flex;
+            gap: 30px;
+            justify-content: center;
             flex-wrap: wrap;
-            gap: 10px 18px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
+            font-size: 0.95rem;
+            color: #e0e0e0;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(74, 127, 127, 0.1);
+            width: 100%;
         }
 
         .ticker-info span {
-            background: rgba(15, 23, 42, 0.9);
-            padding: 4px 9px;
-            border-radius: 999px;
-            border: 1px solid rgba(148, 163, 184, 0.35);
-        }
-
-        .ticker-info strong {
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        /* Metric cards header */
-        .investment-metrics {
-            margin-top: 18px;
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 12px;
-        }
-
-        .metric-card {
-            background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98) 0, #020617 60%);
-            border-radius: 14px;
-            padding: 12px 12px 11px 12px;
-            border: 1px solid rgba(148, 163, 184, 0.4);
-            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.95);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .metric-card::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 55%);
-            opacity: 0.9;
-            pointer-events: none;
-        }
-
-        .metric-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--text-tertiary);
-            margin-bottom: 5px;
-        }
-
-        .metric-value {
-            font-size: 1.22rem;
-            font-weight: 700;
-            color: #e5f4ff;
-        }
-
-        .metric-subtitle {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-top: 1px;
-        }
-
-        .metric-value.positive {
-            color: #4ade80;
-        }
-
-        .metric-value.negative {
-            color: var(--danger-color);
-        }
-
-        /* Barra lateral de índice de secciones para scroll */
-        .scroll-index {
-            position: sticky;
-            top: 70px;
-            margin-bottom: 24px;
-            z-index: 50;
-            display: flex;
-            overflow-x: auto;
-            gap: 10px;
-            padding: 8px 4px 10px 4px;
-            background: linear-gradient(90deg, rgba(15,23,42,0.96), rgba(2,6,23,0.98));
-            border-radius: 999px;
-            border: 1px solid rgba(148, 163, 184, 0.35);
-            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.9);
-        }
-
-        .scroll-index a {
-            font-size: 0.78rem;
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 0.14em;
-            padding: 6px 12px;
-            border-radius: 999px;
-            color: var(--text-secondary);
-            border: 1px solid transparent;
-            transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
-            white-space: nowrap;
-        }
-
-        .scroll-index a.active {
-            background: radial-gradient(circle at top, #00d7ff 0, #0ea5e9 52%, #0891b2 100%);
-            color: #020617;
-            border-color: rgba(15,23,42,0.2);
-            box-shadow: 0 10px 22px rgba(8, 47, 73, 0.9);
-            transform: translateY(-1px);
-        }
-
-        .scroll-index a:hover {
-            color: #e5f4ff;
-        }
-
-        /* Secciones principales */
-        main {
-            margin-top: 18px;
-        }
-
-        section {
-            margin-bottom: 26px;
-            padding: 20px 18px 20px 18px;
-            background: radial-gradient(circle at top, #111827 0, #020617 70%);
-            border-radius: 16px;
-            border: 1px solid rgba(148, 163, 184, 0.32);
-            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.9);
-            opacity: 0;
-            transform: translateY(10px);
-            animation: fadeIn 0.7s forwards;
-        }
-
-        section + section {
-            margin-top: 18px;
-        }
-
-        section h2 {
-            font-size: 1.25rem;
-            margin-bottom: 6px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        section h2 span.emoji {
-            font-size: 1.25rem;
+        .ticker-info strong {
+            color: #ffffff;
+            font-weight: 600;
         }
 
-        section .section-kicker {
-            font-size: 0.78rem;
-            text-transform: uppercase;
-            letter-spacing: 0.16em;
-            color: var(--text-tertiary);
-            margin-bottom: 10px;
+        @media (max-width: 1024px) {
+            .page-title { font-size: 1.8rem; }
+            .logo-company { max-height: 70px; max-width: 150px; }
+            .ticker-info { gap: 20px; }
         }
 
-        section p {
-            font-size: 0.92rem;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
+        @media (max-width: 768px) {
+            .header-professional { padding: 30px 15px; }
+            .page-title { font-size: 1.4rem; }
+            .logo-company { max-height: 65px; max-width: 130px; }
+            .ticker-info { flex-direction: column; gap: 10px; font-size: 0.85rem; }
+            .page-subtitle { font-size: 0.9rem; }
         }
 
-        /* Alerts */
-        .alert {
+        @media (max-width: 480px) {
+            .header-professional { padding: 20px 15px; }
+            .page-title { font-size: 1.1rem; }
+            .logo-company { max-height: 55px; max-width: 110px; }
+            .company-title-row { gap: 15px; }
+            .ticker-info { gap: 8px; font-size: 0.75rem; }
+            .page-subtitle { font-size: 0.8rem; }
+        }
+
+        /* ========================================
+           TARJETAS DE MÉTRICAS
+           ======================================== */
+        .investment-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, rgba(26, 35, 50, 0.6) 0%, rgba(30, 50, 80, 0.6) 100%);
+            border: 2px solid rgba(0, 215, 255, 0.3);
             border-radius: 12px;
-            padding: 10px 12px;
-            margin: 10px 0 12px 0;
-            font-size: 0.9rem;
-            border: 1px solid transparent;
+            padding: 18px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(0, 215, 255, 0.5) 0%, rgba(0, 215, 255, 0) 100%);
+        }
+
+        .metric-card:hover {
+            border-color: rgba(0, 215, 255, 0.6);
+            background: linear-gradient(135deg, rgba(26, 35, 50, 0.8) 0%, rgba(30, 50, 80, 0.8) 100%);
+            box-shadow: 0 0 20px rgba(0, 215, 255, 0.2);
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 1.7rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .metric-value.cyan {
+            color: #00d7ff;
+        }
+
+        .metric-value.green {
+            color: #90ee90;
+        }
+
+        .metric-value.red {
+            color: #ff6b6b;
+        }
+
+        .metric-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            font-weight: 400;
+        }
+
+        @media (max-width: 1024px) {
+            .investment-metrics { grid-template-columns: repeat(2, 1fr); }
+            .metric-card { padding: 20px; }
+            .metric-value { font-size: 1.6rem; }
+        }
+
+        @media (max-width: 768px) {
+            .investment-metrics { grid-template-columns: 1fr; gap: 12px; }
+            .metric-card { padding: 18px; }
+            .metric-value { font-size: 1.4rem; }
+            .metric-label { font-size: 0.7rem; letter-spacing: 1px; margin-bottom: 8px; }
+        }
+
+        /* ========================================
+           NAVEGACIÓN DE PESTAÑAS
+           ======================================== */
+        .nav-tabs {
+            background: var(--card-bg);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .nav-tabs ul {
+            list-style: none;
             display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
             gap: 10px;
         }
 
-        .alert strong {
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .alert-success {
-            background: rgba(34, 197, 94, 0.12);
-            border-color: rgba(34, 197, 94, 0.4);
-            color: #bbf7d0;
-        }
-
-        .alert-warning {
-            background: rgba(234, 179, 8, 0.12);
-            border-color: rgba(234, 179, 8, 0.45);
-            color: #facc15;
-        }
-
-        .alert-info {
-            background: rgba(56, 189, 248, 0.12);
-            border-color: rgba(56, 189, 248, 0.45);
-            color: #bae6fd;
-        }
-
-        .alert-icon {
-            font-size: 1.1rem;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-
-        /* Highlights */
-        .highlights {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px;
-            margin: 8px 0 2px 0;
-        }
-
-        .highlight-item {
-            background: radial-gradient(circle at top, #020617 0, #020617 55%);
-            border-radius: 12px;
-            padding: 9px 10px 9px 10px;
-            border: 1px solid rgba(148, 163, 184, 0.36);
-        }
-
-        .highlight-item h4 {
-            font-size: 0.88rem;
-            margin-bottom: 4px;
-            color: #e5f4ff;
-        }
-
-        .highlight-item p {
-            font-size: 0.85rem;
+        .nav-tabs a {
             color: var(--text-secondary);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
-        /* Stats grid */
+        .nav-tabs a:hover,
+        .nav-tabs a.active {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs ul { flex-direction: column; align-items: center; }
+            .nav-tabs a { padding: 8px 16px; font-size: 0.9rem; }
+        }
+
+        /* ========================================
+           SECCIONES
+           ======================================== */
+        section {
+            padding: 60px 0;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            z-index: 1;
+        }
+
+        section h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            border-left: 4px solid var(--success-color);
+            padding-left: 20px;
+        }
+
+        section h3 {
+            font-size: 1.5rem;
+            margin: 30px 0 15px;
+            color: var(--text-primary);
+        }
+
+        section h4 {
+            font-size: 1.1rem;
+            margin: 15px 0 10px;
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 768px) {
+            section { padding: 40px 0; }
+            section h2 { font-size: 1.6rem; margin-bottom: 20px; }
+            section h3 { font-size: 1.2rem; }
+        }
+
+        /* ========================================
+           TARJETAS
+           ======================================== */
+        .card {
+            background: rgba(26, 35, 50, 0.85);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 1px 3px rgba(74, 127, 127, 0.05);
+        }
+
+        /* ========================================
+           GRILLA DE ESTADÍSTICAS
+           ======================================== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 10px;
-            margin-top: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
         }
 
         .stat-card {
-            background: radial-gradient(circle at top, #020617 0, #020617 55%);
+            background: rgba(26, 35, 50, 0.8);
+            padding: 25px;
             border-radius: 12px;
-            padding: 8px 10px 8px 10px;
-            border: 1px solid rgba(148, 163, 184, 0.32);
+            text-align: center;
+            border: 2px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
         }
 
         .stat-card .label {
-            font-size: 0.78rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--text-tertiary);
-            margin-bottom: 4px;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
         }
 
         .stat-card .value {
-            font-size: 1rem;
+            font-size: 1.8rem;
             font-weight: 600;
-            color: #e5f4ff;
+            color: var(--text-primary);
         }
 
         .stat-card .change {
-            font-size: 0.78rem;
-            margin-top: 1px;
-            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 5px;
         }
 
-        .stat-card .change.positive {
-            color: #4ade80;
+        .positive {
+            color: var(--success-color);
         }
 
-        .stat-card .change.negative {
+        .negative {
             color: var(--danger-color);
         }
 
-        /* Tablas responsive */
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; gap: 15px; }
+            .stat-card { padding: 20px; }
+        }
+
+        /* ========================================
+           TABLAS
+           ======================================== */
         .table-responsive {
-            width: 100%;
             overflow-x: auto;
-            margin-top: 10px;
+            margin: 30px 0;
+            border-radius: 8px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.85rem;
-            min-width: 480px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
         }
 
         thead {
-            background: rgba(15, 23, 42, 0.95);
+            background: #1A1F2E;
+            border-bottom: 2px solid var(--primary-color);
         }
 
         th, td {
-            padding: 7px 8px;
-            border-bottom: 1px solid rgba(51, 65, 85, 0.9);
+            padding: 15px;
             text-align: left;
+            border-bottom: 1px solid var(--border-color);
         }
 
         th {
-            font-weight: 600;
             color: var(--text-secondary);
-            font-size: 0.8rem;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
         }
 
-        tbody tr:nth-child(even) {
-            background: rgba(15, 23, 42, 0.65);
+        tr:hover {
+            background: rgba(74, 127, 127, 0.05);
         }
 
-        td.positive {
-            color: #4ade80;
-            font-weight: 500;
+        @media (max-width: 768px) {
+            th, td { padding: 12px; font-size: 0.85rem; }
+            th { font-size: 0.7rem; }
         }
 
-        td.negative {
-            color: #f97373;
-            font-weight: 500;
+        /* ========================================
+           CAJAS DE ALERTA
+           ======================================== */
+        .alert {
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            backdrop-filter: blur(10px);
         }
 
-        /* Timeline catalizadores */
+        .alert-success {
+            background: rgba(74, 155, 111, 0.08);
+            border-color: var(--success-color);
+            color: var(--text-primary);
+        }
+
+        .alert-warning {
+            background: rgba(255, 165, 0, 0.15);
+            border-color: var(--warning-color);
+            color: var(--text-primary);
+        }
+
+        .alert-info {
+            background: rgba(0, 212, 212, 0.15);
+            border-color: var(--primary-color);
+            color: var(--text-primary);
+        }
+
+        .alert-danger {
+            background: rgba(255, 107, 107, 0.15);
+            border-color: var(--danger-color);
+            color: var(--text-primary);
+        }
+
+        .alert strong {
+            color: #ffffff;
+        }
+
+        /* ========================================
+           HIGHLIGHTS
+           ======================================== */
+        .highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .highlight-item {
+            background: linear-gradient(135deg, var(--card-bg) 0%, rgba(0, 212, 212, 0.1) 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .highlight-item h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .highlight-item p {
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .highlights { grid-template-columns: 1fr; gap: 15px; }
+        }
+
+        /* ========================================
+           TIMELINE
+           ======================================== */
         .timeline {
-            margin-top: 10px;
-            border-left: 2px solid rgba(148, 163, 184, 0.5);
-            padding-left: 12px;
+            position: relative;
+            padding: 20px 0;
+            z-index: 1;
         }
 
         .timeline-item {
             position: relative;
-            padding-left: 10px;
-            margin-bottom: 10px;
+            padding-left: 40px;
+            margin-bottom: 30px;
         }
 
         .timeline-item::before {
-            content: "";
+            content: '';
             position: absolute;
-            left: -13px;
-            top: 5px;
-            width: 9px;
-            height: 9px;
-            border-radius: 999px;
+            left: 0;
+            top: 0;
+            width: 16px;
+            height: 16px;
             background: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.3);
+            border-radius: 50%;
+            border: 3px solid var(--dark-bg);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 16px;
+            width: 2px;
+            height: calc(100% + 14px);
+            background: var(--border-color);
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
         }
 
         .timeline-date {
-            font-size: 0.8rem;
-            color: var(--text-tertiary);
-            margin-bottom: 2px;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 5px;
         }
 
-        .timeline-item p {
-            margin-bottom: 2px;
-            color: var(--text-secondary);
+        /* ========================================
+           BOTONES
+           ======================================== */
+        .btn {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            border: 1px solid var(--primary-color);
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
         }
 
-        .timeline-item strong {
-            color: #e5f4ff;
+        .btn:hover {
+            background: var(--secondary-color);
+            border-color: var(--accent-color);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
         }
 
-        /* Cards genéricos */
-        .card {
-            margin-top: 6px;
-            padding: 10px 11px;
-            border-radius: 12px;
-            background: radial-gradient(circle at top, #020617 0, #020617 55%);
-            border: 1px solid rgba(148, 163, 184, 0.35);
+        .btn-success {
+            background: var(--success-color);
+            color: var(--dark-bg);
+            border-color: var(--success-color);
         }
 
-        .card h3 {
-            font-size: 1rem;
-            margin-bottom: 4px;
-            color: #e5f4ff;
+        .btn-success:hover {
+            background: #00b868;
+            border-color: #00b868;
         }
 
-        /* Matriz de riesgos simple */
-        .risk-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .risk-item {
-            background: radial-gradient(circle at top, #020617 0, #020617 55%);
-            padding: 9px 10px;
-            border-radius: 12px;
-            border: 1px solid rgba(248, 250, 252, 0.09);
-        }
-
-        .risk-item h4 {
-            font-size: 0.9rem;
-            margin-bottom: 4px;
-            color: #fecaca;
-        }
-
-        .risk-item p {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        /* Conclusión con gradiente */
-        .conclusion-card {
-            margin-top: 8px;
-            padding: 14px 12px 14px 12px;
-            border-radius: 16px;
-            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.32), rgba(37, 99, 235, 0.4) 40%, rgba(15, 23, 42, 0.98) 100%);
-            border: 1px solid rgba(191, 219, 254, 0.7);
-            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.95);
-        }
-
-        .conclusion-card h3 {
-            font-size: 1.08rem;
-            margin-bottom: 6px;
-            color: #e0f2fe;
-        }
-
-        .conclusion-card p {
-            color: #e5f4ff;
-        }
-
-        /* Footer + back button */
+        /* ========================================
+           FOOTER
+           ======================================== */
         footer {
-            margin-top: 30px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(51, 65, 85, 0.9);
+            background: var(--card-bg);
+            padding: 40px 0;
             text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-tertiary);
+            margin-top: 60px;
+            border-top: 2px solid var(--border-color);
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
         }
 
         footer p {
-            margin-bottom: 8px;
-        }
-
-        .back-button-wrapper {
-            text-align: center;
-            padding: 26px 20px 6px 20px;
-        }
-
-        .back-button-wrapper a {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #f9fafb;
-            padding: 11px 26px;
-            border-radius: 999px;
-            text-decoration: none;
-            font-weight: 600;
-            box-shadow: 0 18px 36px rgba(15, 23, 42, 0.9);
+            color: var(--text-secondary);
             font-size: 0.9rem;
+            margin: 10px 0;
         }
 
-        .back-button-wrapper a:hover {
-            filter: brightness(1.08);
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
         }
 
-        /* Animaciones */
+        footer a:hover {
+            color: #ffffff;
+        }
+
+        /* ========================================
+           SCROLLBAR
+           ======================================== */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 20, 25, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+
+        /* ========================================
+           ANIMACIONES
+           ======================================== */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
         @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .investment-metrics {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .highlights {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
         @media (max-width: 768px) {
-            header.header-professional {
-                padding: 16px 14px 16px 14px;
-            }
-
-            .page-title {
-                font-size: 1.4rem;
-            }
-
-            .investment-metrics {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .highlights {
-                grid-template-columns: 1fr;
-            }
-
-            .logo-company {
-                width: 105px;
-                height: 38px;
-            }
-
-            .scroll-index {
-                border-radius: 14px;
-            }
-        }
-
-        @media (max-width: 480px) {
             .container {
-                margin-top: 60px;
-                padding: 0 12px 32px 12px;
-            }
-
-            .page-title {
-                font-size: 1.2rem;
-            }
-
-            .page-subtitle {
-                font-size: 0.86rem;
-            }
-
-            section {
-                padding: 14px 12px 14px 12px;
-            }
-
-            .stat-card .value {
-                font-size: 0.95rem;
-            }
-
-            .logo-navbar span {
-                display: none;
+                padding: 0 15px;
             }
         }
+
     </style>
 </head>
 <body>
-<div class="progress-bar" id="progressBar"></div>
+    <!-- Barra de progreso -->
+    <div class="progress-bar" id="progressBar"></div>
 
-<div class="logo-navbar">
-    <img src="logo-empresa.png" alt="SpreadHunters" class="logo-navbar-img">
-    <span>SpreadHunters · EDU</span>
-</div>
+    <!-- Logo en esquina superior izquierda -->
+    <div class="logo-navbar">
+        <img src="../images/logo_sh.svg" alt="SpreadHunters" class="logo-navbar-img">
+    </div>
 
-<div class="container">
+    <!-- Header Profesional -->
     <header class="header-professional">
-        <div class="header-title-section">
-            <div class="company-title-row">
-                <img src="logo-empresa.png" alt="EDU Holdings Logo" class="logo-company">
-                <div>
-                    <h1 class="page-title">EDU HOLDINGS LIMITED (ASX:EDU)</h1>
-                    <p class="page-subtitle">Tesis de Inversión · Arbitraje Regulatorio en Educación Internacional</p>
+        <div class="container">
+            <div class="header-title-section">
+                <div class="company-title-row">
+                    <img src="../images/edu-holdings-logo.png" alt="EDU Holdings Logo" class="logo-company">
+                    <h1 class="page-title">EDU Holdings Limited (ASX: EDU)</h1>
                 </div>
+                <p class="page-subtitle">Arbitraje Regulatorio en Educación Australiana: Oportunidad de Revalorización 2.5x</p>
             </div>
-
-            <div class="ticker-info">
-                <span><strong>Ticker:</strong> ASX:EDU</span>
-                <span><strong>Fecha:</strong> 21 enero 2026</span>
-                <span><strong>Clasificación:</strong> Confidencial</span>
-                <span><strong>Estado:</strong> Monitoreo Activo</span>
-            </div>
-
+            
+            <!-- Métricas de inversión principales -->
             <div class="investment-metrics">
                 <div class="metric-card">
-                    <div class="metric-label">Precio Actual</div>
-                    <div class="metric-value" id="currentPrice">AUD $0.82</div>
-                    <div class="metric-subtitle">Cierre reciente ASX</div>
+                    <div class="metric-label">PRECIO ACTUAL</div>
+                    <div class="metric-value cyan">AUD $0.82</div>
+                    <div class="metric-subtitle">ASX: EDU</div>
                 </div>
+                
                 <div class="metric-card">
-                    <div class="metric-label">Valor Justo DCF</div>
-                    <div class="metric-value positive" id="fairValue">AUD $2.08</div>
-                    <div class="metric-subtitle">Caso base 2026-2031</div>
+                    <div class="metric-label">FAIR VALUE DCF</div>
+                    <div class="metric-value cyan">AUD $2.08</div>
+                    <div class="metric-subtitle">Base Case 18-24m</div>
                 </div>
+                
                 <div class="metric-card">
-                    <div class="metric-label">Potencial Alcista</div>
-                    <div class="metric-value positive" id="upsidePercent">+154%</div>
-                    <div class="metric-subtitle">vs precio actual</div>
+                    <div class="metric-label">UPSIDE POTENCIAL</div>
+                    <div class="metric-value green">+154%</div>
+                    <div class="metric-subtitle">Ratio 3.8:1 atractivo</div>
                 </div>
+                
                 <div class="metric-card">
-                    <div class="metric-label">Riesgo / Beneficio</div>
-                    <div class="metric-value positive">3.8 : 1</div>
-                    <div class="metric-subtitle">Stop ~ -15% / Upside 150%+</div>
+                    <div class="metric-label">RECOMENDACIÓN</div>
+                    <div class="metric-value green">COMPRA</div>
+                    <div class="metric-subtitle">Arbitraje regulatorio</div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Índice de secciones: navegación por scroll -->
-    <nav class="scroll-index">
-        <a href="#resumen" class="active">Resumen</a>
-        <a href="#empresa">Empresa</a>
-        <a href="#evento-regulatorio">Catalizador Regulatorio</a>
-        <a href="#impacto">Impacto & Narrativas</a>
-        <a href="#valoracion">Valuación DCF</a>
-        <a href="#catalizadores">Catalizadores</a>
-        <a href="#riesgos">Riesgos</a>
-        <a href="#recomendacion">Recomendación</a>
+    <!-- Navegación de pestañas -->
+    <nav class="nav-tabs">
+        <div class="container">
+            <ul>
+                <li><a href="#resumen" class="active">Resumen Ejecutivo</a></li>
+                <li><a href="#empresa">Empresa</a></li>
+                <li><a href="#regulatorio">Catalizador Regulatorio</a></li>
+                <li><a href="#impacto">Impacto & Narrativas</a></li>
+                <li><a href="#valuation">Valuación DCF</a></li>
+                <li><a href="#catalysts">Catalizadores</a></li>
+                <li><a href="#riesgos">Riesgos</a></li>
+            </ul>
+        </div>
     </nav>
 
-    <main>
-        <!-- RESUMEN EJECUTIVO -->
-        <section id="resumen">
-            <div class="section-kicker">TESIS PRINCIPAL</div>
-            <h2><span class="emoji">📌</span> Resumen Ejecutivo</h2>
-
+    <!-- Contenido principal -->
+    <main class="container">
+        
+        <!-- Resumen Ejecutivo -->
+        <section id="resumen" class="fade-in">
+            <h2>📌 Resumen Ejecutivo</h2>
+            
             <div class="alert alert-success">
-                <div class="alert-icon">✅</div>
-                <div>
-                    <strong>Tesis de Inversión</strong>
-                    EDU Holdings representa una oportunidad de arbitraje regulatorio donde la prohibición de comisiones a agentes educativos ha creado una perturbación temporal en la visibilidad de ganancias que el mercado ha descontado como si fuera estructural. La combinación de crecimiento secular en educación internacional, capacidad adaptativa del management y balance sólido genera un perfil de retorno asimétrico 3.8:1 a precios actuales.
-                </div>
+                <strong>🎯 Tesis de Inversión:</strong> EDU Holdings representa una oportunidad de arbitraje regulatorio donde la prohibición de comisiones a agentes educativos ha creado una perturbación temporal en la visibilidad de ganancias que el mercado ha descontado como si fuera estructural. La combinación de crecimiento secular en educación internacional, capacidad adaptativa del management y balance sólido genera un perfil de retorno asimétrico 3.8:1 a precios actuales.
             </div>
 
             <div class="highlights">
                 <div class="highlight-item">
-                    <h4>Arbitraje Regulatorio, no Ruptura del Modelo</h4>
-                    <p>El mercado descuenta un colapso estructural de la demanda onshore cuando el cambio regulatorio afecta principalmente la forma de remunerar al canal (agentes), no la necesidad subyacente de los estudiantes de transferirse a proveedores de mayor calidad.</p>
+                    <h4>⚖️ Arbitraje Regulatorio, no Ruptura del Modelo</h4>
+                    <p>El mercado descuenta un colapso estructural cuando el cambio regulatorio afecta principalmente la forma de remunerar al canal (agentes), no la necesidad subyacente de los estudiantes de transferirse a proveedores de mayor calidad.</p>
                 </div>
                 <div class="highlight-item">
-                    <h4>Balance Sólido y Buyback Acretivo</h4>
-                    <p>Con AUD $22.5M de caja pre-recompra y posición de efectivo neto, EDU puede ejecutar un buyback selectivo del 12.5% del capital sin tensionar liquidez, incrementando EPS y reduciendo el free float de forma atractiva.</p>
+                    <h4>💰 Balance Sólido y Buyback Acretivo</h4>
+                    <p>Con AUD $22.5M de caja pre-recompra y posición de efectivo neto, EDU puede ejecutar un buyback selectivo del 12.5% del capital sin tensionar liquidez, incrementando EPS y reduciendo el free float.</p>
                 </div>
                 <div class="highlight-item">
-                    <h4>Gestión con Ejecución Probada</h4>
-                    <p>LTM25 muestra +121% crecimiento de ingresos hasta AUD $61.5M y márgenes EBITDA del 27%, validando la capacidad de ejecutar crecimiento y adaptación, incluso con ruido regulatorio en el sector.</p>
+                    <h4>✅ Gestión con Ejecución Probada</h4>
+                    <p>LTM25 muestra +121% crecimiento de ingresos hasta AUD $61.5M y márgenes EBITDA del 27%, validando la capacidad de ejecutar crecimiento y adaptación incluso con ruido regulatorio.</p>
                 </div>
             </div>
 
+            <h3>Métricas Clave</h3>
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="label">CAGR Ingresos FY22–LTM25</div>
-                    <div class="value positive">+50% aprox.</div>
-                    <div class="change positive">Apalancamiento operativo visible</div>
+                    <div class="label">Fair Value</div>
+                    <div class="value">AUD $2.08</div>
+                    <div class="change positive">+154% Upside</div>
                 </div>
                 <div class="stat-card">
-                    <div class="label">Margen EBITDA LTM25</div>
-                    <div class="value positive">27%</div>
-                    <div class="change positive">desde -7% en FY22</div>
+                    <div class="label">Ingresos LTM25</div>
+                    <div class="value">AUD $61.5M</div>
+                    <div class="change positive">+121% YoY</div>
                 </div>
                 <div class="stat-card">
-                    <div class="label">Caja Neta post-buyback</div>
-                    <div class="value positive">~AUD $9.5M</div>
-                    <div class="change">Runway 12–18 meses</div>
+                    <div class="label">EBITDA Margin</div>
+                    <div class="value">27%</div>
+                    <div class="change positive">Excepcional</div>
                 </div>
                 <div class="stat-card">
-                    <div class="label">Valor Justo / Precio</div>
-                    <div class="value positive">2.08 / 0.82</div>
-                    <div class="change positive">154% potencial alcista</div>
+                    <div class="label">Caja Neta</div>
+                    <div class="value">AUD $19M</div>
+                    <div class="change positive">Pre-buyback</div>
                 </div>
             </div>
         </section>
 
-        <!-- EMPRESA -->
-        <section id="empresa">
-            <div class="section-kicker">MODELO DE NEGOCIO</div>
-            <h2><span class="emoji">🏫</span> Descripción de la Empresa</h2>
-
-            <p>EDU Holdings Limited opera dos plataformas educativas orientadas principalmente a estudiantes internacionales en Australia, combinando educación superior (Ikon) con formación vocacional (ALG), ambas con perfiles de margen atractivos y exposición directa al flujo de estudiantes onshore y offshore.</p>
-
+        <!-- Descripción de Empresa -->
+        <section id="empresa" class="fade-in">
+            <h2>🏫 Descripción de la Empresa</h2>
+            
             <div class="card">
-                <h3>Segmentos Operativos</h3>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
+                <h3>Quiénes Son</h3>
+                <p style="margin-bottom: 15px;">EDU Holdings Limited opera dos plataformas educativas orientadas principalmente a estudiantes internacionales en Australia, combinando educación superior (Ikon) con formación vocacional (ALG), ambas con perfiles de margen atractivos y exposición directa al flujo de estudiantes onshore y offshore.</p>
+            </div>
+
+            <h3>Segmentos Operativos</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
                         <tr>
                             <th>Unidad de Negocio</th>
                             <th>Enfoque</th>
                             <th>Participación Ingresos</th>
                             <th>Margen EBITDA</th>
                         </tr>
-                        </thead>
-                        <tbody>
+                    </thead>
+                    <tbody>
                         <tr>
                             <td><strong>Ikon Institute of Australia</strong></td>
                             <td>Educación superior (Diploma, Bachelor, Master) en Asesoramiento, Educación Infantil y Servicios Comunitarios</td>
                             <td>73% LTM25</td>
-                            <td class="positive">28–30%</td>
+                            <td>28–30%</td>
                         </tr>
                         <tr>
                             <td><strong>Australian Learning Group (ALG)</strong></td>
                             <td>Programas vocacionales y certificados VET, foco estudiantes internacionales</td>
                             <td>27% LTM25</td>
-                            <td class="positive">26–28%</td>
+                            <td>26–28%</td>
                         </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
 
-            <div class="card">
-                <h3>Trayectoria de Crecimiento</h3>
-                <p>La compañía ha pasado de un negocio pequeño y ligeramente deficitario en FY22 a una plataforma con escala y márgenes cercanos al 30%, apoyada en el mix creciente de estudiantes internacionales y el peso incremental de Ikon.</p>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
+            <h3>Trayectoria de Crecimiento</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
                         <tr>
                             <th>Periodo</th>
                             <th>Ingresos (AUD M)</th>
                             <th>Crecimiento YoY</th>
                             <th>Margen EBITDA</th>
                         </tr>
-                        </thead>
-                        <tbody>
+                    </thead>
+                    <tbody>
                         <tr>
                             <td><strong>FY22</strong></td>
                             <td>17.7</td>
@@ -862,13 +921,13 @@
                             <td><strong>FY23</strong></td>
                             <td>21.2</td>
                             <td class="positive">+20%</td>
-                            <td class="positive">+2%</td>
+                            <td>+2%</td>
                         </tr>
                         <tr>
                             <td><strong>FY24</strong></td>
                             <td>42.2</td>
                             <td class="positive">+99%</td>
-                            <td class="positive">+19%</td>
+                            <td>+19%</td>
                         </tr>
                         <tr>
                             <td><strong>LTM25</strong></td>
@@ -876,435 +935,447 @@
                             <td class="positive">+121%</td>
                             <td class="positive">+27%</td>
                         </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="highlights">
-                <div class="highlight-item">
-                    <h4>Mix de Estudiantes Más Resiliente</h4>
-                    <p>El peso de estudiantes internacionales pasa del 68% (FY22) al 89% (LTM25), reforzando exposición a la demanda global por educación australiana.</p>
-                </div>
-                <div class="highlight-item">
-                    <h4>Ikon como Motor de Margen</h4>
-                    <p>Ikon aumenta su peso de 45% a 73% de los ingresos, elevando el perfil de margen consolidado y la percepción de calidad del proveedor.</p>
-                </div>
-                <div class="highlight-item">
-                    <h4>Balance Sheet Fortalecido</h4>
-                    <p>Caja neta de ~AUD $19M pre-buyback y ~AUD $9.5M post-buyback permite absorber el shock regulatorio e invertir en reclutamiento directo sin poner en riesgo la solvencia.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- EVENTO REGULATORIO -->
-        <section id="evento-regulatorio">
-            <div class="section-kicker">CAMBIO NORMATIVO CLAVE</div>
-            <h2><span class="emoji">⚖️</span> Catalizador Regulatorio y Reacción del Mercado</h2>
-
-            <div class="alert alert-warning">
-                <div class="alert-icon">⚠️</div>
-                <div>
-                    <strong>Prohibición de Comisiones a Agentes en Transferencias Onshore</strong>
-                    Desde el 1 de abril de 2026, los proveedores educativos en Australia no podrán pagar comisiones a agentes por estudiantes internacionales que ya estén estudiando en el país y se transfieran entre instituciones. El resto de canales (offshore, directos, domésticos) no se ven afectados por la medida.
-                </div>
-            </div>
-
-            <p>El diseño de la norma apunta a desincentivar incentivos perversos en la “caza agresiva” de estudiantes onshore mediante agentes, pero no prohíbe ni la intermediación de los agentes (pueden cobrar al estudiante) ni la decisión de los estudiantes de cambiar a un proveedor mejor posicionado como EDU.</p>
-
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Elemento</th>
-                        <th>Detalle</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><strong>Qué se Prohíbe</strong></td>
-                        <td>Pago de comisiones a agentes educativos por estudiantes internacionales en transferencia interna (onshore).</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Qué se Mantiene</strong></td>
-                        <td>Comisiones en otros segmentos, reclutamiento directo onshore/offshore, posibilidad de que el estudiante pague al agente.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Transición</strong></td>
-                        <td>Estudiantes aceptados antes del 31 de marzo de 2026 quedan bajo el régimen anterior.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Cohorte en Riesgo</strong></td>
-                        <td>Aprox. 20–30% de matriculaciones internacionales de Ikon (70–90% captadas por agentes).</td>
-                    </tr>
                     </tbody>
                 </table>
             </div>
 
-            <div class="card">
-                <h3>Reacción del Mercado</h3>
-                <p>La acción cae un ~28% en una semana (de ~AUD $1.10–1.15 a ~AUD $0.82–0.85) incorporando un escenario de caída estructural de beneficios y compresión permanente de márgenes. El mercado asume que la demanda onshore dependía críticamente de los incentivos de agentes.</p>
-                <div class="highlights">
-                    <div class="highlight-item">
-                        <h4>Descuento Regulatorio Desproporcionado</h4>
-                        <p>La magnitud de la caída equivale a descontar una erosión permanente de ~12–15% de ingresos y 300 bps de margen, sin reconocer posibles vías de sustitución vía reclutamiento directo.</p>
-                    </div>
-                    <div class="highlight-item">
-                        <h4>Guidance de Management Más Benigno</h4>
-                        <p>La dirección anticipa un período de ajuste pero no un colapso de la demanda, y ya ha puesto en marcha iniciativas de mitigación (más captación directa y mayor foco offshore y doméstico).</p>
-                    </div>
-                    <div class="highlight-item">
-                        <h4>Asimetría de Información</h4>
-                        <p>Management tiene visibilidad sobre la cohorte ya matriculada y sobre la calidad de la demanda onshore, mientras el mercado se guía por el titular regulatorio.</p>
-                    </div>
-                </div>
+            <div class="alert alert-info">
+                <strong>💡 Transformación Notable:</strong> De un negocio pequeño deficitario en FY22 a una plataforma con escala y márgenes cercanos al 30%, apoyada en el mix creciente de estudiantes internacionales (68% → 89%) e Ikon como motor de margen (45% → 73% de ingresos).
             </div>
         </section>
 
-        <!-- IMPACTO & NARRATIVAS -->
-        <section id="impacto">
-            <div class="section-kicker">ESCENARIOS DE IMPACTO</div>
-            <h2><span class="emoji">🧩</span> Impacto en Flujo de Caja y Narrativas de Mercado</h2>
-
-            <p>El impacto real del cambio regulatorio se materializa a través de la elasticidad de la demanda de transferencias onshore y de la capacidad de EDU para sustituir el canal de agentes por reclutamiento directo y otros canales.</p>
+        <!-- Catalizador Regulatorio -->
+        <section id="regulatorio" class="fade-in">
+            <h2>⚖️ Catalizador Regulatorio y Reacción del Mercado</h2>
 
             <div class="card">
-                <h3>Línea de Tiempo de Disrupción</h3>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-date">Q1 2026</div>
-                        <p><strong>Shock Regulatorio & Ajuste Inicial</strong> — Anuncio de la enmienda al Código Nacional, se dispara la incertidumbre y se aceleran transferencias bajo el régimen antiguo.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Q2 2026</div>
-                        <p><strong>Entrada en Vigor</strong> — Desaparecen incentivos de agentes en transferencias onshore; posible “acantilado” de nuevas matriculaciones vía agentes.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Q3–Q4 2026</div>
-                        <p><strong>Reclutamiento Directo Gana Peso</strong> — EDU intensifica marketing directo, relaciones institucionales y captación offshore.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">H1 2027</div>
-                        <p><strong>Normalización Gradual</strong> — CAC se modera, procesos optimizados, el negocio converge a un nuevo equilibrio de márgenes.</p>
-                    </div>
+                <h3>Prohibición de Comisiones a Agentes</h3>
+                <p><strong>Desde el 1 de abril de 2026,</strong> los proveedores educativos en Australia no podrán pagar comisiones a agentes por estudiantes internacionales que ya estén estudiando en el país y se transfieran entre instituciones. El resto de canales (offshore, directos, domésticos) no se ven afectados.</p>
+                <p style="margin-top: 15px;">El diseño de la norma apunta a desincentivar incentivos perversos en la "caza agresiva" de estudiantes onshore, pero no prohíbe ni la intermediación de los agentes ni la decisión de los estudiantes de cambiar a un proveedor mejor posicionado como EDU.</p>
+            </div>
+
+            <h3>Detalles de la Medida Regulatoria</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th>Detalle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Qué se Prohíbe</strong></td>
+                            <td>Pago de comisiones a agentes educativos por estudiantes internacionales en transferencia interna (onshore).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Qué se Mantiene</strong></td>
+                            <td>Comisiones en otros segmentos, reclutamiento directo onshore/offshore, posibilidad de que el estudiante pague al agente.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Transición</strong></td>
+                            <td>Estudiantes aceptados antes del 31 de marzo de 2026 quedan bajo el régimen anterior.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cohorte en Riesgo</strong></td>
+                            <td>Aprox. 20–30% de matriculaciones internacionales de Ikon (70–90% captadas por agentes).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Reacción del Mercado: Descuento Desproporcionado</h3>
+            <div class="card">
+                <h4>La Caída: -28% en una Semana</h4>
+                <p>La acción cae de ~AUD $1.10–1.15 a ~AUD $0.82–0.85, incorporando un escenario de caída estructural de beneficios y compresión permanente de márgenes. El mercado asume que la demanda onshore dependía críticamente de los incentivos de agentes.</p>
+                
+                <p style="margin-top: 15px;"><strong>Descuento Implícito:</strong> La magnitud de la caída equivale a descontar una erosión permanente de ~12–15% de ingresos y 300 bps de margen, sin reconocer posibles vías de sustitución vía reclutamiento directo.</p>
+                
+                <p style="margin-top: 15px;"><strong>Guidance de Management Más Benigno:</strong> La dirección anticipa un período de ajuste pero no un colapso de la demanda, y ya ha puesto en marcha iniciativas de mitigación (captación directa, mayor foco offshore y doméstico).</p>
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>🔑 Clave Analítica:</strong> Asimetría de información. Management tiene visibilidad sobre la cohorte ya matriculada y sobre la calidad de la demanda onshore, mientras el mercado se guía por el titular regulatorio.
+            </div>
+        </section>
+
+        <!-- Impacto y Narrativas -->
+        <section id="impacto" class="fade-in">
+            <h2>🧩 Impacto en Flujo de Caja y Narrativas de Mercado</h2>
+
+            <h3>Línea de Tiempo de Disrupción</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">📌 Shock Regulatorio & Ajuste Inicial</div>
+                    <div>Anuncio de la enmienda al Código Nacional, se dispara la incertidumbre y se aceleran transferencias bajo el régimen antiguo.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">📅 1 Abril 2026</div>
+                    <div>Entrada en vigor: desaparecen incentivos de agentes en transferencias onshore; posible "acantilado" de nuevas matriculaciones vía agentes.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">📅 H2 2026</div>
+                    <div>Reclutamiento Directo Gana Peso: EDU intensifica marketing directo, relaciones institucionales y captación offshore.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">📅 2027-2028</div>
+                    <div>Normalización Gradual: CAC se modera, procesos optimizados, el negocio converge a un nuevo equilibrio de márgenes.</div>
                 </div>
             </div>
 
-            <div class="card">
-                <h3>Dos Narrativas Competidoras</h3>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
+            <h3>Dos Narrativas Competidoras</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
                         <tr>
-                            <th></th>
+                            <th>Aspecto</th>
                             <th>Caso Oso (Mercado)</th>
                             <th>Caso Alcista (Tesis)</th>
                         </tr>
-                        </thead>
-                        <tbody>
+                    </thead>
+                    <tbody>
                         <tr>
                             <td><strong>Elasticidad Demanda</strong></td>
-                            <td>Elevada: sin incentivos de agentes, la demanda colapsa (>50% de la cohorte onshore).</td>
-                            <td>Moderada: la necesidad de transferirse a un mejor proveedor es genuina; la demanda se redirige, no desaparece.</td>
+                            <td>Elevada: sin incentivos de agentes, demanda colapsa (>50% de cohorte onshore)</td>
+                            <td>Moderada: necesidad de transferirse es genuina; demanda se redirige, no desaparece</td>
                         </tr>
                         <tr>
                             <td><strong>Impacto Ingresos</strong></td>
-                            <td>Pérdida estructural de 12–15% de ingresos.</td>
-                            <td>Pérdida inicial del 8–10% con recuperación parcial vía canal directo.</td>
+                            <td class="negative">Pérdida estructural 12–15% de ingresos</td>
+                            <td class="positive">Pérdida inicial 8–10% con recuperación parcial vía canal directo</td>
                         </tr>
                         <tr>
                             <td><strong>Margen EBITDA</strong></td>
-                            <td>Compresión estructural de ~300 bps.</td>
-                            <td>Compresión temporal de ~100 bps con recuperación a ~28.9%.</td>
+                            <td class="negative">Compresión estructural ~300 bps</td>
+                            <td class="positive">Compresión temporal ~100 bps con recuperación a ~28.9%</td>
                         </tr>
                         <tr>
                             <td><strong>Valor Justo Imputado</strong></td>
-                            <td>AUD $1.60–1.75 / acción.</td>
-                            <td>AUD $2.08 (base) a $2.40 (alcista).</td>
+                            <td class="negative">AUD $1.60–1.75 / acción</td>
+                            <td class="positive">AUD $2.08 (base) a $2.40 (alcista)</td>
                         </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
 
-            <div class="alert alert-info">
-                <div class="alert-icon">💡</div>
-                <div>
-                    <strong>Clave Analítica</strong>
-                    La tesis descansa en que la demanda de educación de calidad y de pathways migratorios es estructural, mientras que los agentes son sólo un vector de distribución sustituible; EDU está en posición de capturar esa demanda vía canales alternativos aún a costa de un CAC algo mayor en los próximos 18–24 meses.
-                </div>
+            <div class="alert alert-success">
+                <strong>💡 Diferenciador Clave:</strong> La tesis descansa en que la demanda de educación de calidad y de pathways migratorios es estructural, mientras que los agentes son sólo un vector de distribución sustituible; EDU está en posición de capturar esa demanda vía canales alternativos aún a costa de un CAC algo mayor en los próximos 18–24 meses.
             </div>
         </section>
 
-        <!-- VALORACIÓN DCF -->
-        <section id="valoracion">
-            <div class="section-kicker">VALORACIÓN FUNDAMENTAL</div>
-            <h2><span class="emoji">📊</span> Modelo de Valuación DCF</h2>
+        <!-- Valuación DCF -->
+        <section id="valuation" class="fade-in">
+            <h2>💎 Modelo de Valuación DCF</h2>
 
-            <p>El valor intrínseco se estima mediante un DCF a 6 años con valor terminal vía múltiplo EV/EBITDA, incorporando explícitamente el impacto regulatorio en crecimiento y márgenes.</p>
-
-            <div class="card">
-                <h3>Supuestos Clave</h3>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
+            <h3>Supuestos Clave</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
                         <tr>
                             <th>Categoría</th>
                             <th>Supuesto</th>
                             <th>Comentario</th>
                         </tr>
-                        </thead>
-                        <tbody>
+                    </thead>
+                    <tbody>
                         <tr>
                             <td><strong>Ventas 2025</strong></td>
                             <td>AUD $80M</td>
-                            <td>Conservador frente a LTM25 ($61.5M) y trayectoria de crecimiento.</td>
+                            <td>Conservador frente a LTM25 ($61.5M) y trayectoria de crecimiento</td>
                         </tr>
                         <tr>
                             <td><strong>Crecimiento Ventas</strong></td>
                             <td>25% (2026), 20% (2027), 16%, 12%, 5%, 4.5%</td>
-                            <td>Desaceleración progresiva desde fase de adaptación hasta crecimiento secular maduro.</td>
+                            <td>Desaceleración progresiva desde fase de adaptación hasta crecimiento secular maduro</td>
                         </tr>
                         <tr>
                             <td><strong>Margen EBITDA</strong></td>
                             <td>~28% estabilizado</td>
-                            <td>Impacto regulatorio -100 bps vs perfil pre-cambio, asumiendo éxito en adaptación.</td>
+                            <td>Impacto regulatorio -100 bps vs perfil pre-cambio, asumiendo éxito en adaptación</td>
                         </tr>
                         <tr>
                             <td><strong>CapEx / Ventas</strong></td>
                             <td>2%</td>
-                            <td>Reinversión moderada compatible con modelo asset-light.</td>
+                            <td>Reinversión moderada compatible con modelo asset-light</td>
                         </tr>
                         <tr>
                             <td><strong>WACC</strong></td>
                             <td>12.21%</td>
-                            <td>Coste de equity ~10.5%, caja neta y prima de riesgo regulatoria incorporada.</td>
+                            <td>Coste de equity ~10.5%, caja neta y prima de riesgo regulatoria incorporada</td>
                         </tr>
                         <tr>
                             <td><strong>EV/EBITDA Terminal</strong></td>
                             <td>6.5x</td>
-                            <td>Descuento frente a Navitas (8–9x) e IDP (6–7x) pese a mejor balance.</td>
+                            <td>Descuento frente a Navitas (8–9x) e IDP (6–7x) pese a mejor balance</td>
                         </tr>
-                        </tbody>
-                    </table>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Resultado de la Valuación</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="label">PV of FCF 2026-2031</div>
+                    <div class="value">AUD Multim</div>
+                    <div class="change">Base Case</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Enterprise Value</div>
+                    <div class="value">AUD Multim</div>
+                    <div class="change">Equity adjusted</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Fair Value Per Share</div>
+                    <div class="value cyan">AUD $2.08</div>
+                    <div class="change positive">+154% upside</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Downside Scenario</div>
+                    <div class="value">AUD $1.60</div>
+                    <div class="change">Bear case protection</div>
                 </div>
             </div>
 
+            <div class="alert alert-success">
+                <strong>✅ Sensibilidad Implícita:</strong> Incluso si el crecimiento se reduce 300–400 bps y los márgenes se comprimen 100–150 bps adicionales al caso base, la valoración seguiría sustentando un valor en el entorno de AUD $1.60–1.75, muy por encima del precio actual, ofreciendo colchón a la tesis.
+            </div>
+        </section>
+
+        <!-- Catalizadores -->
+        <section id="catalysts" class="fade-in">
+            <h2>⏱️ Catalizadores de Inversión</h2>
+
+            <h3>Próximos 90 Días</h3>
             <div class="card">
-                <h3>Resultado DCF</h3>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="label">PV FCF 2026–2031</div>
-                        <div class="value">AUD $104M</div>
-                        <div class="change">Flujos explícitos</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="label">PV Valor Terminal</div>
-                        <div class="value">AUD $143M</div>
-                        <div class="change">Múltiplo 6.5x</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="label">Enterprise Value</div>
-                        <div class="value">AUD $247M</div>
-                        <div class="change">Antes de caja neta</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="label">Equity Value / Acción</div>
-                        <div class="value positive">AUD $2.08</div>
-                        <div class="change positive">Upside 154% vs $0.82</div>
-                    </div>
+                <h4>1️⃣ Votación Buyback Selectivo</h4>
+                <p>Aprobación casi segura del buyback a Mulpha (10M) e Investec (8M) a $0.55, con informe independiente calificando "justo y razonable". Señal de disciplina de capital y confianza del consejo.</p>
+            </div>
+
+            <div class="card">
+                <h4>2️⃣ Última Cohorte con Comisiones</h4>
+                <p>Esperable auge de matriculaciones onshore antes de la fecha, confirmando que la demanda sigue presente aunque cambie el modelo de remuneración.</p>
+            </div>
+
+            <div class="card">
+                <h4>3️⃣ Primer Test Post-Regulación</h4>
+                <p>Visibilidad inicial sobre retención de estudiantes en transferencia onshore y sobre el coste de adquisición vía reclutamiento directo.</p>
+            </div>
+
+            <h3>6–24 Meses</h3>
+            
+            <div class="highlights">
+                <div class="highlight-item">
+                    <h4>📊 H1 2026</h4>
+                    <p>Métricas de CAC directo, conversión y tracción de programas de postgrado.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>📈 FY26</h4>
+                    <p>Evidencia de crecimiento aún robusto (~+23–28% ingresos) y márgenes cercanos al 28% pese al cambio regulatorio.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>🔄 2027–2028</h4>
+                    <p>Normalización de márgenes hacia ~28.5–28.9% y estabilización del nuevo mix de canales de captación.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>⭐ Re-rating de Mercado</h4>
+                    <p>A medida que el ruido regulatorio se diluye y las cifras confirman la resiliencia, expansión de múltiplo y potencial interés estratégico.</p>
                 </div>
             </div>
 
             <div class="alert alert-info">
-                <div class="alert-icon">🧮</div>
-                <div>
-                    <strong>Sensibilidad Implícita</strong>
-                    Incluso si el crecimiento se reduce 300–400 bps y los márgenes se comprimen 100–150 bps adicionales al caso base, la valoración seguiría sustentando un valor en el entorno de AUD $1.60–1.75, muy por encima del precio actual, ofreciendo colchón a la tesis.
-                </div>
+                <strong>🎯 Trigger Catalítico:</strong> La evidencia trimestral de retención de estudiantes y coste de adquisición directo competitivo serían los validadores clave de la tesis en los próximos 12 meses.
             </div>
         </section>
 
-        <!-- CATALIZADORES -->
-        <section id="catalizadores">
-            <div class="section-kicker">LÍNEA DE CATALIZADORES</div>
-            <h2><span class="emoji">⏱️</span> Catalizadores de Inversión</h2>
+        <!-- Riesgos -->
+        <section id="riesgos" class="fade-in">
+            <h2>🚨 Análisis de Riesgos</h2>
+
+            <h3>Riesgos Principales (Downside)</h3>
 
             <div class="card">
-                <h3>Próximos 90 Días</h3>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-date">12 feb 2026 · EGM</div>
-                        <p><strong>Votación Buyback Selectivo</strong> — Aprobación casi segura del buyback a Mulpha (10M) e Investec (8M) a $0.55, con informe independiente calificando “justo y razonable”. Señal de disciplina de capital y confianza del consejo.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">31 mar 2026 · Fin Régimen Antiguo</div>
-                        <p><strong>Última Cohorte con Comisiones</strong> — Esperable auge de matriculaciones onshore antes de la fecha, confirmando que la demanda sigue presente aunque cambie el modelo de remuneración.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Q2 2026 · Resultados</div>
-                        <p><strong>Primer Test Post-Regulación</strong> — Visibilidad inicial sobre retención de estudiantes en transferencia onshore y sobre el coste de adquisición vía reclutamiento directo.</p>
-                    </div>
-                </div>
+                <h4>🔴 Risk #1: Impacto Regulatorio Peor de lo Esperado</h4>
+                <p><strong>Escenario:</strong> La demanda de transferencias onshore resulta mucho más sensible a la ausencia de incentivos de agentes, provocando pérdidas de >50% de la cohorte.</p>
+                <p style="margin-top: 10px;"><strong>Impacto:</strong> Valor intrínseco se desplaza a ~AUD $1.60–1.75.</p>
+                <p style="margin-top: 10px;"><strong>Probability:</strong> <span class="negative">30-40%</span></p>
             </div>
 
             <div class="card">
-                <h3>6–24 Meses</h3>
-                <ul style="margin-left:18px; font-size:0.9rem; color:var(--text-secondary); margin-top:6px;">
-                    <li><strong>H1 2026:</strong> métricas de CAC directo, conversión y tracción de programas de postgrado.</li>
-                    <li><strong>FY26:</strong> evidencia de crecimiento aún robusto (~+23–28% ingresos) y márgenes cercanos al 28% pese al cambio regulatorio.</li>
-                    <li><strong>2027–2028:</strong> normalización de márgenes hacia ~28.5–28.9% y estabilización del nuevo mix de canales de captación.</li>
-                    <li><strong>Re-rating de mercado:</strong> a medida que el ruido regulatorio se diluye y las cifras confirman la resiliencia del negocio, debería producirse una expansión de múltiplo y potencial interés estratégico.</li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- RIESGOS -->
-        <section id="riesgos">
-            <div class="section-kicker">MAPA DE RIESGOS</div>
-            <h2><span class="emoji">🚨</span> Análisis de Riesgos</h2>
-
-            <div class="risk-grid">
-                <div class="risk-item">
-                    <h4>Impacto Regulatorio Peor de lo Esperado</h4>
-                    <p>La demanda de transferencias onshore podría resultar mucho más sensible a la ausencia de incentivos de agentes, provocando pérdidas de >50% de la cohorte. El valor intrínseco se desplazaría a ~AUD $1.60–1.75.</p>
-                </div>
-                <div class="risk-item">
-                    <h4>Adaptación Más Lenta</h4>
-                    <p>Si el CAC directo se mantiene 300–400 bps por encima de lo previsto y la curva de aprendizaje en marketing directo se alarga, el valor justo se situaría más cerca de AUD $1.85–1.95.</p>
-                </div>
-                <div class="risk-item">
-                    <h4>Competencia con Prácticas Ilegales</h4>
-                    <p>Proveedores menos escrupulosos podrían mantener pagos encubiertos a agentes, capturando cuota de mercado de la cohorte onshore hasta que la supervisión y sanciones disciplinen el sector.</p>
-                </div>
-                <div class="risk-item">
-                    <h4>Riesgo Macro/Visa</h4>
-                    <p>Endurecimientos adicionales en política migratoria o cupos de estudiantes internacionales reducirían el TAM estructural en 20–30%, con impacto en valor de ~AUD $1.70–1.85.</p>
-                </div>
+                <h4>🟡 Risk #2: Adaptación Más Lenta (MEDIO-ALTO)</h4>
+                <p><strong>Escenario:</strong> CAC directo se mantiene 300–400 bps por encima de lo previsto y curva de aprendizaje en marketing directo se alarga.</p>
+                <p style="margin-top: 10px;"><strong>Impacto:</strong> Valor justo más cerca de AUD $1.85–1.95 vs AUD $2.08 base.</p>
+                <p style="margin-top: 10px;"><strong>Probability:</strong> <span class="warning" style="color: var(--warning-color);">35-45%</span></p>
             </div>
 
-            <div class="alert alert-info" style="margin-top:12px;">
-                <div class="alert-icon">🧱</div>
-                <div>
-                    <strong>Mitigantes Clave</strong>
-                    Caja neta post-buyback, capacidad de redirigir esfuerzos a mercados offshore y programas domésticos, y el incentivo del regulador a preservar la industria como fuente relevante de exportaciones de servicios.
-                </div>
-            </div>
-        </section>
-
-        <!-- RECOMENDACIÓN -->
-        <section id="recomendacion">
-            <div class="section-kicker">CONCLUSIÓN & ESTRATEGIA</div>
-            <h2><span class="emoji">🎯</span> Recomendación de Inversión</h2>
-
-            <div class="conclusion-card">
-                <h3>EDU como Arbitraje Regulatorio Asimétrico</h3>
-                <p>La acción descuenta un escenario muy cercano al caso oso, mientras que el caso base justifica un valor ~2.5x el precio actual y el caso alcista aún mayor. La combinación de balance sólido, amplitud de palancas de adaptación comercial y un sector con viento de cola estructural genera una oportunidad de compra clara para inversores con horizonte 18–24 meses y tolerancia a volatilidad regulatoria.</p>
+            <div class="card">
+                <h4>🟢 Risk #3: Competencia con Prácticas Ilegales (BAJO-MEDIO)</h4>
+                <p><strong>Escenario:</strong> Proveedores menos escrupulosos mantienen pagos encubiertos a agentes, capturando cuota onshore hasta que supervisión y sanciones disciplinen el sector.</p>
+                <p style="margin-top: 10px;"><strong>Probability:</strong> <span class="positive">20%</span></p>
             </div>
 
-            <div class="highlights" style="margin-top:10px;">
+            <div class="card">
+                <h4>🟢 Risk #4: Riesgo Macro/Visa (BAJO-MEDIO)</h4>
+                <p><strong>Escenario:</strong> Endurecimientos adicionales en política migratoria o cupos de estudiantes internacionales reducen TAM estructural en 20–30%.</p>
+                <p style="margin-top: 10px;"><strong>Impacto:</strong> Fair value ~AUD $1.70–1.85.</p>
+                <p style="margin-top: 10px;"><strong>Probability:</strong> <span class="positive">15-25%</span></p>
+            </div>
+
+            <h3>Mitigantes Clave</h3>
+            <div class="alert alert-success">
+                ✅ Caja neta post-buyback permite absorber shocks<br>
+                ✅ Capacidad de redirigir esfuerzos a mercados offshore y programas domésticos<br>
+                ✅ Incentivo regulatorio a preservar industria como fuente de exportaciones de servicios<br>
+                ✅ Management con track record probado de adaptación
+            </div>
+
+            <h3>Upside Risks</h3>
+            
+            <div class="highlights">
                 <div class="highlight-item">
-                    <h4>Calificación</h4>
-                    <p><strong>COMPRA</strong> en el rango AUD $0.80–0.95, con objetivo 12M en AUD $2.00–2.30 y revisión una vez se materialicen los primeros datos post-regulación.</p>
+                    <h4>🟢 Upside #1: Demanda Más Resiliente</h4>
+                    <p>Estudiantes priorizan calidad y pathways migratorios sobre comisiones de agentes. Impacto limitado a 5-8% vs 12-15% esperado.</p>
                 </div>
                 <div class="highlight-item">
-                    <h4>Dimensión de Posición</h4>
-                    <p>Posición núcleo del 4–5% de cartera para inversores especializados en situaciones especiales, con posibilidad de añadir tácticamente ante sobrerreacciones de corto plazo a noticias regulatorias o resultados trimestrales.</p>
+                    <h4>🟢 Upside #2: Reclutamiento Directo Supera Expectations</h4>
+                    <p>CAC directo resulta más competitivo y rampup más rápido. Fair value acercándose a AUD $2.30-2.40.</p>
                 </div>
                 <div class="highlight-item">
-                    <h4>Plan de Salida & Gestión de Riesgo</h4>
-                    <p>Parcial take-profit en torno a AUD $1.60, desriesgando capital y dejando exposición residual al caso alcista; stop técnico alrededor de AUD $0.70 si las métricas de retención onshore y CAC confirman el escenario estructural negativo.</p>
-                </div>
-            </div>
-
-            <div class="alert alert-success" style="margin-top:12px;">
-                <div class="alert-icon">📈</div>
-                <div>
-                    <strong>Resumen Final</strong>
-                    A precios actuales, EDU ofrece un perfil retorno-riesgo excepcional: un valor intrínseco central de AUD $2.08, downside razonablemente acotado por el balance y la solvencia del modelo, y catalizadores claros en los próximos 6–12 meses que permitirán validar o refutar la tesis con evidencia empírica.
+                    <h4>🟢 Upside #3: M&A o Consolidación</h4>
+                    <p>Players internacionales (Navitas, Pearson, IDP) buscan consolidar educación australiana. Precio de oferta 25-40% premium.</p>
                 </div>
             </div>
         </section>
 
-        <div class="back-button-wrapper">
-            <a href="../" title="Volver al Portfolio">← Volver al Portfolio</a>
-        </div>
+        <!-- Conclusión -->
+        <section id="conclusion" class="fade-in">
+            <h2>🎯 Conclusión & Recomendación</h2>
 
-        <footer>
-            <p>Este documento tiene fines exclusivamente informativos y no constituye una recomendación personalizada de inversión.</p>
-            <p>SpreadHunters · Análisis de Situaciones Especiales y M&amp;A Arbitrage.</p>
-        </footer>
+            <div class="card" style="background: linear-gradient(135deg, var(--card-bg) 0%, rgba(16, 185, 129, 0.1) 100%); border: 2px solid var(--success-color);">
+                <h3 style="color: var(--success-color);">Recomendación: COMPRA 🎯</h3>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-top: 20px;"><strong>Rango Compra:</strong> AUD $0.80–0.95 | <strong>Objetivo 12M:</strong> AUD $2.00–2.30 | <strong>Horizonte:</strong> 18–24 meses</p>
+            </div>
+
+            <h3>EDU como Arbitraje Regulatorio Asimétrico</h3>
+            <div class="alert alert-success">
+                <strong>💡 Tesis Resumida:</strong> La acción descuenta un escenario muy cercano al caso oso, mientras que el caso base justifica un valor ~2.5x el precio actual. Combinación de balance sólido, amplitud de palancas de adaptación comercial y sector con viento de cola estructural.
+            </div>
+
+            <h3>Perfil de Inversión</h3>
+            
+            <div class="highlights">
+                <div class="highlight-item">
+                    <h4>📊 Retorno-Riesgo Excepcional</h4>
+                    <p>Valor intrínseco central AUD $2.08, downside acotado por balance y solvencia del modelo, catalizadores claros en 6–12 meses.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>💼 Mejor Para</h4>
+                    <p>Inversores especializados en situaciones especiales, arbitraje regulatorio y eventos corporativos. Horizonte 18-24 meses, tolerancia a volatilidad.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>📈 Dimensión de Posición</h4>
+                    <p>Núcleo del 4–5% de cartera para especializados; posibilidad de añadir tácticamente ante sobrerreacciones de corto plazo.</p>
+                </div>
+                <div class="highlight-item">
+                    <h4>🛡️ Plan de Salida</h4>
+                    <p>Parcial take-profit en AUD $1.60, desriesgando capital. Stop técnico ~AUD $0.70 si métricas confirman escenario negativo.</p>
+                </div>
+            </div>
+
+            <div class="alert alert-success" style="margin-top: 30px;">
+                <strong>✅ Bottom Line:</strong> A precios actuales (AUD $0.82), EDU ofrece un perfil retorno-riesgo excepcional con validadores empíricos claros en los próximos 6-12 meses. La tesis NO depende de múltiplos, sino de la capacidad probada del management para ejecutar adaptación comercial ante cambio regulatorio. 52% upside es conservador si se confirma resiliencia de demanda.
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="#resumen" class="btn btn-success">⬆ Volver al Inicio</a>
+            </div>
+        </section>
+
     </main>
-</div>
 
-<script>
-    // Progress bar scroll
-    window.addEventListener("scroll", function () {
-        var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        var scrolled = (winScroll / height) * 100;
-        document.getElementById("progressBar").style.width = scrolled + "%";
-    });
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p><strong>Disclaimer:</strong> Este análisis se proporciona únicamente con propósitos informativos y educativos. No constituye asesoramiento financiero ni recomendación personalizada de inversión.</p>
+            <p style="margin-top: 20px; font-size: 0.85rem;">
+                📅 Análisis Actualizado: Enero 2026 | 📊 Fuentes: ASX Filings, Management Presentations, Regulatory Notices
+            </p>
+            <p style="margin-top: 15px;">
+                🔗 <a href="https://spreadhuntersinvest.github.io/">SpreadHunters Investment Research</a>
+            </p>
+        </div>
+    </footer>
 
-    // Scroll-index active link on scroll
-    const navLinks = document.querySelectorAll(".scroll-index a");
-    const sections = document.querySelectorAll("main section");
-
-    function onScroll() {
-        let currentId = "";
-        const scrollY = window.pageYOffset;
-
-        sections.forEach((section) => {
-            const sectionTop = section.offsetTop - 140;
-            if (scrollY >= sectionTop) {
-                currentId = section.getAttribute("id");
-            }
-        });
-
-        navLinks.forEach((link) => {
-            link.classList.remove("active");
-            const href = link.getAttribute("href");
-            if (href === "#" + currentId) {
-                link.classList.add("active");
-            }
-        });
-    }
-
-    window.addEventListener("scroll", onScroll);
-
-    // Smooth scroll para los enlaces del índice (por si el navegador no lo soporta nativo)
-    navLinks.forEach((anchor) => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute("href"));
-            if (target) {
-                target.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
-        });
-    });
-</script>
-    <!-- BOTÓN VOLVER AL INDEX - AGREGAR AQUÍ -->
-    <div style="text-align: center; padding: 40px 20px; background: rgba(0,0,0,0.02); margin-top: 50px;">
-        <a href="../" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;" 
-           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(102, 126, 234, 0.4)';" 
-           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-            ← Volver al Porfolio
-        </a>
-    </div>
-    
-    <script src="../shared-price-updater.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    const updater = new PriceUpdater({
-        symbol: 'EDU.AX',              // Ticker NYSE
-        fairValue: 2.08,             // Target Price
-        fallbackPrice: 0.74,         // Precio actual como fallback
-        priceElementId: 'currentPrice', // ID del precio
-        upsideElementId: 'upsidePercent', // ID del upside
-        currency: 'AUD'
-    });
-    updater.start();
-});
-</script>
+        // Scroll Progress Bar
+        window.addEventListener('scroll', function() {
+            var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            var scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
+        });
+
+        // Smooth Scroll para navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+                
+                // Update active nav
+                document.querySelectorAll('.nav-tabs a').forEach(link => {
+                    link.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+
+        // Intersection Observer para animaciones fade-in
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(element);
+        });
+
+        // Actualizar navegación activa al hacer scroll
+        window.addEventListener('scroll', function() {
+            let current = '';
+            const sections = document.querySelectorAll('section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('.nav-tabs a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').slice(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
