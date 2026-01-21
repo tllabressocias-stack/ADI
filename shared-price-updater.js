@@ -121,7 +121,7 @@ async updatePrice() {
         'STAA': 22.15,
         'TNOM.HE': 2.98,
         'WOSG.L': 4.98,
-        'PRTH': 5.84,
+        'PRTH': 5.90,
         'TRUE': 2.11
     };
     
