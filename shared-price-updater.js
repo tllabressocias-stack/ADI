@@ -115,7 +115,7 @@ async updatePrice() {
         'TOA.WA': 9.91,
         'NWL.MI': 19.32,
         'TIC': 9.89,
-        'EDU.ASX': 0.95,
+        'EDU.ASX': 0.74,
         'CALY': 12.87,
         'MLCI': 8.30,
         'STAA': 22.15,
