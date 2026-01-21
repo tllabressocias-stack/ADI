@@ -771,19 +771,19 @@
             <div class="investment-metrics">
                 <div class="metric-card">
                     <div class="metric-label">PRECIO ACTUAL</div>
-                    <div class="metric-value cyan">AUD $0.82</div>
+                    <div class="metric-value cyan" id="currentPrice">AUD $0.82</div>
                     <div class="metric-subtitle">ASX: EDU</div>
                 </div>
                 
                 <div class="metric-card">
                     <div class="metric-label">FAIR VALUE DCF</div>
-                    <div class="metric-value cyan">AUD $2.08</div>
+                    <div class="metric-value cyan" id="fairValue">AUD $2.08</div>
                     <div class="metric-subtitle">Base Case 18-24m</div>
                 </div>
                 
                 <div class="metric-card">
                     <div class="metric-label">UPSIDE POTENCIAL</div>
-                    <div class="metric-value green">+154%</div>
+                    <div class="metric-value green" id="upsidePercent">+154%</div>
                     <div class="metric-subtitle">Ratio 3.8:1 atractivo</div>
                 </div>
                 
@@ -1377,5 +1377,28 @@
             });
         });
     </script>
+    <!-- BOTÓN VOLVER AL INDEX - AGREGAR AQUÍ -->
+    <div style="text-align: center; padding: 40px 20px; background: rgba(0,0,0,0.02); margin-top: 50px;">
+        <a href="../" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;" 
+           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(102, 126, 234, 0.4)';" 
+           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+            ← Volver al Porfolio
+        </a>
+    </div>
+    
+    <script src="../shared-price-updater.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const updater = new PriceUpdater({
+        symbol: 'EDU.AX',              // Ticker NYSE
+        fairValue: 2.08,             // Target Price
+        fallbackPrice: 0.74,         // Precio actual como fallback
+        priceElementId: 'currentPrice', // ID del precio
+        upsideElementId: 'upsidePercent', // ID del upside
+        currency: 'AUD'
+    });
+    updater.start();
+});
+</script>
 </body>
 </html>
